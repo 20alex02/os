@@ -1,0 +1,65 @@
+## Vzájemné recenze
+
+Jednou z možností, jak získat body za aktivitu, jsou vzájemné (peer)
+recenze. Smyslem této aktivity je získat praxi ve čtení a hodnocení
+cizího kódu. Možnost psát tyto recenze se váže na vlastní úspěšné
+vypracování téhož příkladu.
+
+Příklad: odevzdáte-li ve druhém týdnu 4 přípravy, z toho u třech
+splníte testy „verity“ (řekněme ‹p1›, ‹p2›, ‹p5›), ve třetím týdnu
+dostanete po jednom řešení těchto příkladů (tzn. budete mít možnost
+recenzovat po jedné instanci ‹02/p1›, ‹02/p2› a ‹02/p5›). Termín pro
+odevzdání recenzí na přípravy z druhé kapitoly je shodný s termínem
+pro odevzdání příprav třetí kapitoly (tzn. sobotní půlnoc).
+
+Vypracování těchto recenzí je dobrovolné. Za každou vypracovanou
+recenzi získáte jeden bod za aktivitu, počítaný v týdnu, kdy jste
+recenze psali (v uvedeném příkladu by to tedy bylo ve třetím týdnu
+semestru, tedy do stejné „kolonky“ jako body za příklady ‹02/r›).
+
+Udělení bodů je podmíněno smysluplným obsahem – «nestačí» napsat
+„nemám co dodat“ nebo „není zde co komentovat“. Je-li řešení dobré,
+napište «proč» je dobré (viz též níže). Vámi odevzdané recenze si
+přečte Váš cvičící a některé z nich může vybrat k diskusi ve cvičení
+(v dalším týdnu), v podobném duchu jako přípravy samotné.
+
+«Pozor», v jednom týdnu lze získat maximálně «3 body» za aktivitu,
+bez ohledu na jejich zdroj (recenze, vypracování příkladu u tabule,
+atp.). Toto omezení není dotčeno ani v případě, kdy dostanete
+k vypracování více než 3 příklady (můžete si ale vybrat, které
+z nich chcete recenzovat).
+
+### Jak recenze psát
+
+Jak recenze vyzvednout a odevzdat je blíže popsáno v kapitole T.
+Své komentáře vkládejte přímo do vyzvednutých zdrojových souborů.
+Komentáře můžete psát česky (slovensky) nebo anglicky, volba je na
+Vás. Komentáře by měly být stručné, ale užitečné – Vaším hlavním
+cílem by mělo být pomoct adresátovi naučit se lépe programovat.
+
+Snažte se aplikovat kritéria a doporučení z předchozí sekce (nejlépe
+na ně přímo odkázat, např. „tuto proměnnou by šlo jistě pojmenovat
+lépe (viz doporučení 2.b)“). Nebojte se ani vyzvednout pozitiva
+(můžete zde také odkázat doporučení, máte-li například za to, že je
+obzvlášť pěkně uplatněné) nebo poznamenat, když jste se při čtení
+kódu sami něco naučili.
+
+Komentáře vkládejte vždy «před» komentovaný celek, a držte se podle
+možnosti tohoto vzoru (použití ‹**› pomáhá odlišit původní komentáře
+autora od poznámek recenzenta):
+
+    /** A short, one-line remark. **/
+
+U víceřádkových komentářů:
+
+    /** A longer comment, which should be wrapped to 80 columns or
+     ** less, and where each line should start with the ** marker.
+     ** It is okay to end the comment on the last line of text like
+     ** this. **/
+
+Při vkládání komentářů «neměňte» existující řádky (zejména se
+ujistěte, že máte vypnuté automatické formátování, editujete-li
+zdrojový kód v nějakém IDE). Jediné povolená operace jsou:
+
+ • vložení nových řádků (prázdných nebo s komentářem), nebo
+ • doplnění komentáře na stávající «prázdný» řádek.

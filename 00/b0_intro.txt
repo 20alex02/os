@@ -1,0 +1,153 @@
+# B. Úvod
+
+Tato kapitola je předmětem cvičení v prvním týdnu semestru. V tomto
+cvičení se seznámíte s organizací cvičení, se studijními materiály
+(tedy zejména touto sbírkou) a také si připomenete základy práce
+v prostředí POSIX a v jazyce C. Detailněji se pak budeme zabývat
+základní strukturou příkladů (definice, hlavičkové soubory,
+procedura ‹main›, pomocné testovací funkce, atp.), vztahem tohoto
+předmětu ke standardu POSIX a v neposlední řadě obecnými principy
+ošetření různých chybových stavů v programech.
+
+## Normy
+
+Kurz je celý veden v programovacím jazyce C99, specifikovaném normou
+ISO. Krom samotného jazyka C budeme používat rozhraní operačního
+systému v podobě, kterou specifikuje norma POSIX, a několik málo
+vybraných rozšíření (zejména právě v souvislosti s ošetřením chyb –
+drobné odchýlení od standardu nám totiž ušetří značné množství
+psaní).
+
+Není-li daná konstrukce nebo knihovní funkce specifikována normou
+«ISO 9899:1999¹» (ISO C99; «HTML verze²»), normou
+«IEEE Std 1003.1-2017³» (POSIX), ani explicitně zmíněna v této
+sbírce jako podporovaná nad rámec těchto standardů, «nepoužívejte
+ji». Řešení, která na takové konstrukce spoléhají, se nemusí po
+odevzdání přeložit, nebo se v horším případě mohou chovat jinak, než
+na Vašem systému (nebo i jinak, než na serveru ‹aisa›). Nevíte-li
+jistě, zda je v tomto směru Vaše řešení v pořádku, odevzdávejte vždy
+s dostatečným předstihem.
+
+Nevíte-li, je-li nějaká funkcionalita, kterou byste chtěli použít,
+součástí zmiňovaných standardů, a jejich čtení je nad Vaše síly,
+zeptejte se v diskusním fóru, nebo na cvičení. Řešení příkladů
+z této sbírky nebude nikdy vyžadovat funkce, konstrukce, atp., které
+se neobjevují ani v ukázkách, ani v úvodech kapitol, ani nejsou
+explicitně zmíněné v zadání daného příkladu.
+
+¹ ‹http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf›
+² ‹http://port70.net/~nsz/c/c99/n1256.html›
+³ ‹https://pubs.opengroup.org/onlinepubs/9699919799/›
+
+## Manuálové stránky
+
+Každá knihovní funkce z norem POSIX a ISO C99 je zdokumentovaná
+systémem ‹man›, který je nainstalovaný na většině
+POSIX-kompatibilních systémů (server ‹aisa› nevyjímaje). Příkaz
+‹man› lze použít těmito způsoby:
+
+ • ‹man 2 read› zobrazí dokumentaci «lokální» verze systémového
+   volání ‹read› (za ‹read› lze dosadit libovolné systémové volání)
+   – pozor, tato lokální verze může mít oproti POSIX-u
+   nepřenositelná rozšíření (většinou Vás na to ale manuálová
+   stránka explicitně upozorní),
+ • ‹man 3 dprintf› zobrazí dokumentaci «lokální» verze knihovní
+   funkce ‹dprintf› (opět lze dosadit libovolnou jinou knihovní
+   funkci, např.  ‹memcmp›),
+ • ‹man 3p read› zobrazí příslušnou část normy POSIX⁴ – na zde
+   popsané chování se můžete spolehnout.
+
+Samozřejmě krom příkazu ‹man› můžete použít výše odkazované normy
+samotné. Dalším poměrně spolehlivým zdrojem informací o jazyku C je
+online referenční příručka «cppreference⁵».
+
+⁴ Norma POSIX zahrnuje jako svou část popis knihovních funkcí
+  specifikovaných normou ISO «C89» (nikoliv novější «C99» která je
+  závazná pro tento kurz). Autorům této sbírky není známo, že by
+  mezi těmito normami existoval (v částech sdílených s normou POSIX)
+  pro tento předmět relevantní konflikt. Můžete se tedy odvolávat na
+  normu POSIX i u funkcí, které patří do průniku s ISO C.
+  Narazíte-li ovšem při studiu literatury na nějaké relevantní
+  rozdíly, budeme rádi, když se s námi o tento nález podělíte
+  v diskusním fóru.
+⁵ ‹https://en.cppreference.com/w/c›
+
+## Struktura programu
+
+Každý příklad, který budete v tomto předmětu řešit, je tvořen jedním
+zdrojovým souborem v jazyce C. Součástí kostry je text zadání,
+případný pomocný kód, který by Vám měl řešení ulehčit, procedura
+‹main›, která obsahuje základní sadu testů a případné pomocné
+testovací funkce. Vaším úkolem je do této kostry doplnit kód tak,
+aby výsledný celek splňoval text zadání. Hlavním úkolem přiložených
+testů je usnadnit Vám dosažení tohoto cíle. O hlavních částech
+programu se více dovíte v ukázkách a samotných příkladech.
+
+Programy, které budete psát budou dvou hlavních typů – může se
+jednat o znovupoužitelné („knihovní“) funkce se zadaným rozhraním,
+nebo o de-facto kompletní programy. Z povahy zadaného programu bude
+obvykle zřejmé, o který typ úlohy se jedná (je-li např. vstupem
+popisovač otevřeného souboru, nebo nějaká datová struktura, těžko se
+může jednat o kompletní program).
+
+Trochu atypicky, i v případech, kdy píšete de-facto kompletní
+program, vstupní bod tohoto programu bude nějaká námi zadaná
+procedura (např. v přípravě ‹02/p1_echoc› to je procedura s názvem
+‹echoc›), nikoliv speciální procedura ‹main›.
+
+Tuto formu jsme zvolili zejména pro jednoduchost testování – dodané
+testy vytvoří pro Váš program nový proces (použitím systémového
+volání ‹fork›) a chování tohoto programu pak vyhodnotí „zvenčí“
+z rodičovského procesu. Vám tím zejména odpadne nutnost spouštět
+různé pomocné skripty, které by hotový program testovaly, nebo
+provádět testovací scénáře „ručně“. Spuštěním přeloženého programu
+bez parametrů se tento přímo otestuje.
+
+U tohoto typu programů ale dodaná procedura ‹main› umožní i jejich
+přímé spuštění, pro případy, kdy si je budete chtít vyzkoušet
+obvyklým způsobem (jak tohoto dosáhnout zjistíte v komentáři na
+začátku dodané procedury ‹main›).
+
+## Ošetření chyb
+
+Od typu programu nebo podprogramu se bude typicky odvíjet i způsob,
+jakým se vypořádáme s chybovými stavy. Základní pravidlo systémového
+programování je, že «každé systémové volání může selhat» a totéž
+platí pro každý podprogram (ať už knihovní nebo Váš vlastní), který
+vnitřně nějaké systémové volání používá (ať už přímo, nebo nepřímo).
+
+Chyby obecně dělíme na «fatální» a «opravitelné». Toto dělení je
+ovšem silně kontextově závislé – tatáž chyba může být v některých
+případech fatální, ale v jiných opravitelná. Fatální chyba je
+taková, po které nemá smysl pokračovat ve vykonávání programu a
+tento je lepší rovnou ukončit. Je samozřejmě žádoucí uživateli tuto
+chybu ještě před ukončením programu co nejpřesněji popsat.
+Opravitelné chyby jsou pak takové, kdy může program ve své činnosti
+pokračovat.
+
+Zde do hry vstupuje onen rozdíl mezi kompletním programem a neúplným
+(znovupoužitelným) podprogramem. Máme-li pod kontrolou celý program,
+máme automaticky k dispozici mnohem přesnější informaci o tom,
+v jakém kontextu daná chyba nastala, a můžeme se k ní tedy mnohem
+snadněji postavit jako k chybě fatální.
+
+Ve znovupoužitelném podprogramu je situace komplikovanější –
+ukončíme-li při nějaké chybě celý program, omezíme tím možnosti
+použití tohoto podprogramu v situaci, kdy je tato reakce nežádoucí.
+Na druhé straně správně se vypořádat s opravitelnou chybou je mnohem
+náročnější – program jako celek se musí z chyby zotavit. Dotčený
+podprogram obvykle nemůže svůj úkol úspěšně dokončit; musí ale:
+
+ 1. vrátit jakékoliv už provedené efekty, které by mohly mít
+    negativní dopad na další fungování programu – zejména musí
+    uvolnit veškeré již alokované zdroje a zajistit platnost
+    relevantních invariantů,
+ 2. chybu ohlásit volajícímu podprogramu – nikoliv přímo uživateli –
+    způsobem, který umožní zbytku programu na chybu vhodně reagovat.
+
+Při dekompozici programu na podprogramy musíme vždy zvážit, které
+chyby považovat za fatální a které nikoliv. Od tohoto rozhodnutí se
+pak odvíjí jak jednoduchost zápisu (považovat chybu za fatální je
+jednodušší) tak i praktická znovupoužitelnost navrženého podprogramu
+(podprogram, který při sebemenším problému ukončí program, není
+příliš znovupoužitelný).

@@ -1,0 +1,64 @@
+## Opisování
+
+Na všech zadaných problémech pracujte prosím zcela samostatně – toto
+se týká jak příkladů ze sbírky, které budete odevzdávat, tak
+domácích úloh ze sad. To samozřejmě neznamená, že Vám zakazujeme
+společně studovat a vzájemně si pomáhat látku pochopit: k tomuto
+účelu můžete využít všechny zbývající příklady ve sbírce (tedy ty,
+které nebude ani jeden z Vás odevzdávat), a samozřejmě nepřeberné
+množství příkladů a cvičení, které jsou k dispozici online.
+
+Příklady, které odevzdáváte, slouží ke kontrole, že látce skutečně
+rozumíte, a že dokážete nastudované principy prakticky aplikovat.
+Tato kontrola je pro Váš pokrok naprosto klíčová – je velice snadné
+získat pasivním studiem (čtením, posloucháním přednášek, studiem již
+vypracovaných příkladů) pocit, že něčemu rozumíte. Dokud ale sami
+nenapíšete na dané téma několik programů, jedná se pravděpodobně
+skutečně pouze o pocit.
+
+Abyste nebyli ve zbytečném pokušení kontroly obcházet, nedovolenou
+spolupráci budeme relativně přísně trestat. Za každý prohřešek Vám
+bude strženo «v každé instanci» (jeden týden příprav se počítá jako
+jedna instance, příklady ze sad se počítají každý samostatně):
+
+ • 1/2 bodů získaných (ze všech příprav v dotčeném týdnu, nebo za
+   jednotlivý příklad ze sady),
+ • 10 bodů z hodnocení bloku, do kterého opsaný příklad patří,
+ • 10 bodů (navíc k předchozím 10) z celkového hodnocení.
+
+Opíšete-li tedy například 2 přípravy ve druhém týdnu a:
+
+ • Váš celkový zisk za přípravy v tomto týdnu je 4,5 bodu,
+ • Váš celkový zisk za první blok je 65 bodů,
+
+jste «automaticky hodnoceni známkou X» (65 - 2,25 - 10 je méně než
+potřebných 60 bodů). Podobně s příkladem z první sady (65 - 5 - 10),
+atd. Máte-li v bloku bodů dostatek (např. 80 - 5 - 10 > 60), ve
+studiu předmětu pokračujete, ale započte se Vám ještě navíc
+penalizace 10 bodů do celkové známky. Přestává pro Vás proto platit
+pravidlo, že 4 splněné bloky jsou automaticky E nebo lepší.
+
+V situaci, kdy:
+
+ • za bloky máte před penalizací 77, 62, 61, 64,
+ • v prvním bloku jste opsali domácí úkol,
+
+budete penalizováni:
+
+ • v prvním bloku 10 + 5, tzn. bodové zisky za bloky budou efektivně
+   62, 62, 61, 64,
+ • v celkovém hodnocení 10, tzn. celkový zisk 62 + 62 + 61 + 64 - 10
+   = 239, a budete tedy hodnoceni známkou «F».
+
+To, jestli jste příklad řešili společně, nebo jej někdo vyřešil
+samostatně, a poté poskytl své řešení někomu dalšímu, není pro účely
+kontroly opisování důležité. Všechny „verze“ řešení odvozené ze
+společného základu budou penalizovány stejně. Taktéž «zveřejnění
+řešení» budeme chápat jako pokus o podvod, a budeme jej trestat, bez
+ohledu na to, jestli někdo stejné řešení odevzdá, nebo nikoliv.
+
+Podotýkáme ještě, že kontrola opisování «nespadá» do desetidenní
+lhůty pro hodnocení průběžných kontrol. Budeme se sice snažit
+opisování kontrolovat co nejdříve, ale odevzdáte-li opsaný příklad,
+můžete být bodově penalizováni kdykoliv (tedy i dodatečně, a to až
+do konce zkouškového období).

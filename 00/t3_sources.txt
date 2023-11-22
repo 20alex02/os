@@ -1,0 +1,57 @@
+## Kostry úloh
+
+Pracujete-li na studentském serveru ‹aisa›, můžete pro překlad
+jednotlivých příkladů použít přiložený soubor ‹makefile›, a to
+zadáním příkazu
+
+    $ make příklad
+
+kde ‹příklad› je název souboru bez přípony (např. tedy ‹make
+e1_factorial›). Tento příkaz postupně:
+
+ 1. přeloží Vaše řešení překladačem ‹gcc›,
+ 2. spustí přiložené testy,
+ 3. spustí kontrolu nástrojem ‹valgrind›.
+
+Selže-li některý krok, další už se provádět nebude. Povede-li se
+překlad v prvním kroku, v pracovním adresáři naleznete spustitelný
+soubor s názvem ‹příklad›, se kterým můžete dále pracovat (např. ho
+ladit/krokovat nástrojem ‹gdb›).
+
+Existující přeložené soubory můžete smazat příkazem ‹make clean›
+(vynutíte tak jejich opětovný překlad a spuštění všech kontrol).
+
+### Textový editor
+
+Na stroji ‹aisa› je k dispozici jednoduchý editor ‹micro›, který má
+podobné ovládání jako klasické textové editory, které pracují
+v grafickém režimu, a který má slušnou podporu pro práci se
+zdrojovým kódem. Doporučujeme zejména méně pokročilým. Další
+možností jsou samozřejmě pokročilé editory ‹vim› a ‹emacs›.
+
+Mimo lokálně dostupné editory si můžete ve svém oblíbeném editoru,
+který máte nainstalovaný u sebe, nastavit režim vzdálené editace
+(použitím protokolu ‹ssh›). Minimálně ve VS Code je takový režim
+k dispozici a je uspokojivě funkční.
+
+### Vlastní prostředí
+
+Každý příklad je zcela obsažen v jednom standardním zdrojovém
+souboru, proto je jejich překlad velmi jednoduchý. Pravděpodobně
+každé IDE zvládne s příklady bez problémů pracovat (spouštět, ladit,
+atp.), musí ale běžet na systému typu POSIX (splňují všechny OS krom
+Windows – zde ale můžete využít WSL a případně jeho
+«integraci do VS Code¹»).
+
+Krom IDE můžete také použít dodaný soubor ‹makefile›, pouze si
+v nadřazené složce (tzn. «vedle» složek ‹01›, ‹02›, atd.) vytvořte
+soubor ‹local.mk›, ve kterém nastavíte, jak se na Vašem systému
+spouští potřebné příkazy. Implicitní nastavení je toto, a funguje-li
+Vám, není potřeba soubor ‹local.mk› vůbec vytvářet:
+
+    CC = cc
+    VALGRIND = valgrind
+
+Můžete samozřejmě příklady překládat a kontrolovat i ručně.
+
+¹ ‹https://code.visualstudio.com/docs/remote/wsl›

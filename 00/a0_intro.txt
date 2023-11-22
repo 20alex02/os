@@ -1,0 +1,41 @@
+# A. Pravidla a organizace
+
+Tento dokument je sbírkou cvičení a komentovaných příkladů
+zdrojového kódu. Každá kapitola odpovídá jednomu týdnu semestru a
+tedy jednomu cvičení. Cvičení v prvním týdnu semestru („nulté“) je
+určeno k seznámení se s výukovým prostředím, studijními materiály a
+základními nástroji ekosystému.
+
+Každá část sbírky (zejména tedy všechny ukázky a příklady) jsou také
+k dispozici jako samostatné soubory, které můžete upravovat a
+spouštět. Této rozdělené verzi sbírky říkáme «zdrojový balík».
+Aktuální verzi¹ (ve všech variantách) můžete získat dvěma způsoby:
+
+ 1. Ve «studijních materiálech²» předmětu v ISu – soubory PDF ve
+    složce ‹text›, zdrojový balík ve složkách ‹00› (organizační
+    informace), ‹01› až ‹12› (jednotlivé kapitoly = týdny semestru),
+    dále ‹s1› až ‹s3› (sady úloh) a konečně ve složce ‹sol› vzorová
+    řešení. Doporučujeme soubory stahovat dávkově pomocí volby
+    „stáhnout jako ZIP“.
+ 2. Po přihlášení na studentský server ‹aisa› (buď za pomoci ‹ssh›
+    nebo ‹putty›) zadáním příkazu ‹pb152 update›. Všechny výše
+    uvedené složky pak naleznete ve složce ‹~/pb152›.
+
+Tato kapitola (složka) dále obsahuje «závazná» pravidla a
+organizační pokyny. Než budete pokračovat, pozorně si je prosím
+přečtěte.
+
+Pro komunikaci s organizátory kurzu slouží «diskusní fórum» v ISu
+(více informací naleznete v části T.1). Nepište prosím organizátorům
+ani cvičícím maily ohledně předmětu, nejste-li k tomu specificky
+vyzváni. S žádostmi o výjimky ze studijních povinností, omluvenkami,
+atp., se obracejte vždy na studijní oddělení.
+
+¹ Studijní materiály budeme tento semestr doplňovat průběžně,
+  protože kurz prochází zásadní reorganizací. Než začnete pracovat
+  na přípravách nebo příkladech ze sady, vždy se prosím ujistěte, že
+  máte jejich aktuální verzi. Zadání příprav lze považovat za
+  finální počínaje půlnocí na pondělí odpovídajícího týdne, sady
+  podobně půlnocí na první pondělí odpovídajícího bloku. Pro první
+  týden tedy 18.9.2023 0:00 a první sadu 25.9.2023 0:00.
+² ‹https://is.muni.cz/auth/el/fi/podzim2023/PB152cv/um/›

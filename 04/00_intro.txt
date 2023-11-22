@@ -1,0 +1,75 @@
+# Mapování do paměti, neblokující zápis
+
+V této kapitole se podíváme na dvě pokročilejší techniky vstupu a
+výstupu. První z nich se týká především obyčejných souborů, kterými
+jsme se zabývali v první kapitole: ukážeme si alternativu ke
+klasickým voláním ‹read› a ‹write› v podobě mapování souborů do
+paměti.
+
+Druhá část kapitoly pak uzavírá téma komunikace pomocí rour a
+proudových socketů z předchozí kapitoly. Budeme se zejména zabývat
+otázkou krátkého zápisu – situací analogickou ke krátkému čtení
+z předchozí kapitoly.
+
+Přípravy:
+
+ 1. ‹sum›   – sumarizace tabulky s pevně velkými záznamy
+ 2. ‹list›  – kontrola struktury záznamů
+ 3. ‹flood› – in-situ flood fill v bitmapovém souboru
+ 4. ‹write› – zápis bloku dat do neblokujícího popisovače
+ 5. ‹hose›  – souběžný zápis do několika popisovačů
+ 6. ‹tee› ‡ – souběžný zápis s vyrovnávací pamětí
+
+Řešené: TBD.
+
+## Mapování souborů do paměti
+
+Abychom mohli s daty uloženými v souboru pracovat, musíme je načíst
+do operační paměti – k tomu nám doposud sloužilo systémové volání
+‹read›. Protože operační paměť má řádově menší kapacitu (a je to
+obecně mnohem vzácnější zdroj, než perzistentní úložiště), jsme
+často nuceni pracovat se soubory po částech.¹ Správa paměti spojená
+se vstupem a výstupem je díky tomu relativně nepohodlná.
+
+Mapování souborů do paměti nám umožňuje předstírat, že máme celý
+soubor načtený v operační paměti a tím řadu úkolů zjednodušit.
+Zároveň dává operačnímu systému kontrolu nad tím, která data budou
+skutečně v operační paměti uložena, a která se načtou až ve chvíli,
+kdy je program skutečně použije.² Pro interakci s tímto mechanismem
+nabízí POSIX tři systémová volání:
+
+ • ‹mmap› vytvoří mapování – vstupem je popisovač obyčejného
+   souboru, vlastnosti mapování (přístupová práva, sdílený vs
+   soukromý přístup) a jeho rozsah,
+ • ‹msync› vyžádá zápis změn, které program provedl v mapované
+   paměti, zpátky do souboru na disku, a konečně
+ • ‹munmap› již nepotřebné mapování uvolní a zároveň provede
+   případné nedokončené zápisy do souboru.
+
+Mapování může být dvou základních typů:
+
+ • «sdílené» (‹MAP_SHARED›) – změny provedené skrz toto mapování se
+   projeví v souboru, do kterého takto mapované adresy odkazují,
+ • «soukromé» (‹MAP_PRIVATE›) – změny provedené v mapované paměti
+   zůstávají viditelné pouze v procesu, který mapování vlastní.
+
+«Pozor!» Není zaručeno, že v «soukromém» mapování se nebudou
+projevovat vnější změny souboru – přesné chování závisí na
+konkrétním operačním systému. Zároveň není zaručeno, že změny
+provedené ve «sdíleném» mapování budou viditelné pro ostatní
+vstupně-výstupní operace ihned, a to ani ze stejného procesu –
+operace ‹read› «může» vrátit verzi dat, kde se zápis skrze mapování
+ještě neprojevil. Přenos upraveného obsahu paměti do souboru je
+nutné vyžádat voláním ‹msync› nebo ‹munmap›.
+
+¹ Hlavní problém představují velmi velké soubory. Ne každý program
+  musí být schopen s velkými soubory pracovat, ale u řady programů
+  očekáváme, že budou smysluplně fungovat i se soubory, které jsou
+  mnohem větší než je dostupná operační paměť. A i v situaci, kdy je
+  operační paměti dostatek, obvykle pro ni existuje lepší využití.
+² Více informací o tom, jak tento mechanismus funguje na úrovni
+  operačního systému, naleznete v sekcích 1.4 a 3.2 skript.
+
+## Neblokující zápis
+
+ • ‹O_NONBLOCK›

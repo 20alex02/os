@@ -1,0 +1,11 @@
+# T. Technické informace
+
+Tato kapitola obsahuje informace o technické realizaci předmětu,
+a to zejména:
+
+ • jak se pracuje s kostrami úloh,
+ • jak sdílet obrazovku (terminál) ve cvičení,
+ • jak se odevzdávají úkoly,
+ • kde najdete výsledky testů a jak je přečtete,
+ • kde najdete hodnocení kvality kódu (učitelské recenze),
+ • jak získáte kód pro vzájemné recenze.

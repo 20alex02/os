@@ -1,0 +1,100 @@
+# Blokující vstup a výstup, čekání na událost
+
+Ukázky:
+
+ 1. ‹count›   – počítání přijatých bajtů
+ 2. ‹poll›    – souběžná komunikace na dvou popisovačích
+
+Přípravy:
+
+ 1. ‹min›     – jednoduchý datagramový server,
+ 2. ‹read›    – read loop pro pevně velký záznam
+ 3. ‹ready›   – nalezení popisovače připraveného ke čtení
+ 4. ‹collect› – čtení dat ze skupiny popisovačů
+ 5. ‹fget›    – blokový protokol (posílá bloky, čte potvrzení)
+ 6. ‹fput›    – podobně, ale přijímá bloky, posílá potvrzení
+
+## Komunikace a blokování
+
+V této kapitole se budeme zabývat situací, kdy čtení a zápis můžou
+«blokovat» (čekat, angl. «block»). Podobně jako odeslání nebo
+přijetí datagramu může čtení a zápis představovat komunikaci.¹
+Rozdílem zde je, že ‹read› a ‹write› používáme s rourami nebo
+spojovanými sockety – pracují tedy s «proudem dat», který nemá žádné
+jasně určené hranice, jako tomu bylo u datagramů. Zejména nemůžeme
+předpokládat, že logické celky protokolu (to, co bychom intuitivně
+považovali za zprávu) budou přečteny jako jeden celek.
+
+Operaci ‹write› v blokujícím režimu (tak jak ji tento týden budeme
+používat) je poměrně jednoduchá – i v případě, kdy dochází ke
+komunikaci, provede ‹write› vždy kompletní zápis.² Z pohledu
+zapisujícího se tedy jedná o operaci s daty «pevné velikosti»
+(velikost určuje třetí parametr).
+
+Operace ‹read› je složitější, zejména proto, že nemůžeme spolehlivě
+předvídat, kolik druhá strana odešle dat. Čtení z proudu dat je
+proto nutně operací s daty «proměnné velikosti»³ – se všemi
+komplikacemi, které se s tím pojí. Jedno pravidlo zůstává
+v platnosti – vrátí-li ‹read› nulu, žádná další data již nebude
+možné přečíst – v tomto případě to znamená, že protistrana uzavřela
+komunikační kanál (u souborů to značilo konec souboru).
+
+¹ V první kapitole jsme operace ‹read› a ‹write› používali pouze na
+  pasivní objekty – soubory – a měli jsme tak zaručeno, že data
+  budou k dispozici ihned.
+² Zápis menšího počtu bajtů, než kolik bylo vyžádáno, může nastat
+  pouze na «neblokujícím» popisovači – tímto se budeme zabývat
+  v příští kapitole – nebo při «obsluze» signálu (pozor, nikoliv při
+  jeho doručení) – téma, které jde mimo rámec tohoto předmětu.
+³ Mohlo by se zdát, že by operace ‹read› mohla pracovat podobně jako
+  u souborů, totiž jednoduše vyčkat, až bude k dispozici dostatek
+  dat, aby se naplnil dodaný buffer. Rozmyslete si, že takové řešení
+  by automaticky vedlo k uváznutí, kdykoliv protistrana čeká na
+  odpověď (zavolá blokující ‹read›) po odeslání kratší zprávy, než
+  jakou očekáváme.
+
+## Zpracování událostí
+
+Klíčovým stavebním prvkem interaktivních aplikací je tzv. «event
+loop» – konstrukce, která umožňuje přejít od klasického sekvenčního
+programu, jaký dobře znáte z předchozích kurzů programování, k tzv.
+«reaktivním» programům (jsou známé také pod názvem programy řízené
+událostmi).¹
+
+Standardní «event loop» je postaven na službě operačního systému
+‹poll›, nebo některé její variantě/rozšíření. Její základní
+myšlenkou je pozastavit vykonávání programu do chvíle, než je
+splněna nějaká podmínka.²
+
+Tento princip známe již z předešlé kapitoly, kde funkce ‹recv› nebo
+‹send› mohou «blokovat» – program je «uvnitř» systémového volání
+uspán a je mu umožněno pokračovat ve výpočtu až ve chvíli, kdy je
+operaci možné dokončit. Z pohledu toku řízení programu se program na
+delší dobu „zasekne“ ve volání ‹recv›. Připravenost pokračovat ve
+výpočtu je pak programu „oznámena“ prostým návratem z volání ‹recv›.
+
+Princip volání ‹poll›³ je stejný, umožňuje nám ale najednou uvést
+větší množství podmínek pro probuzení (= pokračování ve výpočtu =
+návrat z volání ‹poll›). Je-li tedy potřeba reagovat na jednu
+z vyjmenovaných situací, program je operačním systémem probuzen –
+volání ‹poll› se vrátí. Jeho výsledkem je pak popis těch podmínek,
+které vedly k probuzení programu.
+
+¹ Opět se jedná o klíčovou součást implementace řady známých
+  aplikací. Známé implementace můžete potkat například v ‹node.js›
+  (pro programy v jazyce C je tato dostupná pod názvem ‹libuv›),
+  v interpretu jazyka Python (součást modulu ‹asyncio›), ve většině
+  knihoven pro tvorbu nativních aplikací (gtk, qt), atd. Většina
+  nativních serverových programů obsahuje vlastní event loop.
+² Existují zde dvě základní filozofie – tzv. level-triggered
+  (rozhodují se na základě splněných podmínek) a edge-triggered
+  (rozhodují se podle nastalých událostí). Funkce ‹poll›, která je
+  součástí standardu POSIX, a kterou se zde budeme zabývat, patří do
+  rodiny level-triggered funkcí. Rozšíření systému Linux ‹epoll›
+  nabízí také edge-triggered režim.
+³ Krom samotného systémového volání ‹poll› existuje obdobné pod
+  názvem ‹select› – pracuje na stejném principu, liší se pouze
+  způsobem předání parametrů a návratové hodnoty. Protože řada
+  existujících programů používá toto starší rozhraní, přikládáme i
+  ukázku použití volání ‹select›.
+

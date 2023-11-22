@@ -1,0 +1,56 @@
+## Závěrečný programovací test
+
+Zkouškové období tvoří pomyslný 4. blok a platí zde stejné kritérium
+jako pro všechny ostatní bloky: musíte získat alespoň 60 bodů.
+Závěrečný test:
+
+ • proběhne v počítačové učebně bez přístupu k internetu nebo
+   vlastním materiálům,
+ • k dispozici bude tato sbírka (bez vzorových řešení příkladů typu
+   ‹e› a ‹r›), skripta PB152 a manuálové stránky (příkaz ‹man›),
+ • budete moct používat textový editor nebo vývojové prostředí VS
+   Code, překladač jazyka C (‹gcc› a/nebo ‹clang›) a nástroje
+   ‹valgrind› a ‹gdb›.
+
+Na vypracování praktické části budete mít 4 hodiny čistého času, a
+bude sestávat ze šesti příkladů, které budou hodnoceny automatickými
+testy, s maximálním ziskem 90 bodů. Příklady jsou hodnoceny binárně
+(tzn. příklad je uznán za plný počet bodů, nebo uznán není). Kvalita
+kódu hodnocena nebude. Příklady budou na stejné úrovni obtížnosti
+jako příklady typu ‹p›/‹r›/‹v› ze sbírky.
+
+Během zkoušky můžete kdykoliv odevzdat (na počet odevzdání není
+žádný konkrétní limit) a vždy dostanete zpět výsledek testů syntaxe
+a sanity. Součástí zadání bude navíc soubor ‹tokens.txt›, kde
+naleznete 4 kódy. Každý z nich lze použít nejvýše jednou (vložením
+do komentáře do jednoho z příkladů), a každé použití kódu odhalí
+výsledek verity testu pro ten soubor, do kterého byl vložen. Toto se
+projeví pouze při prvním odevzdání s vloženým kódem, v dalších
+odevzdáních bude tento kód ignorován (bez ohledu na soubor, do
+kterého bude vložen).
+
+Zkouška proběhne až po vyhodnocení recenzí za třetí blok (tzn. ve
+druhé polovině zkouškového období). Plánované termíny¹ jsou tyto:
+
+ • středa 24.1. 9:00–13:00, 14:00–18:00,
+ • středa 31.1. 9:00–13:00, 14:00–18:00,
+ • středa  7.2. 9:00–13:00, 14:00–18:00,
+ • středa 14.2. 9:00–13:00, 14:00–18:00.
+
+### Vnitrosemestrálky
+
+V posledním týdnu každého bloku, tedy
+
+ • týden 4 (16.-20. října),
+ • týdnu 8 (13.–17. listopadu),
+ • týden 12 (11.-15. prosince),
+
+proběhne v rámci cvičení programovací test na 40 minut. Tyto testy
+budou probíhat za stejných podmínek, jako výše popsaný závěrečný
+test (slouží tedy mimo jiné jako příprava na něj). Řešit budete vždy
+ale pouze jeden příklad, za který můžete získat 3 body, které se
+počítají jako body za aktivitu v tomto cvičení.
+
+¹ Může se stát, že termíny budeme z technických nebo organizačních
+  důvodů posunout na jiný den nebo hodinu. V takovém případě Vám
+  samozřejmě změnu s dostatečným předstihem oznámíme.

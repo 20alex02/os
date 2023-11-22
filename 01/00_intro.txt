@@ -1,0 +1,75 @@
+# Základy práce se soubory
+
+Soubor je základní jednotkou práce s perzistentními daty. Rozhraní
+pro práci se soubory je ve většině operačních systémů velmi
+důležité, a často pokrývá mnohem víc, než jen obyčejné soubory. Více
+o souborech a jejich organizaci se dovíte ve třetí kapitole skript.
+
+Z pohledu programátora je důležité rozhraní, které práci se soubory
+zprostředkuje – centrálním prvkem je zde «popisovač otevřeného
+souboru». Jedná se o hodnotu, která je pevně svázaná se «souborem».¹
+Samotný popisovač nemá žádnou vnitřní strukturu, kterou bychom mohli
+zkoumat, je definován pouze operacemi, které je nad ním možné
+provádět (jedná se v tomto smyslu o abstraktní datový typ).
+
+Pro vytvoření popisovače existuje několik systémových volání, ze
+kterých si tento týden ukážeme to nejdůležitější – ‹openat›. Má 3
+pevné a 1 volitelný parametr:
+
+ 1. ‹int fd› je již existující popisovač, který je svázán «se
+    složkou», vůči které budeme uvádět «cestu» – lze použít
+    symbolickou hodnotu ‹AT_FDCWD›, která označuje tzv. pracovní
+    složku,
+ 2. ‹const char *path› je řetězec (ukončený nulou), který udává
+    název, případně cestu (oddělovačem je znak ‹/›) k souboru, se
+    kterým hodláme pracovat,
+ 3. ‹int flags› je bitová kombinace příznaků – budou nás pro tuto
+    chvíli zajímat symbolické hodnoty:
+    ◦ ‹O_RDONLY›, ‹O_WRONLY› a ‹O_RDWR›, které určí jaké operace
+      plánujeme později se souborem provádět,
+    ◦ ‹O_CREAT› která nám umožní vytvořit nový obyčejný soubor,
+ 4. ‹int mode› dodáváme pouze tehdy, když může operací vzniknout
+    nový soubor (zejména obsahuje-li parametr ‹flags› příznak
+    ‹O_CREAT›).
+
+Pro čtení a zápis bloků dat (bajtů) slouží operace ‹read› a ‹write›
+(jejich rozhraní je blíže popsané v ukázkách níže). Pro textový
+(tzv. formátovaný) zápis je určena funkce ‹dprintf›.²
+
+Konečně se v této kapitole budeme zabývat tím, že funkce, které
+zprostředkují služby operačního systému mohou v naprosté většině
+případů «selhat». Tuto skutečnost obvykle indikují speciální
+«návratovou hodnotou» a konkrétní problém upřesňuje proměnná
+‹errno›.³
+
+Ukázky:
+
+ 1. ‹read›   – otevření a čtení obyčejného souboru,
+ 2. ‹hello›  – standardní vstup a výstup,
+ 3. ‹dirs›   – práce se složkami a funkce ‹openat›.
+
+Přípravy:
+
+ 1. ‹lines›  – počítání znaků konce řádku, chyba není-li správně ukončen
+ 2. ‹bwconv› – jednoduchý převod obrázku ze stupňů šedi na černobílý
+ 3. ‹catfd›  – použití ‹read› a ‹write›
+ 4. ‹cols›   – konverze csv s čísly na zarovnané sloupce (‹dprintf›)
+ 5. ‹cut›    – openat + read/write ← cut
+ 6. ‹cat›    – soubor se jmény souborů, které se mají spojit
+
+Rozšířené:
+
+ 1. ‹wcount›  – počítání slov (přechod bílý/nebílý)
+ 2. ‹cgrep›   – výpis řádků, které obsahují zadaný znak
+ 3. ‹flake›   – kontrola souboru s vyobrazením padající vločky
+ 4. ‹bcount›  – kolik různých bajtů se objevuje v souboru?
+ 5. ‹linked›  – procházení zřetězeného seznamu souborů
+ 6. ‹otp›     – xor dvou souborů (one time pad)
+
+¹ Nikoliv s cestou, nebo jiným nepřímým pojmenováním nebo označením.
+  Identita již otevřeného souboru se nám nemůže „změnit pod rukama“.
+² Podobá se funkci ‹printf›, kterou již možná znáte z předchozího
+  programování v jazyce C.
+³ Tuto proměnnou nelze striktně vzato označit za globální, protože
+  každé vlákno má vlastní verzi. Implementace takové proměnné je
+  komplikovaná a jde mimo rámec tohoto kurzu.

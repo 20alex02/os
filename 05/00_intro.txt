@@ -1,0 +1,55 @@
+# Řetězce, cesty, ‹openat›
+
+V této kapitole budeme pracovat se záznamy proměnné délky. Důležitým
+speciálním případem pak bude práce s řetězci a jejich kódováním.¹
+
+Ukázky:
+
+ 1. ‹strings›  – základy práce s řetězci a textem,
+ 2. ‹dirs›     – nalezení / otevření obyčejného souboru,
+ 3. ‹acrostic› – řetězec prvních písmen každého řádku.
+
+Přípravy:
+
+ 1. ‹long›  – nalezení nejdelšího řádku,
+ 2. ‹read›  – čtení záznamů oddělených specifickým bajtem,
+ 3. ‹cat›   – načtení souboru se jmény souborů pro spojení,
+ 4. ‹kvsd›  – slovníkový server s úložištěm v souborovém systému,
+ 5. ‹kvchk› – ověření přítomnosti klíče a asociované hodnoty,
+ 6. ‹kvget› – dávkové stažení (linked list klíčů na vstupu).
+
+## Systémová volání
+
+V této kapitole přidáme systémové volání ‹openat›, které nám umožní
+získat popisovač pro existující obyčejný soubor, nebo takový soubor
+i vytvořit. Jinak budeme používat hlavně již dobře známá volání
+‹read› a ‹write› (jak ke komunikaci, tak k zápisu a čtení dat
+z obyčejných souborů). Také budeme samozřejmě potřebovat voláni
+‹close›, kterým popisovač uzavřeme (a uvolníme tím alokované
+zdroje).
+
+### ‹openat›
+
+Pro vytvoření popisovače existuje několik systémových volání, ze
+kterých si tento týden ukážeme to nejdůležitější. Má 3 pevné a 1
+volitelný parametr:
+
+ 1. ‹int fd› je již existující popisovač, který je svázán «se
+    složkou», vůči které budeme uvádět «cestu» – lze použít
+    symbolickou hodnotu ‹AT_FDCWD›, která označuje tzv. pracovní
+    složku,
+ 2. ‹const char *path› je řetězec (ukončený nulou), který udává
+    název, případně cestu (oddělovačem je znak ‹/›) k souboru, se
+    kterým hodláme pracovat,
+ 3. ‹int flags› je bitová kombinace příznaků – budou nás pro tuto
+    chvíli zajímat symbolické hodnoty:
+    ◦ ‹O_RDONLY›, ‹O_WRONLY› a ‹O_RDWR›, které určí jaké operace
+      plánujeme později se souborem provádět,
+    ◦ ‹O_CREAT› která nám umožní vytvořit nový obyčejný soubor,
+ 4. ‹int mode› dodáváme pouze tehdy, když může operací vzniknout
+    nový soubor (zejména obsahuje-li parametr ‹flags› příznak
+    ‹O_CREAT›).
+
+## Knihovní funkce
+
+ • ‹malloc›, ‹realloc›, ‹free›

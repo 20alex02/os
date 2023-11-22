@@ -1,0 +1,164 @@
+# Z. Doporučení k zápisu kódu
+
+Tato sekce rozvádí obecné principy zápisu kódu s důrazem na
+čitelnost a korektnost. Samozřejmě žádná sada pravidel nemůže
+zaručit, že napíšete dobrý (korektní a čitelný) program, o nic více,
+než může zaručit, že napíšete dobrou povídku nebo namalujete dobrý
+obraz. Přesto ve všech těchto případech pravidla existují a jejich
+dodržování má obvykle na výsledek pozitivní dopad.
+
+Každé pravidlo má samozřejmě nějaké výjimky. Tyto jsou ale výjimkami
+proto, že nastávají «výjimečně». Některá pravidla připouští výjimky
+častěji než jiná: 
+
+### 1. Dekompozice
+
+Vůbec nejdůležitější úlohou programátora je rozdělit problém tak,
+aby byl schopen každou část správně vyřešit a dílčí výsledky pak
+poskládat do korektního celku.
+
+ A. Kód musí být rozdělen do ucelených jednotek (kde jednotkou
+    rozumíme funkci, typ, modul, atd.) přiměřené velikosti, které
+    lze studovat a používat nezávisle na sobě.
+ B. Jednotky musí být od sebe odděleny jasným «rozhraním», které by
+    mělo být jednodušší a uchopitelnější, než kdybychom použití
+    jednotky nahradili její definicí.
+ C. Každá jednotka by měla mít «jeden» dobře definovaný účel, který
+    je zachycený především v jejím pojmenování a případně rozvedený
+    v komentáři.
+ D. Máte-li problém jednotku dobře pojmenovat, může to být známka
+    toho, že dělá příliš mnoho věcí.
+ E. Jednotka by měla realizovat vhodnou «abstrakci», tzn. měla by
+    být «obecná» – zkuste si představit, že dostanete k řešení
+    nějaký jiný (ale dostatečně příbuzný) problém: bude Vám tato
+    konkrétní jednotka k něčemu dobrá, aniž byste ji museli
+    (výrazně) upravovat?
+ F. Má-li jednotka parametr, který fakticky identifikuje místo ve
+    kterém ji používáte (bez ohledu na to, je-li to z jeho názvu
+    patrné), je to často známka špatně zvolené abstrakce. Máte-li
+    parametr, který by bylo lze pojmenovat ‹called_from_bar›, je to
+    jasná známka tohoto problému.
+ G. Daný podproblém by měl být vyřešen v programu pouze jednou –
+    nedaří-li se Vám sjednotit různé varianty stejného nebo velmi
+    podobného kódu (aniž byste se uchýlili k taktice z bodu d), může
+    to být známka nesprávně zvolené dekompozice. Zkuste se zamyslet,
+    není-li možné problém rozložit na podproblémy jinak.
+
+### 2. Jména
+
+Dobře zvolená jména velmi ulehčují čtení kódu, ale jsou i dobrým
+vodítkem při dekompozici a výstavbě abstrakcí.
+
+ A. Všechny entity ve zdrojovém kódu nesou «anglická» jména.
+    Angličtina je univerzální jazyk programátorů.
+ B. Jméno musí být «výstižné» a «popisné»: v místě použití je
+    obvykle jméno náš hlavní (a často jediný) «zdroj informací»
+    o jmenované entitě. Nutnost hledat deklaraci nebo definici
+    (protože ze jména není jasné, co volaná funkce dělá, nebo jaký
+    má použitá proměnná význam) čtenáře nesmírně zdržuje.¹
+ C. Jména «lokálního» významu mohou být méně informativní: je mnohem
+    větší šance, že význam jmenované entity si pamatujeme, protože
+    byla definována před chvílí (např. lokální proměnná v krátké
+    funkci).
+ D. Obecněji, informační obsah jména by měl být přímo úměrný jeho
+    rozsahu platnosti a nepřímo úměrný frekvenci použití: globální
+    jméno musí být informativní, protože jeho definice je „daleko“
+    (takže si ji už nepamatujeme) a zároveň se nepoužívá příliš
+    často (takže si nepamatujeme ani to, co jsme se dozvěděli, když
+    jsme ho potkali naposled).
+ E. Jméno parametru má dvojí funkci: krom toho, že ho používáme
+    v těle funkce (kde se z pohledu pojmenování chová podobně jako
+    lokální proměnná), slouží jako dokumentace funkce jako celku.
+    Pro parametry volíme popisnější jména, než by zaručovalo jejich
+    použití ve funkci samotné – mají totiž dodatečný globální
+    význam.
+ F. Některé entity mají ustálené názvy – je rozumné se jich držet,
+    protože čtenář automaticky rozumí jejich významu, i přes
+    obvyklou stručnost. Zároveň je potřeba se vyvarovat použití
+    takovýchto ustálených jmen pro nesouvisející entity.  Typickým
+    příkladem jsou iterační proměnné ‹i› a ‹j›.
+ G. Jména s velkým rozsahem platnosti by měla být také
+    «zapamatovatelná». Je vždy lepší si přímo vzpomenout na jméno
+    funkce, kterou právě potřebuji, než ho vyhledávat (podobně jako
+    je lepší znát slovo, než ho jít hledat ve slovníku).
+ H. Použitý slovní druh by měl odpovídat druhu entity, kterou
+    pojmenovává. Proměnné a typy pojmenováváme přednostně
+    podstatnými jmény, funkce přednostně slovesy.
+ I. Rodiny příbuzných nebo souvisejících entit pojmenováváme podle
+    společného schématu (‹table_name›, ‹table_size›, ‹table_items› –
+    nikoliv např. ‹items_in_table›; ‹list_parser›, ‹string_parser›,
+    ‹set_parser›; ‹find_min›, ‹find_max›, ‹erase_max› – nikoliv
+    např. ‹erase_maximum› nebo ‹erase_greatest› nebo ‹max_remove›).
+ J. Jména by měla brát do úvahy kontext, ve kterém jsou platná.
+    Neopakujte typ proměnné v jejím názvu (‹cars›, nikoliv
+    ‹list_of_cars› ani ‹set_of_cars›) nemá-li tento typ speciální
+    význam. Podobně jméno nadřazeného typu nepatří do jmen jeho
+    metod (třída ‹list› by měla mít metodu ‹length›, nikoliv
+    ‹list_length›).
+ K. Dávejte si pozor na překlepy a pravopisné chyby. Zbytečně
+    znesnadňují pochopení a (zejména v kombinaci s našeptávačem)
+    lehce vedou na skutečné chyby způsobené záměnou podobných ale
+    jinak napsaných jmen. Navíc kód s překlepy v názvech působí
+    značně neprofesionálně.
+
+¹ Nejde zde pouze o samotný fakt, že je potřeba něco vyhledat. Mohlo
+  by se zdát, že tento problém řeší IDE, které nás umí „poslat“ na
+  příslušnou definici samo. Hlavní zdržení ve skutečnosti spočívá
+  v tom, že musíme přerušit čtení předchozího celku. Na rozdíl od
+  počítače je pro člověka „zanořování“ a zejména pak „vynořování“ na
+  pomyslném zásobníku docela drahou operací.
+
+### 3. Stav a data
+
+Udržet si přehled o tom, co se v programu děje, jaké jsou vztahy
+mezi různými stavovými proměnnými, co může a co nemůže nastat, je
+jedna z nejtěžších částí programování.
+
+TBD: Vstupní podmínky, invarianty, …
+
+### 4. Řízení toku
+
+Přehledný, logický a co nejvíce lineární sled kroků nám ulehčuje
+pochopení algoritmu. Časté, komplikované větvení je naopak těžké
+sledovat a odvádí pozornost od pochopení důležitých myšlenek.
+
+TBD.
+
+### 5. Volba algoritmů a datových struktur
+
+TBD.
+
+### 6. Komentáře
+
+Nejde-li myšlenku předat jinak, vysvětlíme ji doprovodným
+komentářem. Čím těžší myšlenka, tím větší je potřeba komentovat.
+
+ A. Podobně jako jména entit, komentáře které jsou součástí kódu
+    píšeme anglicky.²
+ B. Případný komentář jednotky kódu by měl vysvětlit především „co“
+    a „proč“ (tzn. jaký plní tato jednotka účel a za jakých
+    okolností ji lze použít).
+ C. Komentář by také neměl zbytečně duplikovat informace, které jsou
+    k nalezení v hlavičce nebo jiné „nekomentářové“ části kódu –
+    jestli máte například potřebu komentovat parametr funkce,
+    zvažte, jestli by nešlo tento parametr lépe pojmenovat nebo
+    otypovat.
+ D. Komentář by «neměl» zbytečně duplikovat samotný spustitelný kód
+    (tzn. neměl by se zdlouhavě zabývat tím „jak“ jednotka vnitřně
+    pracuje). Zejména jsou nevhodné komentáře typu „zvýšíme
+    proměnnou i o jedna“ – komentář lze použít k vysvětlení «proč»
+    je tato operace potřebná – co daná operace dělá si může kažďý
+    přečíst v samotném kódu.
+
+² Tato sbírka samotná představuje ústupek z tohoto pravidla: smyslem
+  našich komentářů je naučit Vás poměrně těžké a často nové
+  koncepty, a její cirkulace je omezená. Zkušenost z dřívějších let
+  ukazuje, že pro studenty je anglický výklad značnou bariérou
+  pochopení. Přesto se snažte vlastní kód komentovat anglicky –
+  výjimku lze udělat pouze pro rozsáhlejší komentáře, které byste
+  jinak nedokázali srozumitelně formulovat. V praxi je angličtina
+  zcela běžně bezpodmínečně vyžadovaná.
+
+### 7. Formální úprava
+
+TBD.

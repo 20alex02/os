@@ -1,0 +1,108 @@
+## Studentský server ‹aisa›
+
+Použití serveru ‹aisa› pro odevzdávání příkladů je zcela volitelné a
+vše potřebné můžete vždy udělat i prostřednictvím ISu. Nevíte-li si
+s něčím z níže uvedeného rady, použijte IS.
+
+Na server ‹aisa› se přihlásíte programem ‹ssh›, který je k dispozici
+v prakticky každém moderním operačním systému (v OS Windows skrze
+WSL¹ – Windows Subsystem for Linux). Konkrétní příkaz (za ‹xlogin›
+doplňte ten svůj):
+
+    $ ssh xlogin@aisa.fi.muni.cz
+
+Program se zeptá na heslo: použijte to fakultní (to stejné, které
+používáte k přihlášení na ostatní fakultní počítače, nebo např. ve
+‹fadmin›-u nebo fakultním ‹gitlab›-u).
+
+¹ Jako alternativu, nechcete-li z nějakého důvodu WSL instalovat,
+  lze použít program ‹putty›.
+
+### Pracovní stanice
+
+Veškeré instrukce, které zde uvádíme pro použití na stroji ‹aisa›
+platí beze změn také na libovolné školní UNIX-ové pracovní stanici
+(tzn. z fakultních počítačů není potřeba se hlásit na stroj ‹aisa›,
+navíc mají sdílený domovský adresář, takže svoje soubory z tohoto
+serveru přímo vidíte, jako by byly uloženy na pracovní stanici).
+
+### Stažení koster
+
+Aktuální zdrojový balík stáhnete příkazem:
+
+    $ pb152 update
+
+Stažené soubory pak naleznete ve složce ‹~/pb152›. Je bezpečné tento
+příkaz použít i v případě, že ve své kopii již máte rozpracovaná
+řešení – systém je při aktualizaci nepřepisuje. Došlo-li ke změně
+kostry u příkladu, který máte lokálně modifikovaný, aktualizovanou
+kostru naleznete v souboru s dodatečnou příponou ‹.pristine›, např.
+‹01/e2_concat.cpp.pristine›. V takovém případě si můžete obě verze
+srovnat příkazem ‹diff›:
+
+    $ diff -u e2_concat.cpp e2_concat.cpp.pristine
+
+Případné relevantní změny si pak již lehce přenesete do svého
+řešení.
+
+Krom samotného zdrojového balíku Vám příkaz ‹pb152 update› stáhne i
+veškeré recenze (jak od učitelů, tak od spolužáků). To, že máte
+k dispozici nové recenze, uvidíte ve výpisu. Recenze najdete ve
+složce ‹~/pb152/reviews›.
+
+### Odevzdání řešení
+
+Odevzdat vypracované (nebo i rozpracované) řešení můžete ze složky
+s relevantními soubory takto:
+
+    $ cd ~/pb152/01
+    $ pb152 submit
+
+Přidáte-li přepínač ‹--wait›, příkaz vyčká na vyhodnocení testů fáze
+„syntax“ a jakmile je výsledek k dispozici, vypíše obsah příslušného
+poznámkového bloku. Chcete-li si ověřit co a kdy jste odevzdali,
+můžete použít příkaz
+
+    $ pb152 status
+
+nebo se podívat do informačního systému (blíže popsáno v sekci T.1).
+
+«Pozor!» Odevzdáváte-li stejnou sadu příprav jak v ISu tak
+prostřednictvím příkazu ‹pb152›, ujistěte se, že odevzdáváte vždy
+všechny příklady.
+
+### Sdílení terminálu
+
+Řešíte-li příklad typu ‹r› ve cvičení, bude se Vám pravděpodobně
+hodit režim sdílení terminálu s cvičícím (který tak bude moct
+promítat Váš zdrojový kód na plátno, případně do něj jednoduše
+zasáhnout).
+
+Protože se sdílí pouze terminál, budete se muset spokojit
+s negrafickým textovým editorem (doporučujeme použít ‹micro›,
+případně ‹vim› umíte-li ho ovládat). Spojení navážete příkazem:
+
+    $ pb152 beamer
+
+Protože příkaz vytvoří nové sezení, nezapomeňte se přesunout do
+správné složky příkazem ‹cd ~/pb152/NN›.
+
+### Recenze
+
+Příkaz ‹pb152 update› krom zdrojového balíku stahuje také:
+
+ 1. zdrojové kódy, které máte možnost recenzovat, a to do složky
+    ‹~/pb152/to_review›,
+ 2. recenze, které jste na svůj kód obdrželi (jak od spolužáků, tak
+    od vyučujících), a to do stávajících složek zdrojového balíku
+    (tzn. recenze na příklady z první kapitoly se Vám objeví ve
+    složce ‹~/pb152/01› – že se jedná o recenzi poznáte podle jména
+    souboru, který bude začínat uživatelským jménem autora recenze,
+    např. ‹xrockai.00123.p1_nhamming.cpp›).
+
+Chcete-li vypracované recenze odeslat:
+
+ 1. přesuňte se do složky ‹~/pb152/to_review› a
+ 2. zadejte příkaz ‹pb152 submit›, případně doplněný o seznam
+    souborů, které hodláte odeslat (jinak se odešlou všechny, které
+    obsahují jakýkoliv přidaný komentář).

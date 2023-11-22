@@ -1,0 +1,65 @@
+## Přípravy
+
+Jak již bylo zmíněno, chcete-li se naučit programovat, musíte
+programování věnovat nemalé množství času, a navíc musí být tento
+čas rozložen do delších období – semestr nelze v žádném případě
+doběhnout tím, že budete týden programovat 12 hodin denně, i když to
+možná pokryje potřebný počet hodin. Proto od Vás budeme chtít,
+abyste každý týden odevzdali několik vyřešených příkladů z této
+sbírky. Tento požadavek má ještě jeden důvod: chceme, abyste vždy
+v době cvičení už měli látku každý samostatně nastudovanou, abychom
+mohli řešit zajímavé problémy, nikoliv opakovat základní pojmy.
+
+Také Vás prosíme, abyste příklady, které plánujete odevzdat, řešili
+vždy samostatně: případnou zakázanou spolupráci budeme trestat (viz
+také konec této kapitoly).
+
+### Odevzdání
+
+Každý příklad obsahuje základní sadu testů. To, že Vám tyto testy
+prochází, je jediné kritérium pro zisk základních bodů za odevzdání
+příprav. Poté, co příklady odevzdáte, budou «tytéž testy» na Vašem
+řešení automaticky spuštěny, a jejich výsledek Vám bude zapsán do
+poznámkového bloku. Smyslem tohoto opatření je zamezit případům, kdy
+omylem odevzdáte nesprávné, nebo jinak nevyhovující řešení, aniž
+byste o tom věděli. Velmi silně Vám proto doporučujeme odevzdávat
+s určitým předstihem, abyste případné nesrovnalosti měli ještě čas
+vyřešit. Krom základních („sanity“) testů pak ve čtvrtek o 23:59 a
+znovu v sobotu o 23:59 (těsně po konci odevzdávání) spustíme
+«rozšířenou» sadu testů („verity“).
+
+Za každý odevzdaný příklad, který splnil «základní» („sanity“) testy
+získáváte jeden bod. Za příklad, který navíc splnil «rozšířené»
+testy získáte dalšího 0,5 bodu (tzn. celkem 1,5 bodu). Výsledky
+testů naleznete v «poznámkovém bloku» v informačním systému.
+
+Příklady můžete odevzdávat:
+
+ 1. do «odevzdávárny» s názvem ‹NN› v ISu (např. ‹01›),
+ 2. příkazem ‹pb152 submit› ve složce ‹~/pb152/NN›.
+
+Podrobnější instrukce naleznete v kapitole T (technické informace,
+soubory ‹00/t*›).
+
+### Harmonogram
+
+Termíny pro odevzdání příprav k jednotlivým kapitolám jsou shrnuty
+v následující tabulce:
+
+│ blok │ kapitola │  verity │  termín │
+├──────│──────────│─────────│─────────│
+│   1  │       1  │  21.9.  │  23.9.  │
+│      │       2  │  28.9.  │  30.9.  │
+│      │       3  │   5.10. │   7.10. │
+│      │       4  │  12.10. │  14.10. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│   2  │       5  │  19.10. │  21.10. │
+│      │       6  │  26.10. │  28.10. │
+│      │       7  │   2.11. │   4.11. │
+│      │       8  │   9.11. │  11.11. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│   3  │       9  │  16.11. │  18.11. │
+│      │      10  │  23.11. │  25.11. │
+│      │      11  │  30.11. │   2.12. │
+│      │      12  │   7.12. │   9.12. │
+

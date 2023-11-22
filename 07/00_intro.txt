@@ -1,0 +1,118 @@
+# Adresy a síť
+
+V této kapitole se budeme zabývat «adresami», které nám umožní
+navázat komunikaci mezi různými programy a případně i různými
+počítači. Klíčové bude systémové volání ‹connect› a pro síťovou
+komunikaci také knihovní podprogram ‹getaddrinfo›.
+
+
+Ukázky:
+
+ 1. ‹client› – klient pro proudový socket rodiny ‹AF_UNIX›,
+ 2. ‹udp›    – komunikace pomocí UDP socketů,
+ 3. ‹webget› – stažení webové stránky ze zadané adresy.
+
+Přípravy:
+
+ 1. ‹host›   – nalezení IPv6 adresy zadaného systému
+ 2. ‹banner› – čtení uvítací zprávy serveru
+ 3. ‹block›  – blokování datagramů ze zadaných adres
+ 4. ‹whois›  – zjednodušený klient pro protokol WHOIS
+ 5. ‹redir›  – stažení dat do souboru s přesměrováním
+ 6. ‹meter›  – průtokoměr na proudovém spojení
+
+Řešené příklady:
+
+ 1. ‹bcast›  – přeposílání datagramů na zadaný seznam adres,
+ 2. ‹proxy›  – zrcadlení datagramů na adresy uložené v nich,
+ 3. ‹router› – přeposílání datagramů podle zadané tabulky adres,
+ 4. ‹xxx›
+ 5. ‹xxx›
+ 6. ‹xxx›
+
+## Systémová volání
+
+Se sockety jsme již v tomto kurzu pracovali mnohokrát, nicméně vždy
+to bylo v podobě již nachystaného popisovače.¹ Nyní se seznámíme se
+systémovými voláními, které nám umožní socket vytvořit, pro
+spojované sockety navázat spojení, a pro ty nespojované komunikovat
+s nějakou konkrétní protistranou.
+
+Tento týden se zaměříme na systémová volání ‹connect› a ‹bind›, na
+‹listen› a ‹accept› si budete muset počkat do kapitoly deváté.
+
+### ‹socket›
+
+První zásadní rozdíl mezi socketem a obyčejným souborem spočívá
+v tom, jak socket vznikne – místo volání ‹openat› použijeme volání
+‹socket›.² Má 3 parametry, které mají významný vliv na to, jak lze
+takto vytvořený socket dále používat:
+
+ 1. ‹int domain› určuje tzv. komunikační «doménu» resp. «adresovací
+    rodinu», kterou nám socket zpřístupňuje – nejběžnějšími jsou
+    tzv.  internetové sockety (které umožňují komunikaci protokoly
+    IPv4 a IPv6), ale prozatím se budeme zabývat jednoduššími
+    sockety z domény ‹AF_UNIX›, které umožňují komunikaci pouze
+    v rámci lokálního systému,
+ 2. ‹int type› rozlišuje pro nás dva klíčové případy použití:
+    
+    ◦ tzv. «spojované» sockety typu ‹SOCK_STREAM›, kdy jednotlivé
+      «spojení» je reprezentováno opět socketem, který již dále
+      pracuje jako obousměrná roura,³
+    ◦ «datagramové» sockety typu ‹SOCK_DGRAM› jsou jednodušší, ale
+      zároveň se méně podobají na obyčejné soubory, a práce s nimi
+      vyžaduje speciální funkce (nelze použít již známé ‹read› a
+      ‹write›),
+    
+ 3. ‹int protocol› rozlišuje konkrétní protokol v rámci možností
+    určených předchozími dvěma parametry – pro tento parametr budeme
+    vždy používat hodnotu 0, která volbu vhodného protokolu přenechá
+    operačnímu systému.
+
+### ‹sendto›
+
+Jako ‹send›/‹write›, ale na zadanou adresu. Použitelné pouze
+s datagramovými sockety. TBD.
+
+### ‹recvfrom›
+
+Jako ‹recv›/‹read›, ale u datagramových socketů zároveň získá a
+vyplní adresu odesílatele. TBD.
+
+### ‹bind›
+
+Volání ‹bind› přiřadí otevřenému anonymnímu socketu adresu. V tomto
+předmětu budeme ‹bind› používat pouze se sockety rodiny ‹AF_UNIX›.²
+V takovém případě je adresou soubor, a tedy ‹bind› tento soubor
+v souborovém systému vytvoří. V případě, že zadaná cesta již
+existuje, volání ‹bind› selže s chybou ‹EADDRINUSE›. Není podstatné,
+jaký typ souboru je touto cestou odkazován (tzn. chybou je i případ,
+kdy cesta odkazuje na měkký odkaz, bez ohledu na existenci jeho
+cíle, nebo na existující unixový socket).
+
+### ‹connect›
+
+Pro spojovaný socket naváže spojení. Pro datagramový nastaví
+implicitní cílovou adresu.
+
+¹ Neplatí pro 2023, nicméně vytvoření socketu a navázání spojení si
+  na tomto místě i tak zopakujeme.
+² Na rozdíl od socketů rodiny ‹AF_UNIX›, internetovým datagramovým
+  socketům není nutné explicitně přiřadit adresu voláním ‹bind›.
+  Operační systém jim přidělí náhodně zvolený volný port. Jako
+  adresa hostitele se při odeslání paketu v tomto případě použije
+  adresa rozhraní, ze kterého byl tento paket odeslán.
+
+## Knihovní podprogramy
+
+Získat adresu, kterou předáme systémovému volání ‹connect›, nám
+pomůže knihovní podprogram ‹getaddrinfo›, který nám zprostředkuje
+přistup (zejména) k systému DNS.
+
+Pro výpis internetových adres se Vám může hodit také podprogram
+‹inet_ntop›, který zadanou adresu převede do „lidsky čitelné“
+podoby. Pro řešení příkladů jej ale potřebovat nebudeme.
+
+### ‹getaddrinfo›
+
+Nalezne a vyplní adresu (‹sockaddr›) podle zadaného jména. TBD.

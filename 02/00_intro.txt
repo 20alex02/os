@@ -1,0 +1,80 @@
+# Sockety
+
+V této kapitole budeme pracovat s novým typem objektu, který se může
+skrývat za popisovačem otevřeného souboru. Zdaleka nejdůležitější
+aplikací socketů je síťová komunikace – na úrovni softwaru je
+naprostá většina provozu na internetu realizovaná skrze sockety.¹
+
+S obyčejnými soubory mají sockety dvě klíčové společné vlastnosti:
+
+ • jedná se o objekt operačního systému, který má identitu, a na
+   který se může odkazovat popisovač otevřeného souboru,
+ • ze socketu můžeme číst data, a/nebo je do něj zapisovat.
+
+První zásadní rozdíl oproti obyčejným souborům spočívá v tom, jak
+socket vznikne – místo volání ‹openat› použijeme volání ‹socket›.²
+Má 3 parametry, které mají významný vliv na to, jak lze takto
+vytvořený socket dále používat:
+
+ 1. ‹int domain› určuje tzv. komunikační «doménu» resp. «adresovací
+    rodinu», kterou nám socket zpřístupňuje – nejběžnějšími jsou
+    tzv.  internetové sockety (které umožňují komunikaci protokoly
+    IPv4 a IPv6), ale prozatím se budeme zabývat jednoduššími
+    sockety z domény ‹AF_UNIX›, které umožňují komunikaci pouze
+    v rámci lokálního systému,
+ 2. ‹int type› rozlišuje pro nás dva klíčové případy použití:
+    
+    ◦ tzv. «spojované» sockety typu ‹SOCK_STREAM›, kdy jednotlivé
+      «spojení» je reprezentováno opět socketem, který již dále
+      pracuje jako obousměrná roura,³
+    ◦ «datagramové» sockety typu ‹SOCK_DGRAM› jsou jednodušší, ale
+      zároveň se méně podobají na obyčejné soubory, a práce s nimi
+      vyžaduje speciální funkce (nelze použít již známé ‹read› a
+      ‹write›),
+    
+ 3. ‹int protocol› rozlišuje konkrétní protokol v rámci možností
+    určených předchozími dvěma parametry – pro tento parametr budeme
+    vždy používat hodnotu 0, která volbu vhodného protokolu přenechá
+    operačnímu systému.
+
+Pro práci se spojovanými sockety budeme dále používat funkce
+‹connect›, ‹bind›, ‹listen› a ‹accept› (pro práci s jednotlivým
+spojením pak funkce ‹read›, ‹write› a ‹close› které známe z minulého
+týdne). Tyto funkce jsou blíže popsané v prvních dvou ukázkách.
+
+Pro práci s datagramovými sockety budeme používat funkce ‹connect›,
+‹send›, ‹recv› a ‹recvfrom›. Tyto jsou blíže popsané ve třetí
+ukázce.
+
+Ukázky:
+
+ 1. ‹client›   – jednoduchý klient spojovaného socketu,
+ 2. ‹server›   – jednoduchý odpovídající server,
+ 3. ‹datagram› – práce s datagramovými sockety.
+
+Elementární:
+
+ 1. ‹daytime› – klient pro rfc867
+
+Přípravy:
+
+ 1. ‹echoc› – triviální SOCK_STREAM klient (ověří funkčnost serveru)
+ 2. ‹lmtpc› – triviální LMTP klient
+ 3. ‹tftpc› – jednoduchý SOCK_DGRAM klient
+ 4. ‹newsc› – synchronizační klient k p6
+ 5. ‹echod› – SOCK_STREAM
+ 6. ‹newsd› – (stále SOCK_STREAM)
+
+Rozšířené:
+
+ 1. –         – (tbd)
+ 2. ‹otpd›    – jednoduchý šifrovací server
+ 3. ‹kvsd›    – key/value store v souborovém systému
+ 4. ‹kvscat›  – cat z 01, akorát poslat serveru kvsd
+ 5. ‹deotp›   – dešifrování dat zašifrovaných pomocí ‹otpd›
+ 6. ‹dh› †    – implementace protokolu Diffie–Hellman
+
+¹ Sockety jsou klíčová součást implementace webových serverů (apache,
+  nginx), aplikačních serverů (node.js, django, rails), databází,
+  ale i klientského software (prohlížečů, mobilních aplikací).
+² Roury jsou blíže popsané ve třetí kapitole skript.

@@ -1,0 +1,10 @@
+# S.1. Vstup a výstup
+
+K prvnímu bloku náleží tyto úkoly:
+
+ A. ‹csv›
+ B. ‹merge›
+ C. ‹lmdb›
+ D. ‹httpc›
+ E. ‹httpd›
+ F. ‹logd›

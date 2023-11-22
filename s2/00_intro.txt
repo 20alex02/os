@@ -1,0 +1,14 @@
+# S.2. Složky, cesty, adresy
+
+Příklady druhé sady se zabývají prací se souborovým systémem
+(nikoliv už pouze jednotlivými soubory), ale také s adresami a
+síťovými spojeními.
+
+Příklady jsou tyto:
+
+ A. ‹dup›      – rozdělení pevných odkazů na samostatné soubory
+ B. ‹dir›      – práce s adresářovým stromem
+ C. ‹dedup›    – spojování identických souborů pevnými odkazy
+ D. ‹httpc›    – klient pro stažení souboru z webu
+ E. ‹httpd›    – jednoduchý webový server
+ F. ‹execline› – skripty v jednom procesu

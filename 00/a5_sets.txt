@@ -1,0 +1,186 @@
+## Sady domácích úloh
+
+Ke každému bloku patří sada 6 domácích úloh, které tvoří významnou
+část hodnocení předmětu. Na úspěšné odevzdání každé domácí úlohy
+budete mít 12 pokusů rozložených do 4 týdnů odpovídajícího bloku
+cvičení. Odevzdávání bude otevřeno vždy v 0:00 prvního dne bloku
+(tzn. 24h před prvním spuštěním verity testů).
+
+Termíny odevzdání (vyhodnocení verity testů) jsou vždy v pondělí,
+středu a pátek v 23:59, dle následujícího harmonogramu:
+
+│ sada │ týden │ pondělí │ středa  │ pátek   │
+├──────│───────│────────▻┼────────▻┼────────▻┼
+│    1 │     1 │  25.9.  │  27.9.  │  29.9.  │
+│      │     2 │   2.10. │   4.10. │   6.10. │
+│      │     3 │   9.10. │  11.10. │  13.10. │
+│      │     4 │  16.10. │  18.10. │  20.10. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│    2 │     1 │  23.10. │  25.10. │  27.10. │
+│      │     2 │  30.10. │   1.11. │   3.11. │
+│      │     3 │   6.11. │   8.11. │  10.11. │
+│      │     4 │  13.11. │  15.11. │  17.11. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│    3 │     1 │  20.11. │  22.11. │  24.11. │
+│      │     2 │  27.11. │  29.11. │   1.12. │
+│      │     3 │   4.12. │   6.12. │   8.12. │
+│      │     4 │  11.12. │  13.12. │  15.12. │
+
+### Odevzdávání
+
+Součástí každého zadání je jeden zdrojový soubor (kostra), do
+kterého své řešení vepíšete. Vypracované příklady lze pak odevzdávat
+stejně jako přípravy:
+
+ 1. do «odevzdávárny» s názvem ‹sN_úkol› v ISu (např. ‹s1_a_queens›),
+ 2. příkazem ‹pb152 submit sN_úkol› ve složce ‹~/pb152/sN›, např.
+    ‹pb152 submit s1_a_queens›.
+
+Podrobnější instrukce naleznete opět v kapitole T.
+
+### Vyhodnocení
+
+Vyhodnocení Vašich řešení probíhá ve třech fázích, a s každou z nich
+je spjata sada automatických testů. Tyto sady jsou:
+
+ • „syntax“ – kontroluje, že odevzdaný program je syntakticky
+   správně, lze jej přeložit a prochází základními statickými
+   kontrolami,
+ • „sanity“ – kontroluje, že odevzdaný program se chová „rozumně“ na
+   jednoduchých případech vstupu; tyto testy jsou rozsahem a stylem
+   podobné těm, které máte přiložené k příkladům ve cvičení,
+ • „verity“ – důkladně kontrolují správnost řešení, včetně složitých
+   vstupů a okrajových případů a kontroly paměťových chyb.
+
+Fáze na sebe navazují v tom smyslu, že nesplníte-li testy v některé
+fázi, žádná další se už (pro dané odevzdání) nespustí. Pro splnění
+domácí úlohy je klíčová fáze „verity“, za kterou jsou Vám uděleny
+body. Časový plán vyhodnocení fází je následovný:
+
+ • kontrola „syntax“ se provede obratem (do cca 5 minut od
+   odevzdání),
+ • kontrola „sanity“ každých 6 hodin počínaje půlnocí (tzn. 0:00,
+   6:00, 12:00, 18:00),
+ • kontrola „verity“ se provede v pondělí, středu a pátek ve 23:59
+   (dle tabulky uvedené výše).
+
+Vyhodnoceno je vždy pouze nejnovější odevzdání, a každé odevzdání je
+vyhodnoceno v každé fázi nejvýše jednou. Výsledky naleznete
+v poznámkových blocích v ISu (každá úloha v samostatném bloku),
+případně je získáte příkazem ‹pb152 status›.
+
+### Bodování
+
+Za každý domácí úkol, ve kterém Vaše odevzdání v příslušném termínu
+splní testy „verity“, získáte 10 bodů.
+
+Za stejný úkol máte dále možnost získat body za kvalitu kódu, a to
+vždy v hodnotě max. 5 bodů. Body za kvalitu se počítají v bloku, «ve
+kterém byly uděleny», tzn. body za kvalitu ze «sady 1» se započtou
+do «bloku 2».
+
+Maximální bodový zisk za jednotlivé sady:
+
+ • sada 1: 60 za funkčnost v bloku 1 + 30 za kvalitu v bloku 2,
+ • sada 2: 60 za funkčnost v bloku 2 + 30 za kvalitu v bloku 3,
+ • sada 3: 60 za funkčnost v bloku 3 + 30 za kvalitu v bloku 4
+   («zkouškovém»).
+
+### Hodnocení kvality kódu
+
+Automatické testy ověřují «správnost» vašich programů (do takové
+míry, jak je to praktické – ani nejpřísnější testy nemůžou zaručit,
+že máte program zcela správně). Správnost ale není jediné kritérium,
+podle kterého lze programy hodnotit: podobně důležité je, aby byl
+program «čitelný». Programy totiž mimo jiné slouží ke komunikaci
+myšlenek lidem – dobře napsaný a správně okomentovaný kód by měl
+čtenáři sdělit, jaký řeší problém, jak toto řešení funguje a
+u obojího objasnit «proč».
+
+Je Vám asi jasné, že čitelnost programu člověkem může hodnotit pouze
+člověk: proto si každý Váš «úspěšně» vyřešený domácí úkol přečte
+opravující a své postřehy Vám sdělí. Přitom zároveň Váš kód
+oznámkuje podle kritérií podrobněji rozepsaných v kapitole Z.
+Tato kritéria aplikujeme při známkování takto:
+
+ • hodnocení A dostane takové řešení, které jasně popisuje řešení
+   zadaného problému, je správně dekomponované na podproblémy, je
+   zapsáno bez zbytečného opakování, a používá správné abstrakce,
+   algoritmy a datové struktury,
+   
+ • hodnocení B dostane program, který má výrazné nedostatky v jedné,
+   nebo nezanedbatelné nedostatky ve dvou oblastech výše zmíněných,
+   například:
+   
+   ◦ je relativně dobře dekomponovaný a zbytečně se neopakuje, ale
+     používá nevhodný algoritmus nebo datovou strukturu a není
+     zapsán příliš přehledně,
+   
+   ◦ používá optimální algoritmus a datové struktury a je dobře
+     dekomponovaný, ale lokálně opakuje tentýž kód s drobnými
+     obměnami, a občas používá zavádějící nebo jinak nevhodná
+     jména podprogramů, proměnných atp.,
+   
+   ◦ jinak dobrý program, který používá zcela nevhodný
+     algoritmus, «nebo» velmi špatně pojmenované proměnné, «nebo» je
+     zapsaný na dvě obrazovky úplně bez dekompozice,
+   
+ • hodnocení X dostanou programy, u kterých jste se dobrovolně
+   vzdali hodnocení (a to jasně formulovaným komentářem «na začátku
+   souboru», např. „Vzdávám se hodnocení.“),
+   
+ • hodnocení C dostanou všechny ostatní programy, zejména ty, které
+   kombinují dvě a více výrazné chyby zmiňované výše.
+
+Známky Vám budou zapsány druhé úterý následujícího bloku.
+Dostanete-li známku B nebo C, budete mít možnost svoje řešení
+ještě zlepšit, odevzdat znovu, a známku si tak opravit:
+
+ • na opravu budete mít týden,
+ • na opraveném programu nesmí selhat verity testy,
+ • testy budou nadále probíhat se stejnou kadencí jako během řádné
+   doby k vypracování (pondělí, středa, pátek o 23:59).
+
+Bude-li opravující s vylepšeným programem spokojen, výslednou známku
+Vám upraví.
+
+│ sada │ řádný termín │ známka │ opravný termín │ známka │
+├──────│─────────────▻│───────▻│───────────────▻│───────▻│
+│    1 │     «20.10.» │ 31.10. │        «7.11.» │ 14.11. │
+│    2 │     «17.11.» │ 28.11. │        «5.12.» │ 12.12. │
+│    3 │     «15.12.» │   2.1. │         «9.1.» │  16.1. │
+
+Jednotlivé «výsledné» známky se promítnou do bodového hodnocení
+úkolu následovně:
+
+ • známka «A» Vám vynese «5 bodů»,
+ • známka «B» pak «2 body»,
+ • známka «X» žádné body neskýtá,
+ • známka «C» je hodnocena «-1 bodem».
+
+Samotné body za funkcionalitu se při opravě kvality již nijak
+nemění.
+
+### Neúspěšná řešení
+
+Příklady, které se Vám nepodaří vyřešit kompletně (tzn. tak, aby na
+nich uspěla kontrola „verity“) nebudeme hodnotit. Nicméně může
+nastat situace, kdy byste potřebovali na „téměř hotové“ řešení
+zpětnou vazbu, např. proto, že se Vám nepodařilo zjistit, proč
+nefunguje.
+
+Taková řešení můžou být předmětem společné analýzy ve cvičení,
+v podobném duchu jako probíhá rozprava kolem odevzdaných příprav
+(samozřejmě až poté, co pro danou sadu skončí odevzdávání). Máte-li
+zájem takto rozebrat své řešení, domluvte se, ideálně s předstihem,
+se svým cvičícím. To, že jste autorem, zůstává mezi cvičícím a Vámi
+– Vaši spolužáci to nemusí vědět (ke kódu se samozřejmě můžete
+v rámci debaty přihlásit, uznáte-li to za vhodné). Stejná pravidla
+platí také pro nedořešené přípravy (musíte je ale odevzdat).
+
+Tento mechanismus je omezen prostorem ve cvičení – nemůžeme zaručit,
+že v případě velkého zájmu dojde na všechny (v takovém případě
+cvičící vybere ta řešení, která bude považovat za přínosnější pro
+skupinu – je tedy možné, že i když se na Vaše konkrétní řešení
+nedostane, budete ve cvičení analyzovat podobný problém v řešení
+někoho jiného).

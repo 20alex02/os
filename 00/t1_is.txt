@@ -1,0 +1,187 @@
+## Informační systém
+
+Informační systém tvoří primární „rozhraní“ pro stahování studijních
+materiálů, odevzdávání řešení, získání výsledků vyhodnocení a čtení
+recenzí. Zároveň slouží jako hlavní komunikační kanál mezi studenty
+a učiteli, prostřednictvím diskusního fóra.
+
+### Diskusní fórum
+
+Máte-li dotazy k úlohám, organizaci, atp., využijte k jejich
+položení prosím vždy přednostně diskusní fórum.¹ Ke každé kapitole a
+ke každému příkladu ze sady vytvoříme samostatné vlákno, kam patří
+dotazy specifické pro tuto kapitolu nebo tento příklad. Pro řešení
+obecných organizačních záležitostí a technických problémů jsou
+podobně v diskusním fóru nachystaná vlákna.
+
+Než položíte libovolný dotaz, přečtěte si relevantní část dosavadní
+diskuse – je možné, že na stejný problém už někdo narazil. Máte-li
+ve fóru dotaz, na který se Vám nedostalo do druhého pracovního dne
+reakce, připomeňte se prosím tím, že na tento svůj příspěvek
+odpovíte.
+
+Máte-li dotaz k výsledku testu, nikdy tento výsledek nevkládejte do
+příspěvku (podobně nikdy nevkládejte části řešení příkladu). Učitelé
+mají přístup k obsahu Vašich poznámkových bloků, i k Vámi odevzdaným
+souborům. Je-li to pro pochopení kontextu ostatními čtenáři potřeba,
+odpovídající učitel chybějící informace doplní dle uvážení.
+
+¹ Nebojte se do fóra napsat – když si s něčím nevíte rady a/nebo
+  nemůžete najít v materiálech, rádi Vám pomůžeme nebo Vás
+  nasměrujeme na místo, kde odpověď naleznete.
+
+### Stažení koster
+
+Kostry naleznete ve «studijních materiálech» v ISu: ‹Student› →
+‹PB152› → ‹Studijní materály› → ‹Učební materiály›. Každá kapitola
+má vlastní složku, pojmenovanou ‹00› (tento úvod a materiály
+k nultému cvičení), ‹01› (první běžná kapitola), ‹02›, …, ‹12›.
+Veškeré soubory stáhnete jednoduše tak, že na složku kliknete pravým
+tlačítkem a vyberete možnost ‹Stáhnout jako ZIP›. Stažený soubor
+rozbalte a můžete řešit.
+
+### Odevzdání řešení
+
+Vypracované příklady můžete odevzdat do «odevzdávárny» v ISu:
+‹Student› → ‹PB152› → ‹Odevzdávárny›. Pro přípravy používejte
+odpovídající složky s názvy ‹01›, …, ‹12›. Pro příklady ze sad pak
+‹s1_a_csv›, atp. (složky začínající ‹s1› pro první, ‹s2› pro druhou
+a ‹s3› pro třetí sadu).
+
+Soubor vložíte výběrem možnosti ‹Soubor – nahrát› (první ikonka na
+liště nad seznamem souborů). Tímto způsobem můžete najednou nahrát
+souborů několik (například všechny přípravy z dané kapitoly). Vždy
+se ujistěte, že vkládáte správnou verzi souboru (a že nemáte
+v textovém editoru neuložené změny). «Pozor!» Všechny vložené
+soubory se musí jmenovat stejně jako v kostrách, jinak nebudou
+rozeznány (IS při vkládání automaticky předřadí Vaše UČO – to je
+v pořádku, název souboru po vložení do ISu «neměňte») .
+
+O každém odevzdaném souboru (i nerozeznaném) se Vám v poznámkovém
+bloku ‹log› objeví záznam. Tento záznam i výsledky testu syntaxe by
+se měl objevit do několika minut od odevzdání (nemáte-li ani po 15
+minutách výsledky, napište prosím do diskusního fóra).
+
+Archiv všech souborů, které jste úspěšně odevzdali, naleznete ve
+složce ‹Private› ve studijních materiálech (‹Student› → ‹PB152› →
+‹Studijní materiály› → ‹Private›).
+
+### Výsledky automatických testů
+
+Automatickou zpětnou vazbu k odevzdaným úlohám budete dostávat
+prostřednictvím tzv. «poznámkových bloků» v ISu. Ke každé
+odevzdávárně existuje odpovídající poznámkový blok, ve kterém
+naleznete aktuální výsledky testů. Pro přípravy bude blok vypadat
+přibližně takto:
+
+    testing verity of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed    [0.5]
+    subtest p2_bar failed
+    subtest p3_baz failed
+    subtest p4_quux passed   [0.5]
+    subtest p5_wibble passed [0.5]
+    subtest p6_xyzzy failed
+       {bližší popis chyby}
+    verity test failed
+    
+    testing syntax of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed
+    subtest p2_bar failed
+      {bližší popis chyby}
+    subtest p3_baz failed
+      {bližší popis chyby}
+    subtest p4_quux passed
+    subtest p5_wibble passed
+    subtest p6_xyzzy passed
+    syntax test failed
+    
+    testing sanity of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed    [  1]
+    subtest p2_bar failed
+    subtest p3_baz failed
+    subtest p4_quux passed   [  1]
+    subtest p5_wibble passed [  1]
+    subtest p6_xyzzy passed  [  1]
+    sanity test failed
+    
+    best submission: 2022-09-17 22:43 CEST worth *5.5 point(s)
+
+Jednak si všimněte, že každý odstavec má «vlastní časové razítko»,
+které určuje, ke kterému odevzdání daný výstup patří. Tato časová
+razítka nemusí být stejná. V hranatých závorkách jsou uvedeny dílčí
+body, za hvězdičkou na posledním řádku pak celkový bodový zisk za
+tuto kapitolu.
+
+Také si všimněte, že ‹best submission› se vztahuje na jedno
+konkrétní odevzdání jako celek: v situaci, kdy odstavec „verity“ a
+odstavec „sanity“ nemají stejné časové razítko, «nemusí» být celkový
+bodový zisk součtem všech dílčích bodů.  O konečném zisku rozhoduje
+vždy poslední odevzdání před příslušným termínem (opět jako jeden
+celek).¹
+
+Výstup pro příklady ze sad je podobný, uvažme například:
+
+    testing verity of submission from 2022-10-11 21:14 CEST
+    subtest foo-small passed
+    subtest foo-large passed
+    verity test passed          [ 10]
+    
+    testing syntax of submission from 2022-10-14 23:54 CEST
+    subtest build passed
+    syntax test passed
+    
+    testing sanity of submission from 2022-10-14 23:54 CEST
+    subtest foo passed
+    sanity test passed
+    
+    best submission: 2022-10-11 21:14 CEST worth *10 point(s)
+
+Opět si všimněte, že časová razítka se mohou lišit (a v případě
+příkladů ze sady bude k této situaci docházet poměrně často, vždy
+tedy nejprve ověřte, ke kterému odevzdání se který odstavec vztahuje
+a pak až jej dále interpretujte).
+
+¹ Můžete si tak odevzdáním nefunkčních řešení na poslední chvíli
+  snížit výsledný bodový zisk. Uvažte situaci, kdy máte v pátek 4
+  body za sanity příkladů p1, p2, p3, p6 a 1 bod za verity p1, p2.
+  V sobotu odevzdáte řešení, kde p1 neprochází sanity testem, ale p4
+  ano a navíc projdou verity testy příklady p4 a p6. Váš výsledný
+  zisk bude 5.5 bodu. Tento mechanismus Vám nikdy nesníží výsledný
+  bodový zisk pod již jednou dosaženou hranici „best submission“.
+
+### Recenze
+
+Vám adresované recenze, podobně jako archiv odevzdaných souborů,
+naleznete ve složce ‹Private› ve studijních materiálech (‹Student› →
+‹PB152› → ‹Studijní materiály› → ‹Private›). Shrnutí bodového zisku
+za tyto recenze pak naleznete v poznámkovém bloku ‹reviews›.
+
+### Další poznámkové bloky
+
+Blok ‹corr› obsahuje záznamy o manuálních bodových korekcích (např.
+v situaci, kdy byl Váš bodový zisk ovlivněn chybou v testech).
+Podobně se zde objeví záznamy o penalizaci za opisování.
+
+Blok ‹log› obsahuje záznam o všech odevzdaných souborech, včetně
+těch, které nebyly rozeznány. Nedostanete-li po odevzdání příkladu
+výsledek testů, ověřte si v tomto poznámkovém bloku, že soubor byl
+správně rozeznán.
+
+Blok ‹misc› obsahuje záznamy o Vaší aktivitě ve cvičení (netýká se
+bodů za vzájemné recenze ani vnitrosemestrální testy). Nemáte-li
+před koncem cvičení, ve kterém jste řešili příklad u tabule, záznam
+v tomto bloku, připomeňte se svému cvičícímu.
+
+Konečně blok ‹sum› obsahuje souhrn bodů, které jste dosud získali, a
+které ještě získat můžete. Dostanete-li se do situace, kdy Vám ani
+zisk všech zbývajících bodů nebude stačit pro splnění podmínek
+předmětu, tento blok Vás o tom bude informovat. Tento blok má navíc
+přístupnou statistiku bodů – můžete tak srovnat svůj dosavadní
+bodový zisk se svými spolužáky.
+
+Je-li blok ‹sum› v rozporu s pravidly uvedenými v tomto dokumentu,
+přednost mají pravidla zde uvedená. Podobně mají v případě
+nesrovnalosti přednost dílčí poznámkové bloky. Dojde-li k takovéto
+neshodě, informujte nás o tom prosím v diskusním fóru. Případná
+známka uvedená v poznámkovém bloku ‹sum› je podobně pouze
+informativní – rozhoduje vždy známka zapsaná v hodnocení předmětu.

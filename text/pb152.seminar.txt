@@ -1,0 +1,3067 @@
+: title   : @subject@
+: authors : @authors@
+: doctype : lnotes
+: typing  : plain
+: toc     : yes
+: lang    : cs
+
+
+# A. Pravidla a organizace
+
+Tento dokument je sbírkou cvičení a komentovaných příkladů
+zdrojového kódu. Každá kapitola odpovídá jednomu týdnu semestru a
+tedy jednomu cvičení. Cvičení v prvním týdnu semestru („nulté“) je
+určeno k seznámení se s výukovým prostředím, studijními materiály a
+základními nástroji ekosystému.
+
+Každá část sbírky (zejména tedy všechny ukázky a příklady) jsou také
+k dispozici jako samostatné soubory, které můžete upravovat a
+spouštět. Této rozdělené verzi sbírky říkáme «zdrojový balík».
+Aktuální verzi¹ (ve všech variantách) můžete získat dvěma způsoby:
+
+ 1. Ve «studijních materiálech²» předmětu v ISu – soubory PDF ve
+    složce ‹text›, zdrojový balík ve složkách ‹00› (organizační
+    informace), ‹01› až ‹12› (jednotlivé kapitoly = týdny semestru),
+    dále ‹s1› až ‹s3› (sady úloh) a konečně ve složce ‹sol› vzorová
+    řešení. Doporučujeme soubory stahovat dávkově pomocí volby
+    „stáhnout jako ZIP“.
+ 2. Po přihlášení na studentský server ‹aisa› (buď za pomoci ‹ssh›
+    nebo ‹putty›) zadáním příkazu ‹pb152 update›. Všechny výše
+    uvedené složky pak naleznete ve složce ‹~/pb152›.
+
+Tato kapitola (složka) dále obsahuje «závazná» pravidla a
+organizační pokyny. Než budete pokračovat, pozorně si je prosím
+přečtěte.
+
+Pro komunikaci s organizátory kurzu slouží «diskusní fórum» v ISu
+(více informací naleznete v části T.1). Nepište prosím organizátorům
+ani cvičícím maily ohledně předmětu, nejste-li k tomu specificky
+vyzváni. S žádostmi o výjimky ze studijních povinností, omluvenkami,
+atp., se obracejte vždy na studijní oddělení.
+
+¹ Studijní materiály budeme tento semestr doplňovat průběžně,
+  protože kurz prochází zásadní reorganizací. Než začnete pracovat
+  na přípravách nebo příkladech ze sady, vždy se prosím ujistěte, že
+  máte jejich aktuální verzi. Zadání příprav lze považovat za
+  finální počínaje půlnocí na pondělí odpovídajícího týdne, sady
+  podobně půlnocí na první pondělí odpovídajícího bloku. Pro první
+  týden tedy 18.9.2023 0:00 a první sadu 25.9.2023 0:00.
+² ‹https://is.muni.cz/auth/el/fi/podzim2023/PB152cv/um/›
+
+## Přehled
+
+Tento předmět sestává z cvičení, sad domácích úloh a závěrečného
+praktického testu (kolokvia). Protože se jedná o „programovací“
+předmět, většina práce v předmětu – a tedy i jeho hodnocení – se
+bude zaměřovat na praktické programování. Je důležité, abyste
+programovali co možná nejvíce, ideálně každý den, ale minimálně
+několikrát každý týden. K tomu Vám budou sloužit příklady v této
+sbírce (typicky se bude jednat o velmi malé programy v rozsahu
+jednotek až desítek řádků, kterých byste měli být v průměru schopni
+vyřešit několik za hodinu) a domácí úlohy, kterých budou za semestr
+3 sady, a budou znatelně většího rozsahu (maximálně malé stovky
+řádků). V obou případech bude v průběhu semestru stoupat náročnost –
+je tedy důležité, abyste drželi krok a práci neodkládali na poslední
+chvíli.
+
+Protože programování je těžké, bude i tento kurz těžký – je zcela
+nezbytné vložit do něj odpovídající úsilí. Doufáme, že kurz úspěšně
+absolvujete, a co je důležitější, že se v něm toho naučíte co
+nejvíce. Je ale nutno podotknout, že i přes svou náročnost je tento
+kurz jen malým krokem na dlouhé cestě.
+
+### Probíraná témata
+
+Předmět je rozdělen do 4 bloků (čtvrtý blok patří do zkouškového
+období). Do každého bloku v semestru patří 4 kapitoly (témata) a
+jim odpovídající 4 cvičení.
+
+│ bl. │     │ téma                                  │
+├─────│────▻┼◅──────────────────────────────────────│
+│  1  │  1. │ základy práce se soubory              │
+│     │  2. │ sockety                               │
+│     │  3. │ čekání na událost                     │
+│     │  4. │ mapování souborů do paměti            │
+│┄┄┄┄┄│┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄│
+│  2  │  5. │ složky (adresáře)                     │
+│     │  6. │ síť                                   │
+│     │  7. │ spustitelné soubory                   │
+│     │  8. │ správa popisovačů souborů             │
+│┄┄┄┄┄│┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄│
+│  3  │  9. │ procesy                               │
+│     │ 10. │ vlákna                                │
+│     │ 11. │ synchronizace                         │
+│     │ 12. │ opakování                             │
+
+### Organizace sbírky
+
+V následujících sekcích naleznete detailnější informace a «závazná»
+pravidla kurzu: doporučujeme Vám, abyste se s nimi důkladně
+seznámili.¹ Zbytek sbírky je pak rozdělen na části, které odpovídají
+jednotlivým týdnům semestru. «Důležité:» během prvního týdne
+semestru už budete řešit přípravy z první kapitoly, přestože první
+cvičení je ve až v týdnu druhém. Nulté cvičení je volitelné a není
+nijak hodnoceno.
+
+Kapitoly jsou číslovány podle témat z předchozí tabulky: ve druhém
+týdnu semestru se tedy «ve cvičení» budeme zabývat tématy, ke kterým
+jste v prvním týdnu vypracovali a odevzdali přípravy.
+
+¹ Pravidla jsou velmi podobná těm v kurzu IB111, ale přesto si je
+  pozorně přečtěte.
+
+### Plán semestru
+
+Tento kurz vyžaduje značnou aktivitu během semestru. V této sekci
+naleznete přehled důležitých událostí formou kalendáře. Jednotlivé
+události jsou značeny takto (bližší informace ke každé naleznete
+v následujících odstavcích tohoto úvodu):
+
+ • „#X“    – číslo týdne v semestru,
+ • „cv0“   – tento týden běží „nulté“ cvičení (kapitola B),
+ • „cv1“   – tento týden probíhají cvičení ke kapitole 1,
+ • „X/v“   – mezivýsledek verity testů příprav ke kapitole X,
+ • „X/p“   – poslední termín odevzdání příprav ke kapitole X,
+ • „sX/Y“  – Yté kolo verity testů k sadě X,
+ • „sX/z₁“ – první kolo známek za kvalitu kódu sady X,
+ • „sX/op“ – termín pro opravná odevzdání sady X,
+ • „sX/z₂“ – finální známky za kvalitu kódu sady X,
+ • „test“  – termín programovacího testu.
+
+Nejdůležitější události jsou zvýrazněny: termíny odevzdání příprav a
+poslední termín odevzdání úloh ze sad (obojí vždy o 23:59 uvedeného
+dne).
+
+│                            září                             │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│  #1 │ 18    │ 19    │ 20    │ 21    │ 22    │ 23    │ 24    │
+│ cv0 │       │       │       │ 01/v  │       │«01/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #2 │ 25    │ 26    │ 27    │ 28 sv │ 29    │ 30    │       │
+│ cv1 │ s1/1  │       │ s1/2  │ 02/v  │ s1/3  │«02/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+│                            říjen                            │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│  #2 │       │       │       │       │       │       │ 1     │
+│     │       │       │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #3 │ 2     │ 3     │ 4     │ 5     │ 6     │ 7     │ 8     │
+│     │ s1/4  │       │ s1/5  │ 03/v  │ s1/6  │«03/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #4 │ 9     │ 10    │ 11    │ 12    │ 13    │ 14    │ 15    │
+│     │ s1/7  │       │ s1/8  │ 04/v  │ s1/9  │«04/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #5 │ 16    │ 17    │ 18    │ 19    │ 20    │ 21    │ 22    │
+│     │ s1/10 │       │ s1/11 │ 05/v  │«s1/12»│«05/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #6 │ 23    │ 24    │ 25    │ 26    │ 27    │ 28 sv │ 29    │
+│     │ s2/1  │       │ s2/2  │ 06/v  │ s2/3  │«06/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #7 │ 30    │ 31    │       │       │       │       │       │
+│     │ s2/4  │ s1/z₁ │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+│                          listopad                           │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│  #7 │       │       │ 1     │ 2     │ 3     │ 4     │ 5     │
+│     │       │       │ s2/5  │ 07/v  │ s2/6  │«07/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #8 │ 6     │ 7     │ 8     │ 9     │ 10    │ 11    │ 12    │
+│     │ s2/7  │«s1/op»│ s2/8  │ 08/v  │ s2/9  │«08/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│  #9 │ 13    │ 14    │ 15    │ 16    │ 17 sv │ 18    │ 19    │
+│     │ s2/10 │ s1/z₂ │ s2/11 │ 09/v  │«s2/12»│«09/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│ #10 │ 20    │ 21    │ 22    │ 23    │ 24    │ 25    │ 26    │
+│     │ s3/1  │       │ s3/2  │ 10/v  │ s3/3  │«10/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│ #11 │ 27    │ 28    │ 29    │ 30    │       │       │       │
+│     │ s3/4  │ s2/z₁ │ s3/5  │ 11/v  │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+│                          prosinec                           │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│ #11 │       │       │       │       │ 1     │ 2     │ 3     │
+│     │       │       │       │       │ s3/6  │«11/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│ #12 │ 4     │ 5     │ 6     │ 7     │ 8     │ 9     │ 10    │
+│     │ s3/7  │«s2/op»│ s3/8  │ 12/v  │ s3/9  │«12/p» │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│ #13 │ 11    │ 12    │ 13    │ 14    │ 15    │ 16    │ 17    │
+│     │ s3/10 │ s2/z₂ │ s3/11 │       │«s3/12»│       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 18    │ 19    │ 20    │ 21    │ 22    │ 23    │ 24    │
+│     │       │       │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 25    │ 26    │ 27    │ 28    │ 29    │ 30    │ 31    │
+│     │       │       │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+│                            leden                            │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│     │ 1     │ 2     │ 3     │ 4     │ 5     │ 6     │ 7     │
+│     │       │ s3/z₁ │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 8     │ 9     │ 10    │ 11    │ 12    │ 13    │ 14    │
+│     │       │«s3/op»│       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 15    │ 16    │ 17    │ 18    │ 19    │ 20    │ 21    │
+│     │       │ s3/z₂ │ test  │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 22    │ 23    │ 24    │ 25    │ 26    │ 27    │ 28    │
+│     │       │       │ test  │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 29    │ 30    │ 31    │       │       │       │       │
+│     │       │       │ test  │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+│                            únor                             │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │   Po  │   Út  │   St  │   Čt  │   Pá  │   So  │   Ne  │
+├────▻│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│◅──────│
+│     │       │       │       │ 1     │ 2     │ 3     │ 4     │
+│     │       │       │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 5     │ 6     │ 7     │ 8     │ 9     │ 10    │ 11    │
+│     │       │       │ test  │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+│     │ 12    │ 13    │ 14    │ 15    │ 16    │ 17    │ 18    │
+│     │       │       │       │       │       │       │       │
+│┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄│
+
+
+## Hodnocení
+
+Abyste předmět úspěšně ukončili, musíte v «každém bloku¹» získat «60
+bodů». Žádné další požadavky nemáme.
+
+Body lze získat mnoha různými způsoby (přesnější podmínky naleznete
+v následujících sekcích této kapitoly). V blocích 1-3 (probíhají
+během semestru) jsou to:
+
+ • za každou úspěšně odevzdanou přípravu «1» bod (max. 6 bodů každý
+   týden, nebo «24/blok»),
+ • za každou přípravu, která projde „verity“ testy navíc «0,5» bodu
+   (max. 3 body každý týden, nebo «12/blok»),
+ • za účast³ na cvičení získáte 3 body (max. tedy «12/blok»),
+ • za aktivitu ve cvičení 3 body (max. tedy «12/blok»).
+
+Za přípravy a cvičení lze tedy získat teoretické maximum «60» bodů.
+Dále můžete získat:
+
+ • «10» bodů za úspěšně vyřešený příklad ze sady domácích úloh
+   (celkem vždy «60/blok»).
+
+V blocích 2-4 navíc můžete získat body za kvalitu řešení příkladů ze
+sady úloh předchozího bloku:
+
+ • za kvalitu kódu max. «5» bodů za příklad (celkem «30/blok»).
+
+Konečně blok 4, který patří do zkouškového období, nemá ani cvičení
+ani sadu domácích úloh. Krom bodů za kvalitu kódu ze třetí sady lze
+získat:
+
+ • «15» bodů za každý zkouškový příklad (celkem «90/blok»).
+
+Celkově tedy potřebujete:
+
+ • blok 1: «60/120» bodů,
+ • blok 2: «60/150» bodů,
+ • blok 3: «60/150» bodů,
+ • blok 4: «60/120» bodů (neplatí pro ukončení zápočtem).
+
+¹ Máte-li předmět ukončen zápočtem, čtvrtý blok a tedy ani závěrečný
+  test pro Vás není relevantní. Platí požadavek na 3×60 bodů z bloků
+  v semestru.
+
+³ V případě, že jste «řádně omluveni» v ISu, nebo Vaše cvičení
+  «odpadlo» (např. padlo na státní svátek), můžete body za účast
+  získat buď náhradou v jiné skupině (pro státní svátky dostanete
+  instrukce mailem, individuální případy si domluvte s cvičícími
+  obou dotčených skupin). Nemůžete-li účast nahradit takto,
+  «domluvte se» se svým cvičícím (v tomto případě lze i mailem) na
+  vypracování 3 rozšířených příkladů ze sbírky (přesné detaily Vám
+  sdělí cvičící podle konkrétní situace). Neomluvenou neúčast lze
+  nahrazovat «pouze» v jiné skupině a to max. 1–2× za semestr.
+
+## Přípravy
+
+Jak již bylo zmíněno, chcete-li se naučit programovat, musíte
+programování věnovat nemalé množství času, a navíc musí být tento
+čas rozložen do delších období – semestr nelze v žádném případě
+doběhnout tím, že budete týden programovat 12 hodin denně, i když to
+možná pokryje potřebný počet hodin. Proto od Vás budeme chtít,
+abyste každý týden odevzdali několik vyřešených příkladů z této
+sbírky. Tento požadavek má ještě jeden důvod: chceme, abyste vždy
+v době cvičení už měli látku každý samostatně nastudovanou, abychom
+mohli řešit zajímavé problémy, nikoliv opakovat základní pojmy.
+
+Také Vás prosíme, abyste příklady, které plánujete odevzdat, řešili
+vždy samostatně: případnou zakázanou spolupráci budeme trestat (viz
+také konec této kapitoly).
+
+### Odevzdání
+
+Každý příklad obsahuje základní sadu testů. To, že Vám tyto testy
+prochází, je jediné kritérium pro zisk základních bodů za odevzdání
+příprav. Poté, co příklady odevzdáte, budou «tytéž testy» na Vašem
+řešení automaticky spuštěny, a jejich výsledek Vám bude zapsán do
+poznámkového bloku. Smyslem tohoto opatření je zamezit případům, kdy
+omylem odevzdáte nesprávné, nebo jinak nevyhovující řešení, aniž
+byste o tom věděli. Velmi silně Vám proto doporučujeme odevzdávat
+s určitým předstihem, abyste případné nesrovnalosti měli ještě čas
+vyřešit. Krom základních („sanity“) testů pak ve čtvrtek o 23:59 a
+znovu v sobotu o 23:59 (těsně po konci odevzdávání) spustíme
+«rozšířenou» sadu testů („verity“).
+
+Za každý odevzdaný příklad, který splnil «základní» („sanity“) testy
+získáváte jeden bod. Za příklad, který navíc splnil «rozšířené»
+testy získáte dalšího 0,5 bodu (tzn. celkem 1,5 bodu). Výsledky
+testů naleznete v «poznámkovém bloku» v informačním systému.
+
+Příklady můžete odevzdávat:
+
+ 1. do «odevzdávárny» s názvem ‹NN› v ISu (např. ‹01›),
+ 2. příkazem ‹pb152 submit› ve složce ‹~/pb152/NN›.
+
+Podrobnější instrukce naleznete v kapitole T (technické informace,
+soubory ‹00/t*›).
+
+### Harmonogram
+
+Termíny pro odevzdání příprav k jednotlivým kapitolám jsou shrnuty
+v následující tabulce:
+
+│ blok │ kapitola │  verity │  termín │
+├──────│──────────│─────────│─────────│
+│   1  │       1  │  21.9.  │  23.9.  │
+│      │       2  │  28.9.  │  30.9.  │
+│      │       3  │   5.10. │   7.10. │
+│      │       4  │  12.10. │  14.10. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│   2  │       5  │  19.10. │  21.10. │
+│      │       6  │  26.10. │  28.10. │
+│      │       7  │   2.11. │   4.11. │
+│      │       8  │   9.11. │  11.11. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│   3  │       9  │  16.11. │  18.11. │
+│      │      10  │  23.11. │  25.11. │
+│      │      11  │  30.11. │   2.12. │
+│      │      12  │   7.12. │   9.12. │
+
+
+## Cvičení
+
+Těžiště tohoto předmětu je jednoznačně v samostatné domácí práci –
+učit se programovat znamená zejména hodně programovat. Společná
+cvičení sice nemohou tuto práci nahradit, mohou Vám ale přesto
+v lecčem pomoct. Smyslem cvičení je:
+
+ 1. analyzovat problémy, na které jste při samostatné domácí práci
+    narazili, a zejména prodiskutovat, jak je vyřešit,
+ 2. řešit programátorské problémy společně (s cvičícím, ve dvojici,
+    ve skupině) – nahlédnout jak o programech a programování uvažují
+    ostatní a užitečné prvky si osvojit.
+
+Cvičení je rozděleno na dva podobně dlouhé segmenty, které
+odpovídají těmto bodům. První část probíhá přibližně takto:
+
+ • cvičící vybere ty z Vámi odevzdaných příprav, které se mu zdají
+   něčím zajímavé – ať už v pozitivním, nebo negativním smyslu,
+   
+   ◦ řešení bude «anonymně» promítat na plátno a u každého otevře
+     diskusi o tom, čím je zajímavé;
+   ◦ Vaším úkolem je aktivně se do této diskuse zapojit (můžete se
+     například ptát proč je daná věc dobře nebo špatně a jak by se
+     udělala lépe, vyjádřit svůj názor, odpovídat na dotazy
+     cvičícího),
+   ◦ k promítnutému řešení se můžete přihlásit a ostatním přiblížit,
+     proč je napsané tak jak je, nebo klidně i rozporovat případnou
+     kritiku (není to ale vůbec nutné),
+   
+ • dále podobným způsobem vybere vzájemné (peer) recenze, které jste
+   v předchozím týdnu psali, a stručně je s Vámi prodiskutuje
+   (celkovou strukturu recenze, proč je který komentář dobrý nebo
+   nikoliv, jestli nějaký komentář chybí, atp.) – opět se můžete
+   (resp. byste se měli) zapojovat,
+ • na Vaši žádost lze ve cvičení analogicky probrat «neúšpěšná»
+   řešení příkladů (a to jak příprav, tak příkladů z uzavřených
+   sad).
+
+Druhá část cvičení je variabilnější, ale bude se vždy točit kolem
+bodů za aktivitu (každý týden můžete za aktivitu získat maximálně 3
+body).
+
+Ve čtvrtém, osmém a dvanáctém týdnu proběhnou „vnitrosemestrálky“
+kde budete řešit samostatně jeden příklad ze sbírky, bez možnosti
+hledat na internetu – tak, jak to bude na závěrečném testu; každé
+úspěšné řešení (tzn. takové, které splní verity testy) získá ony 3
+body za aktivitu pro daný týden.
+
+V ostatních týdnech budete ve druhém segmentu kombinovat různé
+aktivity, které budou postavené na příkladech typu ‹r› z aktuální
+kapitoly (které konkrétní příklady budete ve cvičení řešit vybere
+cvičící, může ale samozřejmě vzít v potaz Vaše preference):
+
+ 1. Můžete se přihlásit k řešení příkladu na plátně, kdy primárně
+    vymýšlíte řešení Vy, ale zbytek třídy Vám bude podle potřeby
+    radit, nebo se ptát co/jak/proč se v řešení děje. U jednodušších
+    příkladů se od Vás bude také očekávat, že jako součást řešení
+    doplníte testy.
+ 2. Cvičící Vám může zadat práci ve dvojicích – první dvojice, která
+    se dopracuje k funkčnímu řešení získá možnost své řešení
+    předvést zbytku třídy – vysvětlit jak a proč funguje, odpovědět
+    na případné dotazy, opravit chyby, které v řešení publikum
+    najde, atp. – a získat tak body za aktivitu. Získané 3 body
+    budou rozděleny rovným dílem mezi vítězné řešitele.
+ 3. příklad můžete také řešit společně jako skupina – takto
+    vymyšlený kód bude zapisovat cvičící (body za aktivitu se
+    v tomto případě neudělují).
+
+## Sady domácích úloh
+
+Ke každému bloku patří sada 6 domácích úloh, které tvoří významnou
+část hodnocení předmětu. Na úspěšné odevzdání každé domácí úlohy
+budete mít 12 pokusů rozložených do 4 týdnů odpovídajícího bloku
+cvičení. Odevzdávání bude otevřeno vždy v 0:00 prvního dne bloku
+(tzn. 24h před prvním spuštěním verity testů).
+
+Termíny odevzdání (vyhodnocení verity testů) jsou vždy v pondělí,
+středu a pátek v 23:59, dle následujícího harmonogramu:
+
+│ sada │ týden │ pondělí │ středa  │ pátek   │
+├──────│───────│────────▻┼────────▻┼────────▻┼
+│    1 │     1 │  25.9.  │  27.9.  │  29.9.  │
+│      │     2 │   2.10. │   4.10. │   6.10. │
+│      │     3 │   9.10. │  11.10. │  13.10. │
+│      │     4 │  16.10. │  18.10. │  20.10. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│    2 │     1 │  23.10. │  25.10. │  27.10. │
+│      │     2 │  30.10. │   1.11. │   3.11. │
+│      │     3 │   6.11. │   8.11. │  10.11. │
+│      │     4 │  13.11. │  15.11. │  17.11. │
+│┄┄┄┄┄┄│┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│┄┄┄┄┄┄┄┄┄│
+│    3 │     1 │  20.11. │  22.11. │  24.11. │
+│      │     2 │  27.11. │  29.11. │   1.12. │
+│      │     3 │   4.12. │   6.12. │   8.12. │
+│      │     4 │  11.12. │  13.12. │  15.12. │
+
+### Odevzdávání
+
+Součástí každého zadání je jeden zdrojový soubor (kostra), do
+kterého své řešení vepíšete. Vypracované příklady lze pak odevzdávat
+stejně jako přípravy:
+
+ 1. do «odevzdávárny» s názvem ‹sN_úkol› v ISu (např. ‹s1_a_queens›),
+ 2. příkazem ‹pb152 submit sN_úkol› ve složce ‹~/pb152/sN›, např.
+    ‹pb152 submit s1_a_queens›.
+
+Podrobnější instrukce naleznete opět v kapitole T.
+
+### Vyhodnocení
+
+Vyhodnocení Vašich řešení probíhá ve třech fázích, a s každou z nich
+je spjata sada automatických testů. Tyto sady jsou:
+
+ • „syntax“ – kontroluje, že odevzdaný program je syntakticky
+   správně, lze jej přeložit a prochází základními statickými
+   kontrolami,
+ • „sanity“ – kontroluje, že odevzdaný program se chová „rozumně“ na
+   jednoduchých případech vstupu; tyto testy jsou rozsahem a stylem
+   podobné těm, které máte přiložené k příkladům ve cvičení,
+ • „verity“ – důkladně kontrolují správnost řešení, včetně složitých
+   vstupů a okrajových případů a kontroly paměťových chyb.
+
+Fáze na sebe navazují v tom smyslu, že nesplníte-li testy v některé
+fázi, žádná další se už (pro dané odevzdání) nespustí. Pro splnění
+domácí úlohy je klíčová fáze „verity“, za kterou jsou Vám uděleny
+body. Časový plán vyhodnocení fází je následovný:
+
+ • kontrola „syntax“ se provede obratem (do cca 5 minut od
+   odevzdání),
+ • kontrola „sanity“ každých 6 hodin počínaje půlnocí (tzn. 0:00,
+   6:00, 12:00, 18:00),
+ • kontrola „verity“ se provede v pondělí, středu a pátek ve 23:59
+   (dle tabulky uvedené výše).
+
+Vyhodnoceno je vždy pouze nejnovější odevzdání, a každé odevzdání je
+vyhodnoceno v každé fázi nejvýše jednou. Výsledky naleznete
+v poznámkových blocích v ISu (každá úloha v samostatném bloku),
+případně je získáte příkazem ‹pb152 status›.
+
+### Bodování
+
+Za každý domácí úkol, ve kterém Vaše odevzdání v příslušném termínu
+splní testy „verity“, získáte 10 bodů.
+
+Za stejný úkol máte dále možnost získat body za kvalitu kódu, a to
+vždy v hodnotě max. 5 bodů. Body za kvalitu se počítají v bloku, «ve
+kterém byly uděleny», tzn. body za kvalitu ze «sady 1» se započtou
+do «bloku 2».
+
+Maximální bodový zisk za jednotlivé sady:
+
+ • sada 1: 60 za funkčnost v bloku 1 + 30 za kvalitu v bloku 2,
+ • sada 2: 60 za funkčnost v bloku 2 + 30 za kvalitu v bloku 3,
+ • sada 3: 60 za funkčnost v bloku 3 + 30 za kvalitu v bloku 4
+   («zkouškovém»).
+
+### Hodnocení kvality kódu
+
+Automatické testy ověřují «správnost» vašich programů (do takové
+míry, jak je to praktické – ani nejpřísnější testy nemůžou zaručit,
+že máte program zcela správně). Správnost ale není jediné kritérium,
+podle kterého lze programy hodnotit: podobně důležité je, aby byl
+program «čitelný». Programy totiž mimo jiné slouží ke komunikaci
+myšlenek lidem – dobře napsaný a správně okomentovaný kód by měl
+čtenáři sdělit, jaký řeší problém, jak toto řešení funguje a
+u obojího objasnit «proč».
+
+Je Vám asi jasné, že čitelnost programu člověkem může hodnotit pouze
+člověk: proto si každý Váš «úspěšně» vyřešený domácí úkol přečte
+opravující a své postřehy Vám sdělí. Přitom zároveň Váš kód
+oznámkuje podle kritérií podrobněji rozepsaných v kapitole Z.
+Tato kritéria aplikujeme při známkování takto:
+
+ • hodnocení A dostane takové řešení, které jasně popisuje řešení
+   zadaného problému, je správně dekomponované na podproblémy, je
+   zapsáno bez zbytečného opakování, a používá správné abstrakce,
+   algoritmy a datové struktury,
+   
+ • hodnocení B dostane program, který má výrazné nedostatky v jedné,
+   nebo nezanedbatelné nedostatky ve dvou oblastech výše zmíněných,
+   například:
+   
+   ◦ je relativně dobře dekomponovaný a zbytečně se neopakuje, ale
+     používá nevhodný algoritmus nebo datovou strukturu a není
+     zapsán příliš přehledně,
+   
+   ◦ používá optimální algoritmus a datové struktury a je dobře
+     dekomponovaný, ale lokálně opakuje tentýž kód s drobnými
+     obměnami, a občas používá zavádějící nebo jinak nevhodná
+     jména podprogramů, proměnných atp.,
+   
+   ◦ jinak dobrý program, který používá zcela nevhodný
+     algoritmus, «nebo» velmi špatně pojmenované proměnné, «nebo» je
+     zapsaný na dvě obrazovky úplně bez dekompozice,
+   
+ • hodnocení X dostanou programy, u kterých jste se dobrovolně
+   vzdali hodnocení (a to jasně formulovaným komentářem «na začátku
+   souboru», např. „Vzdávám se hodnocení.“),
+   
+ • hodnocení C dostanou všechny ostatní programy, zejména ty, které
+   kombinují dvě a více výrazné chyby zmiňované výše.
+
+Známky Vám budou zapsány druhé úterý následujícího bloku.
+Dostanete-li známku B nebo C, budete mít možnost svoje řešení
+ještě zlepšit, odevzdat znovu, a známku si tak opravit:
+
+ • na opravu budete mít týden,
+ • na opraveném programu nesmí selhat verity testy,
+ • testy budou nadále probíhat se stejnou kadencí jako během řádné
+   doby k vypracování (pondělí, středa, pátek o 23:59).
+
+Bude-li opravující s vylepšeným programem spokojen, výslednou známku
+Vám upraví.
+
+│ sada │ řádný termín │ známka │ opravný termín │ známka │
+├──────│─────────────▻│───────▻│───────────────▻│───────▻│
+│    1 │     «20.10.» │ 31.10. │        «7.11.» │ 14.11. │
+│    2 │     «17.11.» │ 28.11. │        «5.12.» │ 12.12. │
+│    3 │     «15.12.» │   2.1. │         «9.1.» │  16.1. │
+
+Jednotlivé «výsledné» známky se promítnou do bodového hodnocení
+úkolu následovně:
+
+ • známka «A» Vám vynese «5 bodů»,
+ • známka «B» pak «2 body»,
+ • známka «X» žádné body neskýtá,
+ • známka «C» je hodnocena «-1 bodem».
+
+Samotné body za funkcionalitu se při opravě kvality již nijak
+nemění.
+
+### Neúspěšná řešení
+
+Příklady, které se Vám nepodaří vyřešit kompletně (tzn. tak, aby na
+nich uspěla kontrola „verity“) nebudeme hodnotit. Nicméně může
+nastat situace, kdy byste potřebovali na „téměř hotové“ řešení
+zpětnou vazbu, např. proto, že se Vám nepodařilo zjistit, proč
+nefunguje.
+
+Taková řešení můžou být předmětem společné analýzy ve cvičení,
+v podobném duchu jako probíhá rozprava kolem odevzdaných příprav
+(samozřejmě až poté, co pro danou sadu skončí odevzdávání). Máte-li
+zájem takto rozebrat své řešení, domluvte se, ideálně s předstihem,
+se svým cvičícím. To, že jste autorem, zůstává mezi cvičícím a Vámi
+– Vaši spolužáci to nemusí vědět (ke kódu se samozřejmě můžete
+v rámci debaty přihlásit, uznáte-li to za vhodné). Stejná pravidla
+platí také pro nedořešené přípravy (musíte je ale odevzdat).
+
+Tento mechanismus je omezen prostorem ve cvičení – nemůžeme zaručit,
+že v případě velkého zájmu dojde na všechny (v takovém případě
+cvičící vybere ta řešení, která bude považovat za přínosnější pro
+skupinu – je tedy možné, že i když se na Vaše konkrétní řešení
+nedostane, budete ve cvičení analyzovat podobný problém v řešení
+někoho jiného).
+
+## Vzájemné recenze
+
+Jednou z možností, jak získat body za aktivitu, jsou vzájemné (peer)
+recenze. Smyslem této aktivity je získat praxi ve čtení a hodnocení
+cizího kódu. Možnost psát tyto recenze se váže na vlastní úspěšné
+vypracování téhož příkladu.
+
+Příklad: odevzdáte-li ve druhém týdnu 4 přípravy, z toho u třech
+splníte testy „verity“ (řekněme ‹p1›, ‹p2›, ‹p5›), ve třetím týdnu
+dostanete po jednom řešení těchto příkladů (tzn. budete mít možnost
+recenzovat po jedné instanci ‹02/p1›, ‹02/p2› a ‹02/p5›). Termín pro
+odevzdání recenzí na přípravy z druhé kapitoly je shodný s termínem
+pro odevzdání příprav třetí kapitoly (tzn. sobotní půlnoc).
+
+Vypracování těchto recenzí je dobrovolné. Za každou vypracovanou
+recenzi získáte jeden bod za aktivitu, počítaný v týdnu, kdy jste
+recenze psali (v uvedeném příkladu by to tedy bylo ve třetím týdnu
+semestru, tedy do stejné „kolonky“ jako body za příklady ‹02/r›).
+
+Udělení bodů je podmíněno smysluplným obsahem – «nestačí» napsat
+„nemám co dodat“ nebo „není zde co komentovat“. Je-li řešení dobré,
+napište «proč» je dobré (viz též níže). Vámi odevzdané recenze si
+přečte Váš cvičící a některé z nich může vybrat k diskusi ve cvičení
+(v dalším týdnu), v podobném duchu jako přípravy samotné.
+
+«Pozor», v jednom týdnu lze získat maximálně «3 body» za aktivitu,
+bez ohledu na jejich zdroj (recenze, vypracování příkladu u tabule,
+atp.). Toto omezení není dotčeno ani v případě, kdy dostanete
+k vypracování více než 3 příklady (můžete si ale vybrat, které
+z nich chcete recenzovat).
+
+### Jak recenze psát
+
+Jak recenze vyzvednout a odevzdat je blíže popsáno v kapitole T.
+Své komentáře vkládejte přímo do vyzvednutých zdrojových souborů.
+Komentáře můžete psát česky (slovensky) nebo anglicky, volba je na
+Vás. Komentáře by měly být stručné, ale užitečné – Vaším hlavním
+cílem by mělo být pomoct adresátovi naučit se lépe programovat.
+
+Snažte se aplikovat kritéria a doporučení z předchozí sekce (nejlépe
+na ně přímo odkázat, např. „tuto proměnnou by šlo jistě pojmenovat
+lépe (viz doporučení 2.b)“). Nebojte se ani vyzvednout pozitiva
+(můžete zde také odkázat doporučení, máte-li například za to, že je
+obzvlášť pěkně uplatněné) nebo poznamenat, když jste se při čtení
+kódu sami něco naučili.
+
+Komentáře vkládejte vždy «před» komentovaný celek, a držte se podle
+možnosti tohoto vzoru (použití ‹**› pomáhá odlišit původní komentáře
+autora od poznámek recenzenta):
+
+    /** A short, one-line remark. **/
+
+U víceřádkových komentářů:
+
+    /** A longer comment, which should be wrapped to 80 columns or
+     ** less, and where each line should start with the ** marker.
+     ** It is okay to end the comment on the last line of text like
+     ** this. **/
+
+Při vkládání komentářů «neměňte» existující řádky (zejména se
+ujistěte, že máte vypnuté automatické formátování, editujete-li
+zdrojový kód v nějakém IDE). Jediné povolená operace jsou:
+
+ • vložení nových řádků (prázdných nebo s komentářem), nebo
+ • doplnění komentáře na stávající «prázdný» řádek.
+
+## Závěrečný programovací test
+
+Zkouškové období tvoří pomyslný 4. blok a platí zde stejné kritérium
+jako pro všechny ostatní bloky: musíte získat alespoň 60 bodů.
+Závěrečný test:
+
+ • proběhne v počítačové učebně bez přístupu k internetu nebo
+   vlastním materiálům,
+ • k dispozici bude tato sbírka (bez vzorových řešení příkladů typu
+   ‹e› a ‹r›), skripta PB152 a manuálové stránky (příkaz ‹man›),
+ • budete moct používat textový editor nebo vývojové prostředí VS
+   Code, překladač jazyka C (‹gcc› a/nebo ‹clang›) a nástroje
+   ‹valgrind› a ‹gdb›.
+
+Na vypracování praktické části budete mít 4 hodiny čistého času, a
+bude sestávat ze šesti příkladů, které budou hodnoceny automatickými
+testy, s maximálním ziskem 90 bodů. Příklady jsou hodnoceny binárně
+(tzn. příklad je uznán za plný počet bodů, nebo uznán není). Kvalita
+kódu hodnocena nebude. Příklady budou na stejné úrovni obtížnosti
+jako příklady typu ‹p›/‹r›/‹v› ze sbírky.
+
+Během zkoušky můžete kdykoliv odevzdat (na počet odevzdání není
+žádný konkrétní limit) a vždy dostanete zpět výsledek testů syntaxe
+a sanity. Součástí zadání bude navíc soubor ‹tokens.txt›, kde
+naleznete 4 kódy. Každý z nich lze použít nejvýše jednou (vložením
+do komentáře do jednoho z příkladů), a každé použití kódu odhalí
+výsledek verity testu pro ten soubor, do kterého byl vložen. Toto se
+projeví pouze při prvním odevzdání s vloženým kódem, v dalších
+odevzdáních bude tento kód ignorován (bez ohledu na soubor, do
+kterého bude vložen).
+
+Zkouška proběhne až po vyhodnocení recenzí za třetí blok (tzn. ve
+druhé polovině zkouškového období). Plánované termíny¹ jsou tyto:
+
+ • středa 24.1. 9:00–13:00, 14:00–18:00,
+ • středa 31.1. 9:00–13:00, 14:00–18:00,
+ • středa  7.2. 9:00–13:00, 14:00–18:00,
+ • středa 14.2. 9:00–13:00, 14:00–18:00.
+
+### Vnitrosemestrálky
+
+V posledním týdnu každého bloku, tedy
+
+ • týden 4 (16.-20. října),
+ • týdnu 8 (13.–17. listopadu),
+ • týden 12 (11.-15. prosince),
+
+proběhne v rámci cvičení programovací test na 40 minut. Tyto testy
+budou probíhat za stejných podmínek, jako výše popsaný závěrečný
+test (slouží tedy mimo jiné jako příprava na něj). Řešit budete vždy
+ale pouze jeden příklad, za který můžete získat 3 body, které se
+počítají jako body za aktivitu v tomto cvičení.
+
+¹ Může se stát, že termíny budeme z technických nebo organizačních
+  důvodů posunout na jiný den nebo hodinu. V takovém případě Vám
+  samozřejmě změnu s dostatečným předstihem oznámíme.
+
+## Opisování
+
+Na všech zadaných problémech pracujte prosím zcela samostatně – toto
+se týká jak příkladů ze sbírky, které budete odevzdávat, tak
+domácích úloh ze sad. To samozřejmě neznamená, že Vám zakazujeme
+společně studovat a vzájemně si pomáhat látku pochopit: k tomuto
+účelu můžete využít všechny zbývající příklady ve sbírce (tedy ty,
+které nebude ani jeden z Vás odevzdávat), a samozřejmě nepřeberné
+množství příkladů a cvičení, které jsou k dispozici online.
+
+Příklady, které odevzdáváte, slouží ke kontrole, že látce skutečně
+rozumíte, a že dokážete nastudované principy prakticky aplikovat.
+Tato kontrola je pro Váš pokrok naprosto klíčová – je velice snadné
+získat pasivním studiem (čtením, posloucháním přednášek, studiem již
+vypracovaných příkladů) pocit, že něčemu rozumíte. Dokud ale sami
+nenapíšete na dané téma několik programů, jedná se pravděpodobně
+skutečně pouze o pocit.
+
+Abyste nebyli ve zbytečném pokušení kontroly obcházet, nedovolenou
+spolupráci budeme relativně přísně trestat. Za každý prohřešek Vám
+bude strženo «v každé instanci» (jeden týden příprav se počítá jako
+jedna instance, příklady ze sad se počítají každý samostatně):
+
+ • 1/2 bodů získaných (ze všech příprav v dotčeném týdnu, nebo za
+   jednotlivý příklad ze sady),
+ • 10 bodů z hodnocení bloku, do kterého opsaný příklad patří,
+ • 10 bodů (navíc k předchozím 10) z celkového hodnocení.
+
+Opíšete-li tedy například 2 přípravy ve druhém týdnu a:
+
+ • Váš celkový zisk za přípravy v tomto týdnu je 4,5 bodu,
+ • Váš celkový zisk za první blok je 65 bodů,
+
+jste «automaticky hodnoceni známkou X» (65 - 2,25 - 10 je méně než
+potřebných 60 bodů). Podobně s příkladem z první sady (65 - 5 - 10),
+atd. Máte-li v bloku bodů dostatek (např. 80 - 5 - 10 > 60), ve
+studiu předmětu pokračujete, ale započte se Vám ještě navíc
+penalizace 10 bodů do celkové známky. Přestává pro Vás proto platit
+pravidlo, že 4 splněné bloky jsou automaticky E nebo lepší.
+
+V situaci, kdy:
+
+ • za bloky máte před penalizací 77, 62, 61, 64,
+ • v prvním bloku jste opsali domácí úkol,
+
+budete penalizováni:
+
+ • v prvním bloku 10 + 5, tzn. bodové zisky za bloky budou efektivně
+   62, 62, 61, 64,
+ • v celkovém hodnocení 10, tzn. celkový zisk 62 + 62 + 61 + 64 - 10
+   = 239, a budete tedy hodnoceni známkou «F».
+
+To, jestli jste příklad řešili společně, nebo jej někdo vyřešil
+samostatně, a poté poskytl své řešení někomu dalšímu, není pro účely
+kontroly opisování důležité. Všechny „verze“ řešení odvozené ze
+společného základu budou penalizovány stejně. Taktéž «zveřejnění
+řešení» budeme chápat jako pokus o podvod, a budeme jej trestat, bez
+ohledu na to, jestli někdo stejné řešení odevzdá, nebo nikoliv.
+
+Podotýkáme ještě, že kontrola opisování «nespadá» do desetidenní
+lhůty pro hodnocení průběžných kontrol. Budeme se sice snažit
+opisování kontrolovat co nejdříve, ale odevzdáte-li opsaný příklad,
+můžete být bodově penalizováni kdykoliv (tedy i dodatečně, a to až
+do konce zkouškového období).
+
+# B. Úvod
+
+Tato kapitola je předmětem cvičení v prvním týdnu semestru. V tomto
+cvičení se seznámíte s organizací cvičení, se studijními materiály
+(tedy zejména touto sbírkou) a také si připomenete základy práce
+v prostředí POSIX a v jazyce C. Detailněji se pak budeme zabývat
+základní strukturou příkladů (definice, hlavičkové soubory,
+procedura ‹main›, pomocné testovací funkce, atp.), vztahem tohoto
+předmětu ke standardu POSIX a v neposlední řadě obecnými principy
+ošetření různých chybových stavů v programech.
+
+## Normy
+
+Kurz je celý veden v programovacím jazyce C99, specifikovaném normou
+ISO. Krom samotného jazyka C budeme používat rozhraní operačního
+systému v podobě, kterou specifikuje norma POSIX, a několik málo
+vybraných rozšíření (zejména právě v souvislosti s ošetřením chyb –
+drobné odchýlení od standardu nám totiž ušetří značné množství
+psaní).
+
+Není-li daná konstrukce nebo knihovní funkce specifikována normou
+«ISO 9899:1999¹» (ISO C99; «HTML verze²»), normou
+«IEEE Std 1003.1-2017³» (POSIX), ani explicitně zmíněna v této
+sbírce jako podporovaná nad rámec těchto standardů, «nepoužívejte
+ji». Řešení, která na takové konstrukce spoléhají, se nemusí po
+odevzdání přeložit, nebo se v horším případě mohou chovat jinak, než
+na Vašem systému (nebo i jinak, než na serveru ‹aisa›). Nevíte-li
+jistě, zda je v tomto směru Vaše řešení v pořádku, odevzdávejte vždy
+s dostatečným předstihem.
+
+Nevíte-li, je-li nějaká funkcionalita, kterou byste chtěli použít,
+součástí zmiňovaných standardů, a jejich čtení je nad Vaše síly,
+zeptejte se v diskusním fóru, nebo na cvičení. Řešení příkladů
+z této sbírky nebude nikdy vyžadovat funkce, konstrukce, atp., které
+se neobjevují ani v ukázkách, ani v úvodech kapitol, ani nejsou
+explicitně zmíněné v zadání daného příkladu.
+
+¹ ‹http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf›
+² ‹http://port70.net/~nsz/c/c99/n1256.html›
+³ ‹https://pubs.opengroup.org/onlinepubs/9699919799/›
+
+## Manuálové stránky
+
+Každá knihovní funkce z norem POSIX a ISO C99 je zdokumentovaná
+systémem ‹man›, který je nainstalovaný na většině
+POSIX-kompatibilních systémů (server ‹aisa› nevyjímaje). Příkaz
+‹man› lze použít těmito způsoby:
+
+ • ‹man 2 read› zobrazí dokumentaci «lokální» verze systémového
+   volání ‹read› (za ‹read› lze dosadit libovolné systémové volání)
+   – pozor, tato lokální verze může mít oproti POSIX-u
+   nepřenositelná rozšíření (většinou Vás na to ale manuálová
+   stránka explicitně upozorní),
+ • ‹man 3 dprintf› zobrazí dokumentaci «lokální» verze knihovní
+   funkce ‹dprintf› (opět lze dosadit libovolnou jinou knihovní
+   funkci, např.  ‹memcmp›),
+ • ‹man 3p read› zobrazí příslušnou část normy POSIX⁴ – na zde
+   popsané chování se můžete spolehnout.
+
+Samozřejmě krom příkazu ‹man› můžete použít výše odkazované normy
+samotné. Dalším poměrně spolehlivým zdrojem informací o jazyku C je
+online referenční příručka «cppreference⁵».
+
+⁴ Norma POSIX zahrnuje jako svou část popis knihovních funkcí
+  specifikovaných normou ISO «C89» (nikoliv novější «C99» která je
+  závazná pro tento kurz). Autorům této sbírky není známo, že by
+  mezi těmito normami existoval (v částech sdílených s normou POSIX)
+  pro tento předmět relevantní konflikt. Můžete se tedy odvolávat na
+  normu POSIX i u funkcí, které patří do průniku s ISO C.
+  Narazíte-li ovšem při studiu literatury na nějaké relevantní
+  rozdíly, budeme rádi, když se s námi o tento nález podělíte
+  v diskusním fóru.
+⁵ ‹https://en.cppreference.com/w/c›
+
+## Struktura programu
+
+Každý příklad, který budete v tomto předmětu řešit, je tvořen jedním
+zdrojovým souborem v jazyce C. Součástí kostry je text zadání,
+případný pomocný kód, který by Vám měl řešení ulehčit, procedura
+‹main›, která obsahuje základní sadu testů a případné pomocné
+testovací funkce. Vaším úkolem je do této kostry doplnit kód tak,
+aby výsledný celek splňoval text zadání. Hlavním úkolem přiložených
+testů je usnadnit Vám dosažení tohoto cíle. O hlavních částech
+programu se více dovíte v ukázkách a samotných příkladech.
+
+Programy, které budete psát budou dvou hlavních typů – může se
+jednat o znovupoužitelné („knihovní“) funkce se zadaným rozhraním,
+nebo o de-facto kompletní programy. Z povahy zadaného programu bude
+obvykle zřejmé, o který typ úlohy se jedná (je-li např. vstupem
+popisovač otevřeného souboru, nebo nějaká datová struktura, těžko se
+může jednat o kompletní program).
+
+Trochu atypicky, i v případech, kdy píšete de-facto kompletní
+program, vstupní bod tohoto programu bude nějaká námi zadaná
+procedura (např. v přípravě ‹02/p1_echoc› to je procedura s názvem
+‹echoc›), nikoliv speciální procedura ‹main›.
+
+Tuto formu jsme zvolili zejména pro jednoduchost testování – dodané
+testy vytvoří pro Váš program nový proces (použitím systémového
+volání ‹fork›) a chování tohoto programu pak vyhodnotí „zvenčí“
+z rodičovského procesu. Vám tím zejména odpadne nutnost spouštět
+různé pomocné skripty, které by hotový program testovaly, nebo
+provádět testovací scénáře „ručně“. Spuštěním přeloženého programu
+bez parametrů se tento přímo otestuje.
+
+U tohoto typu programů ale dodaná procedura ‹main› umožní i jejich
+přímé spuštění, pro případy, kdy si je budete chtít vyzkoušet
+obvyklým způsobem (jak tohoto dosáhnout zjistíte v komentáři na
+začátku dodané procedury ‹main›).
+
+## Ošetření chyb
+
+Od typu programu nebo podprogramu se bude typicky odvíjet i způsob,
+jakým se vypořádáme s chybovými stavy. Základní pravidlo systémového
+programování je, že «každé systémové volání může selhat» a totéž
+platí pro každý podprogram (ať už knihovní nebo Váš vlastní), který
+vnitřně nějaké systémové volání používá (ať už přímo, nebo nepřímo).
+
+Chyby obecně dělíme na «fatální» a «opravitelné». Toto dělení je
+ovšem silně kontextově závislé – tatáž chyba může být v některých
+případech fatální, ale v jiných opravitelná. Fatální chyba je
+taková, po které nemá smysl pokračovat ve vykonávání programu a
+tento je lepší rovnou ukončit. Je samozřejmě žádoucí uživateli tuto
+chybu ještě před ukončením programu co nejpřesněji popsat.
+Opravitelné chyby jsou pak takové, kdy může program ve své činnosti
+pokračovat.
+
+Zde do hry vstupuje onen rozdíl mezi kompletním programem a neúplným
+(znovupoužitelným) podprogramem. Máme-li pod kontrolou celý program,
+máme automaticky k dispozici mnohem přesnější informaci o tom,
+v jakém kontextu daná chyba nastala, a můžeme se k ní tedy mnohem
+snadněji postavit jako k chybě fatální.
+
+Ve znovupoužitelném podprogramu je situace komplikovanější –
+ukončíme-li při nějaké chybě celý program, omezíme tím možnosti
+použití tohoto podprogramu v situaci, kdy je tato reakce nežádoucí.
+Na druhé straně správně se vypořádat s opravitelnou chybou je mnohem
+náročnější – program jako celek se musí z chyby zotavit. Dotčený
+podprogram obvykle nemůže svůj úkol úspěšně dokončit; musí ale:
+
+ 1. vrátit jakékoliv už provedené efekty, které by mohly mít
+    negativní dopad na další fungování programu – zejména musí
+    uvolnit veškeré již alokované zdroje a zajistit platnost
+    relevantních invariantů,
+ 2. chybu ohlásit volajícímu podprogramu – nikoliv přímo uživateli –
+    způsobem, který umožní zbytku programu na chybu vhodně reagovat.
+
+Při dekompozici programu na podprogramy musíme vždy zvážit, které
+chyby považovat za fatální a které nikoliv. Od tohoto rozhodnutí se
+pak odvíjí jak jednoduchost zápisu (považovat chybu za fatální je
+jednodušší) tak i praktická znovupoužitelnost navrženého podprogramu
+(podprogram, který při sebemenším problému ukončí program, není
+příliš znovupoužitelný).
+
+
+## d. Demonstrace (ukázky)
+
+
+### 1. [‹empty›]
+
+Tento program nic nedělá, slouží pouze jako ukázka základní
+struktury. Ve všech programech v tomto předmětu budeme
+deklarovat, že jsou napsané s ohledem na normu POSIX.1–2017.
+K tomu slouží následovná direktiva preprocesoru: 
+
+    #define _POSIX_C_SOURCE 200809L /* C */
+
+Relevantní informace z kapitoly 2 standardu POSIX:
+
+> A POSIX-conforming application shall ensure that the feature
+> test macro _POSIX_C_SOURCE is defined before inclusion of any
+> header.
+>
+> When an application includes a header described by
+> POSIX.1-2017, and when this feature test macro is defined to
+> have the value ‹200809L›: All symbols required by POSIX.1-2017
+> to appear when the header is included shall be made visible.
+
+Výše uvedená direktiva ‹#define› není jediný způsob, jak tomuto
+požadavku dostát, ale je pro naše účely nejjednodušší. Musí vždy
+stát před jakoukoliv direktivou ‹#include›. 
+
+Obvykle následují direktivy ‹#include›, které odkazují tzv.
+systémové hlavičkové soubory. V těchto souborech jsou deklarovány
+podprogramy, které poskytuje implementace jazyka C a operační
+systém. Které hlavičkové soubory je pro použití daného
+podprogramu vložit je vždy popsáno v odpovídající manuálové
+stránce (a také v příslušných normách). V ukázkách a kostrách
+budeme u každého ‹#include› v komentáři uvádět podprogramy,
+případně konstanty, které z dané hlavičky hodláme využívat. 
+
+    #include <stdlib.h>     /* exit */ /* C */
+
+Na tomto místě bude ve většině příkladů popsaný podprogram,
+napsání kterého je Vaším úkolem. V této ukázce zde není nic. 
+
+Konečně bude součástí kostry procedura ‹main›, která představuje
+vstupní bod výsledného programu. Jejím obvyklým úkolem bude
+otestovat podprogram, který jste výše naprogramovali. V této
+ukázce nedělá nic, pouze explicitně ukončí program. 
+
+    int main() /* demo */ /* C */
+    {
+Procedura ‹exit› ukončí vykonávání programu. Má stejný efekt,
+jako návrat z procedury ‹main›, ale lze ji použít na
+libovolném místě. V tomto kurzu ji prakticky nikdy nebudete
+mít důvod použít (může se ale objevit v testech, proto je
+dobré ji znát). 
+
+        exit( 0 ); /* C */
+    }
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 2. [‹strings›]
+
+Operační systém a také většina programů při své činnosti
+komunikuje s uživatelem. Tato komunikace je obvykle postavena na
+textu, a proto musí mít program a operační systém společný
+způsob, kterým text reprezentuje v paměti. I kdybychom si
+odmysleli klasické výpisy na obrazovku, tak základní věc jako
+soubor má «jméno», které je samozřejmě také kusem textu.
+
+Normy ISO C a POSIX specifikují některé základní charakteristiky
+kódování textu:
+
+ 1. každé písmeno¹ je kódováno nějakou posloupností bajtů, a
+    fragment textu (tzv. «řetězec») je v paměti uložen tak, že
+    kódování jednotlivých znaků (písmen) jsou uložena za sebou
+    (na postupně se zvyšujících adresách),
+ 2. nulový bajt je vyhrazen pro speciální účely (pro řadu
+    knihovních a systémových funkcí označuje konec řetězce, tzn.
+    bajt uložený bezprostředně před nulovým bajtem je poslední
+    bajt kódující daný řetězec),
+ 3. vybranou množinu znaků, nazývanou Portable Character Set,
+    musí být systém schopen kódovat, a to navíc tak, že každému
+    znaku odpovídá jeden bajt (jedná se o většinu znaků
+    obsažených v ASCII²),
+ 4. konkrétní číselné hodnoty, kterými jsou tyto znaky kódované,
+    nejsou pevně určeny (s výjimkou nulového znaku, který musí
+    být kódován nulovým bajtem), ale v praxi každý systém, který
+    potkáte, bude používat kódování ASCII, a naprostá většina
+    UTF-8 (které je nadmnožinou ASCII). 
+
+    #define _POSIX_C_SOURCE 200809L /* C */
+    #include <string.h>     /* strlen, strcmp */
+    #include <stdio.h>      /* dprintf, snprintf */
+    #include <unistd.h>     /* STDOUT_FILENO */
+    #include <assert.h>
+
+    int main( void ) /* demo */ /* C */
+    {
+Nejjednodušší způsob, jak v programu získat kódování nějakého
+textu je pomocí tzv. «řetězcového literálu». Zdrojový kód je
+samozřejmě také text, je tedy zcela logické, že programovací
+jazyky nám umožňují část textu označit za data. Zapíšeme-li
+v jazyce C do programu řetězcový literál, překladač v paměti
+programu vyhradí potřebné místo a uloží do tohoto místa
+kódování uvozeného textu, ukončeno nulovým bajtem. Protože
+řetězcový literál je výraz, má hodnotu – tato hodnota je
+(opět platí pro jazyk C) «ukazatel» na takto vyhrazenou
+paměť. Je obvyklé, že tato paměť je označena «pouze pro
+čtení», do paměti řetězcového literálu tedy «není dovoleno»
+zapsat jiná data. 
+
+        const char * const string = "hello"; /* C */
+
+Pojmenovaná konstanta ‹string› nyní obsahuje ukazatel na
+paměť, kde je uloženo kódování řetězce ‹hello› ukončené
+nulovým bajtem. Pro práci s takto uloženými řetězci poskytuje
+jazyk C sadu základních funkcí. První z nich je ‹strlen›,
+která zjistí počet «bajtů» (nikoliv znaků), kterými je
+řetězec zakódovaný. Např.: 
+
+        assert( strlen( string ) == 5 ); /* C */
+        assert( strlen( "věc" ) == 4 );
+
+Pozor, ‹strlen› prochází paměť od předaného ukazatele po
+bajtech, až dokud nenajde nulový bajt. Není-li na předané
+adrese uložen nulou ukončený řetězec, může se stát celkem
+cokoliv (včetně chyby ochrany paměti). 
+
+Další užitečnou funkcí je ‹strcmp›, která po bajtech srovnává
+dvě oblasti paměti, až dokud nenarazí na rozdílný nebo na
+nulový bajt. Návratová hodnota je 0, jsou-li na zadaných
+adresách uloženy stejné bajty³, záporná je-li levá strana
+lexikograficky (po bajtech) menší a kladná jinak. 
+
+        assert( strcmp( string, "hello" ) == 0 ); /* C */
+
+Protože řetězce jsou v paměti zakódované jako posloupnost
+bajtů, můžeme samozřejmě tuto posloupnost bajtů do paměti
+uložit přímo.⁴ 
+
+        const char thing_1[] = { 0x76, 0xc4, 0x9b, 0x63, 0 }; /* C */
+        const char thing_2[] = { 0x76, 0x65, 0xcc, 0x8c, 0x63, 0 };
+
+        assert( strcmp( "věc",  thing_1 ) == 0 ); /* C */
+        assert( strcmp( "věc",  thing_2 ) != 0 );
+
+Pro tzv. formátovaný výpis můžeme využít knihovní funkce
+‹dprintf›. Podrobný popis formátovacího řetězce (druhý
+parametr) naleznete v její manuálové stránce (‹man dprintf›).
+Nám v tuto chvíli postačí, že za každou ‹%›-sekvenci se
+při výpisu dosadí postupně další parametry, a že daná
+‹%›-sekvence popisuje tzv. «konverzi», která určuje, jak se
+má daný parametr vypsat. Konverze ‹%s› interpretuje příslušný
+parametr jako ukazatel na paměť, která kóduje nulou ukončený
+řetězec. 
+
+        dprintf( STDOUT_FILENO, "%s - %s\n", thing_1, thing_2 ); /* C */
+
+Pro výpis číselných hodnot typicky použijeme konverze ‹%d›
+(desítková) nebo ‹%x› (šestnáctková), případně jsou-li
+předané hodnoty typu ‹long›, použijeme ‹%ld› nebo ‹%lx›. Pro
+desítkový výpis bez znaménka použijeme ‹%u› nebo ‹%lu›. 
+
+        dprintf( STDOUT_FILENO, "%d %u %x\n", thing_1[ 0 ], /* C */
+                 (unsigned char) thing_1[ 1 ],
+                 (unsigned char) thing_1[ 2 ] );
+
+Krom zápisu do souboru (resp. na standardní výstup) můžeme
+někdy potřebovat pomocí formátování nachystat řetězec
+v paměti. K tomu lze použít funkci ‹snprintf›, které předáme
+ukazatel na přichystané místo v paměti, kam bude uloženo
+výsledné kódování, počet vyhrazených bajtů, formátovací
+řetězec a případné další parametry.
+
+Tato funkce zapíše tolik bajtů výsledného řetězce, kolik
+umožní vyhrazené místo. Návratová hodnota pak indikuje, kolik
+bajtů bylo potřeba (bez ohledu na to, jestli se do vyhrazené
+paměti vešly nebo nikoliv). Poslední zapsaný bajt je vždy
+nulový, a to i v situaci, kdy zapsaný řetězec není kompletní.
+
+
+        char buffer[ 5 ]; /* C */
+        assert( snprintf( buffer, 5, "123456789" ) == 9 );
+        assert( strcmp( buffer, "1234" ) == 0 );
+
+        return 0; /* C */
+
+        // cflags: -Wno-format-truncation /* C */
+    }
+
+¹ Co přesně je písmeno je mnohem komplikovanější otázka, než by
+  se mohlo zdát. Zájemce o obecně uznávanou definici odkazujeme
+  na normu Unicode. To, co tady zjednodušeně nazýváme písmenem,
+  je správně tzv. kódový bod.
+² ASCII je norma, která popisuje kódování základní 127-znakové
+  abecedy, používaná původně ve Spojených státech (proto název
+  „American Standard Code for Information Interchange“), nyní ale
+  celosvětově, zejména jako podmnožina kódování UTF-8 standardu
+  Unicode.
+³ Rádi bychom zde řekli, že funkce srovnává řetězce, to by ale
+  bylo mírně zavádějící. Některé řetězce lze kódovat více než
+  jedním ekvivalentním způsobem, např. ‹věc› lze v UTF-8
+  zakódovat jako ‹76 c4 9b 63› nebo jako ‹76 65 cc 8c 63›. Tyto
+  sekvence reprezentují tentýž «text», ale protože jsou v paměti
+  uloženy jako různé posloupnosti bajtů, funkce ‹strcmp› je bude
+  považovat za odlišné.
+⁴ Toto bude samozřejmě fungovat pouze tehdy, kdy známe konkrétní
+  kódování používané daným systémem. Spustíte-li tento program na
+  systému, který nepoužívá UTF-8, výsledky se mohou lišit.
+  Zejména výstup na obrazovce nebude odpovídat tomu, co bychom
+  očekávali. 
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 3. [‹err›]
+
+V této ukázce se podíváme na to, jak se lze vypořádat s fatálními
+chybami, zejména těmi, které jsou zaviněny selháním systémového
+volání. Pro tento účel budeme používat «nestandardní» rozšíření
+v podobě hlavičkového souboru ‹err.h›. Tento kompromis volíme ze
+dvou důvodů:
+
+ 1. jedná se o velmi široce podporované rozšíření a není
+    jednoduché nalézt POSIX-kompatibilní operační systém, který
+    by je neposkytoval,
+ 2. definice funkcí ‹err›, ‹errx›, ‹warn› a ‹warnx›, které budeme
+    v tomto předmětu používat, se vejdou na cca 50 řádků, takže
+    v případě potřeby je není problém do programů doplnit
+    (zajímají-li Vás možné definice, naleznete je v poslední
+    ukázce této kapitoly). 
+
+    #include <err.h>        /* err, errx, warn, warnx */ /* C */
+    #include <stdio.h>      /* dprintf */
+    #include <unistd.h>     /* STDOUT_FILENO */
+
+Tento program nedělá nic jiného, než že na standardní výstup
+zapíše řetězec. Podle toho, jak ho spustíme, může i tato velmi
+jednoduchá operace selhat. Podrobněji se základy vstupu a výstupu
+budeme zabývat v první kapitole. 
+
+    int main( void ) /* demo */ /* C */
+    {
+Pro vypořádání se s chybou, která není fatální, ale je
+žádoucí na ni upozornit uživatele, budeme obvykle používat
+proceduru ‹warn›, která vypíše chybové hlášení ale pokračuje
+ve vykonávání programu. Spustíte-li si tento program např.
+příkazem, dostanete výpis, který krom samotné chyby vypíše:
+
+ 1. jméno programu (toto je užitečné zejména ve chvíli, kdy
+    uživatel spustil několik programů najednou, třeba
+    spojených rourou)
+ 2. popis poslední «systémové» chyby – výčet možných chyb
+    naleznete např. v manuálové stránce ‹man 7p errno›.
+
+Příklad:
+
+    $ ./d3_err > /dev/full
+    d3_err: write to stdout failed: No space left on device
+    d3_err: write to stdout failed: No space left on device
+    $ echo $?
+    1
+
+Všimněte si zejména poslední části chybového výpisu, kde je
+uvedeno jakým způsobem poslední systémové volání selhalo. Je
+ovšem naším úkolem dodat uživateli dostatečný kontext, aby
+mohl tuto část chybového výpisu interpretovat (je například
+dobré v první části chyby zmínit s jakým souborem se
+pracovalo). 
+
+        if ( dprintf( STDOUT_FILENO, "foo\n" ) == -1 ) /* C */
+            warn( "write to stdout failed" );
+
+Procedura ‹err› pracuje podobně, ale program zároveň ukončí,
+a to s návratovým kódem, který jí byl předán v prvním
+parametru. Varianty ‹warnx› a ‹errx› se liší tím, že
+nevypisují poslední část, tzn. popis systémové chyby. Můžeme
+je tedy použít v situaci, kdy chyba nepochází ze systémového
+volání. 
+
+        if ( dprintf( STDOUT_FILENO, "bar\n" ) == -1 ) /* C */
+            err( 1, "write to stdout failed" );
+
+        return 0; /* C */
+    }
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 4. [‹fail›]
+
+Zde si ukážeme několik technik, které nám pomohou vypořádat se
+s opravitelnými chybami. Připomínáme, že za opravitelné
+považujeme chyby, po kterých může program jako celek smysluplně
+pokračovat ve své činnosti. V tomto předmětu to bude zejména
+v případech, kdy budeme psát znovupoužitelné podprogramy.
+
+Nastane-li opravitelná chyba, snažíme se dotčený podprogram
+ukončit tak, aby:
+
+ 1. nedošlo k úniku zdrojů, tzn. každý zdroj, který podprogram
+    vyžádal, musí být vrácen, nebo se musí stát součástí stavu
+    programu (a tedy bude vrácen později, v rámci standardního –
+    nechybového – úklidu),
+ 2. byly zachovány veškeré požadované invarianty, na které mohl
+    mít podprogram vliv – v ideálním případě je chování
+    podprogramu „všechno anebo nic“, tzn. pokud podprogram
+    neuspěl, nebude mít žádný pozorovatelný efekt,¹
+ 3. volající byl o tomto selhání co možná nejpodrobněji
+    informován. 
+
+¹ Toto je samozřejmě v praxi těžké stoprocentně zajistit, nicméně
+  čím blíže se tomuto ideálu dokážeme přiblížit, tím snazší bude
+  daný podprogram použít v nějakém větším celku. 
+
+    #define _POSIX_C_SOURCE 200809L /* C */
+    #include <unistd.h>     /* read, write */
+    #include <fcntl.h>      /* openat */
+    #include <err.h>        /* warn */
+    #include <errno.h>      /* errno */
+
+V této ukázce trochu předběhneme učivo a naprogramujeme si
+jednoduchou proceduru, která vytvoří kopii souboru v souborovém
+systému. Podrobněji se budeme systémovými voláními ‹openat›,
+‹read› a ‹write› zabývat v první kapitole. 
+
+    int copy_1( int from_dir, const char *from_name, /* C */
+                int to_dir, const char *to_name )
+    {
+        int fd_in, fd_out;
+
+Voláním ‹openat› otevřeme soubor s názvem ‹from_name› ve
+složce ‹from_dir›. Nyní jsou důležité dvě věci:
+
+ 1. systémové volání ‹openat› může selhat, například proto,
+    že požadovaný soubor neexistuje, a s touto situací se
+    budeme muset vypořádat,
+ 2. je-li soubor úspěšně otevřen, popisovač souboru, který
+    získáme jako návratovou hodnotu, reprezentuje «zdroj»
+    který je nutné později opět uvolnit (systémovým voláním
+    ‹close›). 
+
+        fd_in = openat( from_dir, from_name, O_RDONLY ); /* C */
+
+Neúspěch volání ‹openat› poznáme tak, že ‹fd_in› obsahuje
+hodnotu -1. Protože v tomto kontextu se jedná o opravitelnou
+chybu, podprogram ukončíme. Navíc jsme dosud neprovedli žádné
+„viditelné“ akce, tak nemusíme řešit jejich vrácení. 
+
+        if ( fd_in == -1 ) /* C */
+            return 1;
+
+Abychom mohli kopírovat data, musíme otevřít (a případně
+vytvořit) i cílový soubor. Opět k tomu použijeme volání
+‹openat›. 
+
+        fd_out = openat( to_dir, to_name, O_WRONLY | O_CREAT, 0666 ); /* C */
+
+Opakuje se zde situace, kdy volání ‹openat› může selhat, ale
+nyní máme nový problém – první volání ‹openat› uspělo a tedy
+‹fd_in› odkazuje na «alokovaný zdroj», totiž popisovač
+souboru. Abychom dodrželi zásadu, že podprogram, který
+selhal, by neměl mít žádný efekt, musíme tento popisovač před
+návratem uzavřít. 
+
+        if ( fd_out == -1 ) /* C */
+        {
+Dostáváme se nyní do trochu nešťastné situace, kdy
+vrácení zdroje může také selhat. V takové situaci nám
+nezbývá, než uživatele varovat a pokračovat ve výpočtu
+(alternativně bychom mohli tuto chybu považovat za
+fatální a program ukončit).
+
+Volání ‹close› na tomto místě přináší ještě jeden problém
+– hodnota ‹errno›, která popisuje z jakého důvodu selhalo
+volání ‹openat›, bude při volání ‹close› přepsána, a
+volající tedy nebude moct hodnotu ‹errno› použít. Měli
+bychom tedy tuto hodnotu uložit a před návratem
+z podprogramu ‹copy_1› obsah ‹errno› obnovit. Toto platí
+o jakémkoliv systémovém volání, nebo podprogramu, který
+systémová volání vnitřně používá. Použijeme-li např.
+proceduru ‹warn›, tato může ‹errno› také přepsat. 
+
+            int saved_errno = errno; /* C */
+
+            if ( close( fd_in ) == -1 ) /* C */
+                warn( "failed to close file %s", from_name );
+
+            errno = saved_errno; /* C */
+            return 1;
+        }
+
+Máme nyní otevřeny oba dotčené soubory. Nyní budeme
+potřebovat místo v paměti, do kterého nejprve načteme blok
+dat ze vstupního souboru a tento pak obratem zapíšeme do
+souboru výstupního. Opět platí, že každá z těchto operací
+může selhat a tuto situaci musíme řešit. 
+
+        const int nbytes = 1024; /* C */
+        char buffer[ nbytes ];
+        int bytes_read, bytes_written;
+
+        do { /* C */
+            bytes_read = read( fd_in, buffer, nbytes );
+
+            if ( bytes_read == -1 ) /* C */
+            {
+Výsledek -1 znamená, že čtení selhalo. Operaci musíme
+ukončit a opět musíme zároveň vrátit vše, co můžeme,
+do původního stavu. To už v tuto chvíli nebude možné
+zcela splnit, protože volání ‹openat› pro výstupní
+soubor mohlo tento soubor vytvořit, ale nemůžeme zde
+tento soubor odstranit, protože není zaručeno, že pod
+jménem ‹to_name› ve složce ‹from_dir› se stále
+nachází soubor, který jsme o několik řádků dříve
+vytvořili.  Omezíme se tedy na uvolnění zdrojů. 
+
+                int saved_errno = errno; /* C */
+
+                if ( close( fd_in ) == -1 ) /* C */
+                    warn( "failed to close file %s", from_name );
+                if ( close( fd_out ) == -1 )
+                    warn( "failed to close file %s", to_name );
+
+                errno = saved_errno; /* C */
+                return 2;
+            }
+
+            bytes_written = write( fd_out, buffer, bytes_read ); /* C */
+
+            if ( bytes_written == -1 ) /* C */
+            {
+A ještě jednou totéž. 
+
+                int saved_errno = errno; /* C */
+
+                if ( close( fd_in ) == -1 ) /* C */
+                    warn( "failed to close file %s", from_name );
+                if ( close( fd_out ) == -1 )
+                    warn( "failed to close file %s", to_name );
+
+                errno = saved_errno; /* C */
+                return 2;
+            }
+        } while ( bytes_read != 0 );
+
+Data jsou úspěšně zkopírována, můžeme tedy oba soubory zavřít
+a oznámit volajícímu úspěch. 
+
+        if ( close( fd_in ) == -1 ) /* C */
+            warn( "failed to close file %s", from_name );
+        if ( close( fd_out ) == -1 )
+            warn( "failed to close file %s", to_name );
+
+        return 0; /* C */
+    }
+
+Jistě jste si všimli, že procedura ‹copy_1› obsahuje velké
+množství redundantního kódu (a jistě také víte, že to není
+dobře). Máme dva základní prostředky, které nám pomohou se
+s tímto vypořádat. Jedním jsou pomocné podprogramy. Jako „nízko
+visící ovoce“ se nabízí procedura ‹close_or_warn›, která nám
+zjednoduší zavírání souborů, aniž bychom museli přijmout tzv.
+tichá selhání.
+
+Jako dodatečné vylepšení navíc budeme vstupní popisovač
+s hodnotou -1 ignorovat – žádný platný popisovač nemůže nikdy mít
+tuto hodnotu. Jedná se o podobný „trik“ jako používá knihovní
+procedura ‹free›, kterou lze bez rizika zavolat na nulový
+ukazatel. 
+
+    void close_or_warn( int fd, const char *name ) /* C */
+    {
+        int saved_errno = errno;
+
+        if ( fd != -1 && close( fd ) == -1 ) /* C */
+            warn( "failed to close file %s", name );
+
+        errno = saved_errno; /* C */
+    }
+
+Druhým prostředkem je poněkud kontroverzní příkaz ‹goto›. To, že
+budeme někdy ‹goto› používat pro ošetření chyb neznamená, že
+můžete ‹goto› „beztrestně“ použít na cokoliv. Problém, který zde
+‹goto› řeší je, že odkazy na zdroje alokované podprogramem
+obvykle ukládáme do lokálních proměnných, které bychom případnému
+pomocnému „úklidovému“ podprogramu museli vždy všechny předat –
+to je zápisově značně nepraktické.² 
+
+    int copy_2( int from_dir, const char *from_name, /* C */
+                int to_dir, const char *to_name )
+    {
+        int fd_in = -1, fd_out = -1;
+        int rv = 1;
+
+        const int nbytes = 1024; /* C */
+        char buffer[ nbytes ];
+        int bytes_read, bytes_written;
+
+        if ( ( fd_in = openat( from_dir, from_name, O_RDONLY ) ) == -1 ) /* C */
+            goto error;
+
+        if ( ( fd_out = openat( to_dir, to_name, O_WRONLY | O_CREAT, /* C */
+                                0666 ) ) == -1 )
+            goto error;
+
+        rv = 2; /* C */
+
+        do { /* C */
+
+            if ( ( bytes_read = read( fd_in, buffer, nbytes ) ) == -1 ) /* C */
+                goto error;
+
+            if ( ( bytes_written = write( fd_out, buffer, /* C */
+                                          bytes_read ) ) == -1 )
+                goto error;
+
+Za povšimnutí stojí, že neřešíme situaci, kdy je
+‹bytes_written› nezáporné, ale zároveň menší než
+‹bytes_read›. Rozpravu na toto téma si necháme na
+později. 
+
+        } while ( bytes_read != 0 ); /* C */
+
+        rv = 0; /* C */
+
+    error: /* C */
+        close_or_warn( fd_in, from_name );
+        close_or_warn( fd_out, to_name );
+        return rv;
+    }
+
+    int main( void ) /* demo */ /* C */
+    {
+        int wd = openat( AT_FDCWD, ".", O_DIRECTORY );
+
+        if ( wd == -1 ) /* C */
+            err( 1, "could not open working directory" );
+
+        const char *src = "a0_intro.txt"; /* C */
+        const char *dest = "zt.intro.txt";
+
+        if ( copy_1( wd, src, wd, dest ) != 0 ) /* C */
+            warn( "copying %s to %s failed", src, dest );
+
+        if ( copy_2( wd, src, wd, dest ) != 0 ) /* C */
+            warn( "copying %s to %s failed", src, dest );
+
+        if ( unlinkat( wd, dest, 0 ) != 0 ) /* C */
+            warn( "removing %s failed", dest );
+
+        return 0; /* C */
+    }
+
+² Oddělení úklidu do pomocného podprogramu má i jiné problémy.
+  Můžete si zkusit takový úklidový podprogram napsat, abyste
+  zjistili, jaké kompromisy to obnáší. 
+
+
+# Základy práce se soubory
+
+Soubor je základní jednotkou práce s perzistentními daty. Rozhraní
+pro práci se soubory je ve většině operačních systémů velmi
+důležité, a často pokrývá mnohem víc, než jen obyčejné soubory. Více
+o souborech a jejich organizaci se dovíte ve třetí kapitole skript.
+
+Z pohledu programátora je důležité rozhraní, které práci se soubory
+zprostředkuje – centrálním prvkem je zde «popisovač otevřeného
+souboru». Jedná se o hodnotu, která je pevně svázaná se «souborem».¹
+Samotný popisovač nemá žádnou vnitřní strukturu, kterou bychom mohli
+zkoumat, je definován pouze operacemi, které je nad ním možné
+provádět (jedná se v tomto smyslu o abstraktní datový typ).
+
+Pro vytvoření popisovače existuje několik systémových volání, ze
+kterých si tento týden ukážeme to nejdůležitější – ‹openat›. Má 3
+pevné a 1 volitelný parametr:
+
+ 1. ‹int fd› je již existující popisovač, který je svázán «se
+    složkou», vůči které budeme uvádět «cestu» – lze použít
+    symbolickou hodnotu ‹AT_FDCWD›, která označuje tzv. pracovní
+    složku,
+ 2. ‹const char *path› je řetězec (ukončený nulou), který udává
+    název, případně cestu (oddělovačem je znak ‹/›) k souboru, se
+    kterým hodláme pracovat,
+ 3. ‹int flags› je bitová kombinace příznaků – budou nás pro tuto
+    chvíli zajímat symbolické hodnoty:
+    ◦ ‹O_RDONLY›, ‹O_WRONLY› a ‹O_RDWR›, které určí jaké operace
+      plánujeme později se souborem provádět,
+    ◦ ‹O_CREAT› která nám umožní vytvořit nový obyčejný soubor,
+ 4. ‹int mode› dodáváme pouze tehdy, když může operací vzniknout
+    nový soubor (zejména obsahuje-li parametr ‹flags› příznak
+    ‹O_CREAT›).
+
+Pro čtení a zápis bloků dat (bajtů) slouží operace ‹read› a ‹write›
+(jejich rozhraní je blíže popsané v ukázkách níže). Pro textový
+(tzv. formátovaný) zápis je určena funkce ‹dprintf›.²
+
+Konečně se v této kapitole budeme zabývat tím, že funkce, které
+zprostředkují služby operačního systému mohou v naprosté většině
+případů «selhat». Tuto skutečnost obvykle indikují speciální
+«návratovou hodnotou» a konkrétní problém upřesňuje proměnná
+‹errno›.³
+
+Ukázky:
+
+ 1. ‹read›   – otevření a čtení obyčejného souboru,
+ 2. ‹hello›  – standardní vstup a výstup,
+ 3. ‹dirs›   – práce se složkami a funkce ‹openat›.
+
+Přípravy:
+
+ 1. ‹lines›  – počítání znaků konce řádku, chyba není-li správně ukončen
+ 2. ‹bwconv› – jednoduchý převod obrázku ze stupňů šedi na černobílý
+ 3. ‹catfd›  – použití ‹read› a ‹write›
+ 4. ‹cols›   – konverze csv s čísly na zarovnané sloupce (‹dprintf›)
+ 5. ‹cut›    – openat + read/write ← cut
+ 6. ‹cat›    – soubor se jmény souborů, které se mají spojit
+
+Rozšířené:
+
+ 1. ‹wcount›  – počítání slov (přechod bílý/nebílý)
+ 2. ‹cgrep›   – výpis řádků, které obsahují zadaný znak
+ 3. ‹flake›   – kontrola souboru s vyobrazením padající vločky
+ 4. ‹bcount›  – kolik různých bajtů se objevuje v souboru?
+ 5. ‹linked›  – procházení zřetězeného seznamu souborů
+ 6. ‹otp›     – xor dvou souborů (one time pad)
+
+¹ Nikoliv s cestou, nebo jiným nepřímým pojmenováním nebo označením.
+  Identita již otevřeného souboru se nám nemůže „změnit pod rukama“.
+² Podobá se funkci ‹printf›, kterou již možná znáte z předchozího
+  programování v jazyce C.
+³ Tuto proměnnou nelze striktně vzato označit za globální, protože
+  každé vlákno má vlastní verzi. Implementace takové proměnné je
+  komplikovaná a jde mimo rámec tohoto kurzu.
+
+
+## d. Demonstrace (ukázky)
+
+
+### 1. [‹read›]
+
+Tento jednoduchý program demonstruje POSIXové rozhraní pro práci
+s obyčejným souborem. Jako obvykle začneme direktivami ‹#define
+_POSIX_C_SOURCE› a ‹#include› – budeme potřebovat hlavičku
+‹unistd.h›, která deklaruje většinu systémových volání (nás bude
+v tuto chvíli zajímat pouze ‹read›), a také hlavičku ‹fcntl.h›,
+která deklaruje ‹openat› (tato jako jedna z mála není deklarována
+v ‹unistd.h›). 
+
+    #define _POSIX_C_SOURCE 200809L /* C */
+
+    #include <unistd.h>  /* read, write */ /* C */
+    #include <fcntl.h>   /* openat */
+    #include <string.h>  /* memcmp */
+    #include <err.h>     /* err */
+
+Protože se jedná o velmi jednoduchý program, bude obsahovat pouze
+proceduru ‹main›. Jak si jistě pamatujete, jedná se o vstupní bod
+programu (spustíme-li přeložený program, začne se vykonávat
+odsud). 
+
+    int main( void ) /* demo */ /* C */
+    {
+Začneme tím, že otevřeme soubor pro čtení. Z úvodu víme, že
+k tomu slouží systémové volání ‹openat›, které má v tomto
+případě 3 parametry. Prozatím se omezíme na soubory
+v «pracovní složce» spuštěného programu, jako první parametr
+tedy předáme ‹AT_FDCWD› (aby program správně pracoval, musíte
+jej spustit přímo ve složce ‹01›).
+
+Dalším parametrem je «název souboru» který chceme otevřít,
+formou řetězce (ukončeného nulou). Krom samotného názvu zde
+může stát i cesta (relativní nebo absolutní), ale pro tuto
+chvíli se opět omezíme na práci s jedinou složkou (tou
+pracovní).
+
+Konečně příznak ‹O_RDONLY› specifikuje, že ze souboru hodláme
+pouze číst (‹O› od ‹open›, ‹RDONLY› od ‹read only›). 
+
+        const char * const filename = "zz.foo.txt"; /* C */
+
+        int fd = openat( AT_FDCWD, filename, O_RDONLY ); /* C */
+
+‹fd› je tradiční název proměnné, která uchovává popisovač
+otevřeného souboru (z angl. «f»ile «d»escriptor; samozřejmě
+tento název lze použít pouze v situaci, kdy pracujeme
+s jediným popisovačem). Za povšimnutí stojí typ této proměnné
+– POSIX specifikuje, že popisovače souborů jsou typu ‹int›.
+
+Než budeme pokračovat, musíme (jako u prakticky každého
+systémového volání) ověřit, že otevření souboru proběhlo
+v pořádku. Manuálová stránka pro systémové volání ‹open›
+(otevřete ji příkazem ‹man 2 open›) v sekci „return value“
+píše:
+
+> If successful, ‹open()› returns a non-negative integer,
+> termed a file descriptor.  Otherwise, a value of -1 is
+> returned and ‹errno› is set to indicate the error. 
+
+        if ( fd == -1 ) /* this would indicate an error */ /* C */
+
+Protože se jedná o kompletní program (nikoliv samostatnou
+funkci), lze tento typ chyby chápat jako fatální a
+program s odpovídající chybovou hláškou ukončit. K tomu
+použijeme proceduru ‹err›, kterou již známe z kapitoly B.
+
+
+            err( 1, "opening file %s", filename ); /* C */
+
+Protože procedura ‹err› ukončí program, dostaneme-li se do
+tohoto místa, víme, že volání ‹open› uspělo a ‹fd› obsahuje
+platný popisovač, ze kterého lze číst. Čtení provedeme
+voláním ‹read›, kterému musíme krom popisovače předat
+ukazatel na paměť, do které data přečtená ze souboru uloží
+(angl. obvykle označované jako ‹buffer›).
+
+Konečně poslední parametr určuje kolik «nejvýše» bajtů má být
+přečteno. Tomuto parametru musíme věnovat zvláštní pozornost:
+
+ 1. Bajtů může být přečteno méně, než jsme žádali – kolik
+    jich bylo skutečně přečteno zjistíme až z návratové
+    hodnoty.
+ 2. Vedlejším efektem volání ‹read› je, že do paměti určené
+    adresou ‹buffer› bude zapsáno až ‹nbytes› bajtů (volání
+    tedy přepíše hodnoty na adresách ‹buffer + 0›, ‹buffer +
+    1›, …, ‹buffer + nbytes - 1›). Abychom si omylem
+    nezničili nějaká nesouvisející data, musíme systémovému
+    volání ‹read› předat adresu, od které máme vyhrazeno
+    alespoň ‹nbytes› bajtů.
+
+Jednoduchý způsob, jak vyhradit pevný počet bajtů v paměti,
+je deklarací lokálního pole. Počet bajtů, které hodláme
+načíst, si uložíme do pojmenované konstanty ‹nbytes›. 
+
+        const int nbytes = 16; /* C */
+        const int expect = 4;
+
+        char buffer[ nbytes ]; /* C */
+        ssize_t bytes_read = read( fd, buffer, nbytes );
+
+Jako každé systémové volání může ‹read› selhat. Podobně jako
+u volání ‹open› tuto skutečnost indikuje návratová hodnota
+-1.¹
+
+Pozor, návratová hodnota ‹0› «není chybou» (říká nám pouze,
+že žádné další bajty přečíst nelze, protože jsme narazili na
+konec souboru). 
+
+        if ( bytes_read == -1 ) /* C */
+            err( 1, "error reading from %s", filename );
+
+Dále ověříme, že jsme načetli data, která jsme očekávali.
+Protože se v těchto případech nejedná o systémové chyby,
+použijeme místo procedury ‹err› proceduru ‹errx›, která
+nevypisuje chybu uloženou v proměnné ‹errno›. 
+
+        if ( bytes_read < expect ) /* C */
+            errx( 1, "file %s was shorter than expected, only %zd bytes",
+                  filename, bytes_read );
+
+        if ( memcmp( buffer, "foo\n", expect ) ) /* C */
+            errx( 1, "file %s has unexpected content", filename );
+
+Po dokončení práce se souborem tento uzavřeme. Všimněte si,
+že v případě chyby čtení jsme popisovač neuzavřeli – to si
+můžeme dovolit pouze v situaci, kdy zároveň ukončujeme celý
+program (tím jsou veškeré zdroje automaticky uvolněny).
+
+Systémové volání ‹close› může opět selhat, nicméně situace,
+kdy se můžeme s takovou chybou smysluplně vypořádat jsou
+relativně vzácné. Měli bychom ale v každém případě o takovém
+selhání uživatele informovat, protože tento typ chyby může
+znamenat ztrátu dat, která program do souboru zapisoval. To,
+co naopak udělat «nesmíme», je pokusit se soubor zavřít
+podruhé – v závislosti na systému a okolnostech mohl být
+popisovač uzavřen i přesto, že volání ‹close› selhalo (a ani
+nemáme jak zjistit, jestli k tomu došlo nebo nikoliv). 
+
+        if ( close( fd ) != 0 ) /* C */
+            warn( "error closing %s", filename );
+
+Návratová hodnota 0 značí, že program bez chyby doběhl. 
+
+        return 0; /* C */
+    }
+
+¹ Všimněte si, že proměnnou ‹bytes› jsme deklarovali s typem
+  ‹ssize_t› – jedná se o «znaménkový» typ, na rozdíl od podobně
+  pojmenovaného typu ‹size_t›. 
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 2. [‹hello›]
+
+Krom obyčejných souborů lze popisovače využít k práci s řadou
+dalších podobných zdrojů. V tomto programu si ukážeme, jak
+pracovat s takzvaným standardním vstupem a výstupem (angl.
+standard input/output, nebo také stdio). Tento se v systémech
+POSIX skládá ze tří částí, reprezentovaných třemi popisovači:¹
+
+ • standardní vstup, na popisovači číslo 0, symbolicky
+   ‹STDIN_FILENO›, který je implicitně „připojený ke klávesnici“
+   (čtením z tohoto popisovače získáme bajty, které uživatel
+   zadal do terminálu po spuštění programu),
+ • standardní výstup, na popisovači číslo 1, symbolicky
+   ‹STDOUT_FILENO›, který je implicitně „připojený k obrazovce“
+   (zápisem do tohoto popisovače zobrazujeme data na obrazovku
+   terminálu),
+ • standardní «chybový» výstup, na popisovači číslo 2, symbolicky
+   ‹STDERR_FILENO›, který je implicitně spojen s předchozím a
+   tedy odesílán na obrazovku.
+
+Přesto, že se na pohled chovají zaměnitelně, je mezi standardním
+výstupem a standardním chybovým výstupem klíčový «sémantický»
+rozdíl – výstup běžného neinteraktivního programu lze pomyslně
+rozdělit do dvou oddělených proudů:
+
+ • užitný výstup, který je hlavním výsledkem výpočtu a tzv.
+ • diagnostický výstup, který obsahuje informace o průběhu
+   výpočtu, zejména o chybách.
+
+Nikoho zřejmě nepřekvapí, že tyto dva typy výstupů patří každý na
+odpovídající typ standardního výstupu. Důležitým efektem tohoto
+rozdělení je, že když standardní výstup «přesměrujeme» (např. do
+souboru, nebo na vstup dalšího programu), nebudou se do dat
+určených k dalšímu zpracování míchat diagnostické výstupy –
+naopak, uživateli budou nadále přístupné na obrazovce.² 
+
+    #include <unistd.h> /* write, STDIN_FILENO, … */ /* C */
+    #include <stdio.h>  /* dprintf */
+    #include <err.h>    /* err */
+
+    int main( void ) /* demo */ /* C */
+    {
+Veškerý výstup do popisovače otevřeného souboru je realizován
+systémovým voláním ‹write›.³ Zejména veškeré sofistikované
+knihovní funkce pro výstup (např. ‹dprintf›, ale třeba i
+procedury z rodiny ‹err›) nakonec výstup realizují voláním
+‹write›. Systémové volání ‹write› je ve svém principu velmi
+jednoduché: předáme mu relevantní popisovač, ukazatel na
+paměť a počet bajtů, které má vypsat. 
+
+        const int nbytes = 5; /* C */
+        int bytes_written = write( STDOUT_FILENO, "hello", nbytes );
+
+Uspěje-li volání ‹write›, náš program právě na standardní
+výstup zapsal 5 bajtů, 0x68, 0x65, 0x6c, 0x6c a konečně 0x6f
+(viz také ‹man ascii›). Úspěch ale ani u takto na první
+pohled jednoduché operace není zaručen. Výstup mohl být
+například uživatelem přesměrován do souboru nebo do roury.
+Za určitých okolností může také zápis uspět částečně, ale
+touto situací se prozatím nebudeme zabývat.⁴
+
+Protože standardní výstup a standardní chybový výstup nemusí
+být tentýž objekt, má i v případě selhání zápisu na
+standardní výstup smysl zapsat na chybový výstup hlášení
+o chybě. Je již na uživateli, aby chybový výstup směroval na
+podle možnosti spolehlivá zařízení. Krom ukončení programu
+s chybovým kódem nemáme žádnou možnost, jak na chybu při
+výpisu chybové hlášky reagovat. 
+
+        if ( bytes_written == -1 ) /* C */
+            err( 1, "write to stdout failed" );
+
+Krom přímého použití systémového volání ‹write› budeme
+k zápisu používat knihovní proceduru ‹dprintf›, která nám
+umožní jednodušeji sestavovat textové zprávy. Protože
+‹dprintf› vnitřně používá systémová volání, která mohou
+(opět) selhat, musí se s případnou chybou nějak vypořádat.
+Protože se jedná o knihovní podprogram, který by měl být
+použitelný v mnoha různých situacích, prakticky jedinou
+rozumnou možností je informaci o selhání předat volajícímu.
+Podobně jako samotná systémová volání k tomu používá
+návratovou hodnotu. Rychlý pohled do ‹man dprintf› nám sdělí,
+že výsledkem funkce je počet zapsaných bajtů, resp. -1 pokud
+nastala nějaká chyba. 
+
+        if ( dprintf( STDOUT_FILENO, " world\n" ) == -1 ) /* C */
+            err( 1, "write to stdout failed" );
+
+Konečně vypíšeme nějaký text i na chybový výstup. Protože
+selhání výstupu v tomto případě nemáme jak dále
+diagnostikovat, program pouze ukončíme s chybou. 
+
+        if ( dprintf( STDERR_FILENO, "hello stderr\n" ) == -1 ) /* C */
+            return 2;
+
+Abyste si ověřili, že rozumíte tomu, jak se tento program
+chová, zkuste si jej spustit následovnými způsoby, a ujistěte
+se, že jste tento výsledek očekávali (soubor ‹/dev/full›
+simuluje situaci, kdy dojde místo v souborovém systému – není
+standardizován, ale na stroji ‹aisa› je k dispozici):
+
+    $ ./d2_hello
+    $ ./d2_hello > /dev/null
+    $ ./d2_hello > /dev/full
+    $ ./d2_hello 2> /dev/null
+    $ ./d2_hello 2> /dev/full
+
+Návratový kód programu si můžete bezprostředně po jeho
+ukončení vypsat příkazem ‹echo $?› (platí interprety příkazů,
+které se drží normy POSIX). 
+
+        return 0; /* C */
+    }
+
+¹ Součástí jazyka C (nezávisle na standardu POSIX) jsou knihovní
+  funkce pro práci standardním vstupem a výstupem, které možná
+  znáte. Patří sem např. procedury ‹printf›, ‹fprintf›, ‹puts›,
+  atp. – tyto můžete v principu používat jako ladící pomůcky, ale
+  v hotových programech se jim raději vyhněte. Potřebujete-li
+  alternativu k ‹fprintf›, použijte ‹dprintf›. «Pozor»! Programy,
+  které míchají vstupně-výstupní prostředky jazyka C s těmi
+  POSIX-ovými, jsou náchylné na těžko odhalitelné chyby (zejména
+  při nesprávném nebo chybějícím použití procedury ‹fflush›).
+² Mohli byste mít pocit, že výstup Vašeho programu nebude nikdo
+  dále automaticky zpracovávat a tedy na toto rozdělení nemusíte
+  dbát. Uvědomte si ale, že i běžné použití programu ‹grep› pro
+  vyhledání relevantních řádků ve výstupu na toto rozdělení
+  spoléhá. Uvažte situaci, kdy ‹./program | grep system› nic
+  nevypíše – je to proto, že program selhal, ale ‹grep› chybovou
+  hlášku z výstupu odstranil, nebo proto, že žádný řádek ve
+  výpisu neobsahoval řetězec ‹system›?
+³ Nebo některou jeho variantou – ‹pwrite›, ‹writev›, ‹pwritev›,
+  které jdou ale nad rámec tohoto předmětu.
+⁴ Situace s částečnými zápisy je poněkud komplikovaná – pro
+  blokující popisovač (případ, kdy by byl standardní vstup nebo
+  výstup nastaven do neblokujícího režimu, nebudeme řešit) může
+  být zápis (nebo analogicky i čtení) přerušeno signálem. Protože
+  naše programy nebudou signály obsluhovat, doručení signálu
+  zároveň ukončí program, a tedy částečné zápisy nebo čtení
+  nemusíme řešit, není-li pro to speciální důvod (např. použití
+  neblokujících popisovačů – ‹O_NONBLOCK›). 
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 3. [‹dirs›]
+
+V této ukázce si trochu více přiblížíme systémové volání ‹openat›
+a podíváme se na základy práce se složkami (adresáři). Jak víte
+z třetí přednášky PB152, složka asociuje jména¹ se soubory
+(v obecném smyslu, tzn. nejen obyčejnými).
+
+Složku lze otevřít stejně jako jiné typy souborů – takto získaný
+popisovač tuto složku jednoznačně identifikuje, a to i v situaci,
+kdy se změní odkazy na tuto složku, a tedy její jméno v nadřazené
+složce nemusí platit, nebo se může přesunout v adresářové
+struktuře na úplně jiné místo.² 
+
+    #include <stdio.h>      /* dprintf */ /* C */
+    #include <unistd.h>     /* read, write */
+    #include <fcntl.h>
+    #include <err.h>
+
+Nejprve si nachystáme několik jednoduchých pomocných podprogramů,
+které nám zjednoduší zápis zbytku programu. Protože se jedná
+o malý uzavřený program, můžeme si dovolit považovat chyby při
+otevírání souboru za fatální. 
+
+    int open_or_die( int dir_fd, const char *path, int flags ) /* C */
+    {
+        int fd = openat( dir_fd, path, flags );
+
+        if ( fd == -1 ) /* C */
+            err( 1, "error opening %s", path );
+
+        return fd; /* C */
+    }
+
+    void close_or_warn( int fd, const char *name ) /* C */
+    {
+        if ( close( fd ) == -1 )
+            warn( "error closing descriptor %d for file %s", fd, name );
+    }
+
+    int main( int argc, const char **argv ) /* demo */ /* C */
+    {
+Tento program bude postupně otevírat soubory, kterých jména
+jsou uložené v následujícím poli ukazatelů, a z každého
+vypíše prvních pár bajtů na standardní výstup. Nulový
+ukazatel označuje konec pole. 
+
+        const char * const filenames[] = /* C */
+        {
+            "a0_intro.txt",
+            "a1_overview.txt",
+            "a2_grading.txt",
+            NULL
+        };
+
+Aby se nám s programem lépe experimentovalo, spustíme-li jej
+s parametrem, tento parametr se použije jako cesta ke složce,
+ve které budeme hledat složku ‹00› (a v ní pak výše uvedené
+soubory). Doporučujeme zkusit si tento program spustit
+s různě přichystanými složkami, např. takovou, která
+podsložku ‹00› vůbec neobsahuje, s takovou, která neobsahuje
+všechny očekávané soubory, atp. 
+
+        const char *top_path = argc > 1 ? argv[ 1 ] : ".."; /* C */
+        int top_fd = open_or_die( AT_FDCWD, top_path, O_DIRECTORY );
+        int dir_fd = open_or_die( top_fd, "00", O_DIRECTORY );
+
+Následující cyklus každý soubor otevře – všimněte si, že
+používáme pouze «jména» souborů, protože rodičovská složka je
+do podprogramu ‹open_or_die› předána pomocí popisovače. Tento
+přístup má dvě zásadní výhody:
+
+ 1. nemusíme složitě konstruovat «cesty», které by k souborům
+    vedly – něco jako ‹top_path + "/00/" + name› – zápis,
+    který v jazyce C samozřejmě nemůžeme použít; navíc
+ 2. takto sestavené cesty mohou v různých iteracích ukazovat
+    na soubory v různých složkách – souborový systém je
+    «sdílený» a každá operace je potenciálním «hazardem
+    souběhu».³ 
+
+        for ( int i = 0; filenames[ i ]; ++i ) /* C */
+        {
+            const char *name = filenames[ i ];
+            int file_fd = open_or_die( dir_fd, name, O_RDONLY );
+
+            const int nbytes = 10; /* C */
+            char buffer[ nbytes ];
+
+            int bytes_read = read( file_fd, buffer, nbytes ); /* C */
+
+            if ( bytes_read == -1 ) /* C */
+                err( 1, "error reading %d bytes from %s",
+                     nbytes, name );
+
+Přečtené bajty přepíšeme na standardní výstup a posuneme
+se na nový řádek. 
+
+            if ( write( STDOUT_FILENO, buffer, bytes_read ) == -1 || /* C */
+                 dprintf( STDOUT_FILENO, "\n" ) == -1 )
+                err( 1, "error writing to stdout" );
+
+            close_or_warn( file_fd, name ); /* C */
+        }
+
+Nezapomeneme uzavřít popisovače složek, které jsme otevřeli
+na začátku podprogramu. 
+
+        close_or_warn( dir_fd, "00" ); /* C */
+        close_or_warn( top_fd, top_path );
+        return 0;
+    }
+
+¹ Jméno souboru je libovolný řetězec, který ovšem nesmí obsahovat
+  znak ‹/› ani nulový znak. Délka jména může být operačním
+  systémem nebo souborovým systémem omezená.
+² Protože na složky není dovoleno vytvořit víc než jeden
+  standardní odkaz, a zároveň není možné neprázdnou složku
+  odstranit, mohlo by se zdát, že tato situace nemá jak nastat.
+  Odkazy na složky lze ale atomicky «přesouvat» použitím
+  systémového volání ‹renameat›. Více si o něm povíme v páté
+  kapitole.
+³ Uvažme situaci, kdy všechny vstupní soubory v zadané složce
+  existují. Sestavujeme-li cesty jak bylo naznačeno, může se
+  stát, že jiný program složku přejmenuje. Náš program některé
+  soubory úspěšně vypíše a u jiných ohlásí chybu, a to přesto, že
+  se soubory ani s odkazy na ně v rodičovské složce se vůbec nic
+  nestalo. Považujeme-li takovéto chování za chybné (a bylo by to
+  naprosto logické), prakticky celý náš program tvoří kritickou
+  sekci vůči přesunu (přejmenování) rodičovské složky, kterou ale
+  nemáme jak ochránit. Řešení s předáváním složky pomocí
+  popisovače tuto kritickou sekci (a tedy ani popsaný hazard
+  souběhu) neobsahuje. 
+
+
+## p. Přípravy
+
+
+### 1. [‹lines›]
+
+POSIX definuje řádek jako posloupnost libovolných znaků
+zakončenou znakem nového řádku ‹\n› (U+000A, označovaný ‹line
+feed› nebo též ‹newline›).
+
+Implementujte podprogram ‹count_lines›, který spočítá řádky na
+vstupu daném popisovačem ‹fd› a ověří, zda vstup neobsahuje žádné
+nekompletní řádky. Počet (kompletních) řádků vrátí skrze ukazatel
+‹count›.
+
+Vstup zpracovávejte postupně po malých částech (množství paměti
+potřebné pro spuštění programu by nemělo záviset na velikosti
+vstupu).
+
+Návratová hodnota bude:
+
+  • ‹0› proběhlo-li vše v pořádku,
+  • ‹1› obsahuje-li soubor nekompletní řádek,
+  • ‹2› v případě selhání čtení nebo jiné systémové chyby
+    (v tomto případě navíc není určeno, jaká hodnota bude zapsána
+    do výstupního parametru ‹count›). 
+
+    int count_lines( int fd, int *count ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 2. [‹bwconv›]
+
+Úkolem je naprogramovat proceduru ‹bwconv›, která převede obrázek
+ve formátu BMP ze stupňů šedi do černé a bílé. Výsledný obrázek
+tak bude obsahovat pixely pouze těchto dvou barev.
+
+Procedura přijímá parametry:
+  • ‹fd_in› – popisovač pro vstupní bitmapová data;
+  • ‹w› – šířka obrázku;
+  • ‹h› – výška obrázku;
+  • ‹fd_out› – výstupní popisovač;
+  • ‹threshold› – mez rozdělující bílou a černou (hodnota 0–255).
+
+Na vstupu může procedura očekávat pouze bitmapová data (tedy
+o hlavičku je postaráno se jinde) a stejně tak bude zapisovat
+pouze výsledná bitmapová data bez hlavičky.
+
+Data budou takového formátu, že jeden bajt = jeden pixel (tedy 8
+bitů na pixel). Formát BMP navíc definuje, že každý řádek musí
+být uložen tak, aby jeho délka v bajtech byla dělitelná 4, tedy
+po přečtení ‹w› bajtů budou na řádku další 0 až 3 bajty, které
+výsledný obrázek nijak neovlivní. Můžete předpokládat, že na
+vstupu bude hodnota těchto bajtů 0.
+
+Pro každý bajt určující barvu zapište na výstup černou (hodnotu
+0) je-li vstupní barva «menší nebo rovna» hodnotě ‹threshold› a
+bílou (‹255›) jinak.
+
+«Pozor!» Když budete srovnávat vstupní bajty s hodnotou
+‹threshold›, dejte si pozor na implicitní konverze. Ujistěte se,
+že konverze mezi použitými číselnými typy proběhne tak, jak
+očekáváte.
+
+Návratová hodnota: ‹0› – úspěch; ‹-1› – systémová chyba.
+
+Při testování může přijít vhod příkaz ‹od -t x1› na prohlížení
+jednotlivých bajtů obrázku. 
+
+    int bwconv( int fd_in, int w, int h, int fd_out, int threshold ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 3. [‹catfd›]
+
+V tomto příkladu bude úkolem implementovat proceduru, jejíž
+chování se podobá standardnímu programu ‹cat›.
+
+Procedura ‹catfd› přijímá 3 parametry:
+
+ • ‹fds› – ukazatel na pole popisovačů,
+ • ‹count› – počet popisovačů zde uložený,
+ • ‹out_fd› – výstupní popisovač.
+
+Účelem této procedury bude přečíst veškerá data z každého
+popisovače (v zadaném pořadí) a ta zapsat do výstupního
+popisovače. Pokud vše proběhne bez chyby, vrátí 0, jinak skončí
+při první chybě a vrátí -1. 
+
+    int catfd( int *fds, int count, int out_fd ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 4. [‹cols›]
+
+Vaším úkolem je implementovat proceduru ‹write_aligned›, jejímž
+účelem bude na výstupní popisovač vypsat tabulku v níže popsaném
+formátu, avšak doplněnou o mezery tak, aby byl každý sloupec
+zarovnaný vpravo. Zároveň by měl být použit minimální nutný počet
+takových mezer.
+
+CSV je velmi jednoduchý formát na ukládání tabulek. Jelikož však
+neexistuje¹ jediný standard, který by byl všeobecně dodržován, je
+možné se setkat s množstvím rozdílných variant.
+
+Pro toto zadání uvažme následující:
+
+  • Hodnoty jsou ukládány «oddělené» znakem čárky ‹,› – U+002C.
+  • Počet hodnot na každém řádku odpovídá počtu sloupců.
+    Všechny řádky tak musí obsahovat stejný počet hodnot, jinak
+    by se nejednalo o validní tabulku.
+  • Každý řádek je «zakončen» znakem ‹\n› (U+000A, označovaný
+    ‹line feed› nebo též ‹newline›).
+
+Protože budeme beztak hodnoty zarovnávat mezerami, pro lepší
+čitelnost budeme také za každou oddělovací čárkou zapisovat
+alespoň jednu mezeru. Procedura akceptuje čtyři parametry:
+
+  • ‹fd› – «výstupní» popisovač, na který má být zapsána
+    vpravo zarovnaná tabulka;
+  • ‹values› – ukazatel na pole celočíselných hodnot o velikosti
+    alespoň ‹cols × rows›;
+  • ‹cols› – počet sloupců;
+  • ‹rows› – počet řádků.
+
+Návratová hodnota nechť je v případě úspěchu 0 a jinak -1
+(například selže-li zápis na zadaný popisovač).
+
+«Příklad:» Pro hodnoty ‹123, 456, 789, 1, 2, 3, 12, 3, 456› a
+velikost tabulky 3 × 3 očekáváme, že na výstup bude vypsán
+řetězec:
+
+    "123, 456, 789\n"
+    "  1,   2,   3\n"
+    " 12,   3, 456\n"
+
+Nápověda: jistě Vám přijde vhod procedura ‹dprintf› –
+doporučujeme podívat se zejména co znamená znak ‹*› ve
+formátovacím řetězci. Rovněž může být užitečná funkce ‹snprintf›
+s omezením na nulovou délku.
+
+¹ Existuje definice dle RFC 4180, nicméně tato se nezdá být
+  širší komunitou považována za závaznou. 
+
+    int write_aligned( int fd, const int *values, int cols, int rows ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 5. [‹cut›]
+
+Implementujte proceduru ‹cut›, která na popisovač ‹out› vypíše
+sloupec zadaný parametrem ‹field› ze souboru ‹file› (sloupce
+číslujeme od 1).¹ Každý řádek na vstupu i výstupu bude zakončen
+znakem ‹'\n'› a sloupce jsou na vstupu odděleny bajtem ‹delim›.
+Soubor ‹file› hledejte ve složce určené popisovačem ‹dir›.
+
+Návratová hodnota: 0 – úspěch; -1 – systémová chyba.
+
+¹ Toto chování je podobné standardnímu příkazu ‹cut -d delim -f
+  field file›. 
+
+    int cut( int dir, const char* file, char delim, int field, int out ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 6. [‹cat›]
+
+Naprogramujte proceduru ‹cat›, která obdrží tyto 3 parametry:
+
+  • ‹dir_fd› – popisovač adresáře, ve kterém bude hledat všechny
+    níže zmíněné soubory,
+  • ‹list› – jméno souboru se jmény souborů ke čtení,
+  • ‹out_fd› – «výstupní» popisovač.
+
+Soubor ‹list› bude obsahovat na každém řádku jméno souboru.
+Procedura ‹cat› zapíše obsahy všech těchto souborů (v zadaném
+pořadí) do popisovače ‹out›.
+
+Stejně jako v předešlých příkladech za řádek považujeme
+posloupnost znaků «zakončenou» ‹'\n'› (nikoliv tedy ‹"\r\n"› nebo
+‹'\r'›).
+
+Pro zjednodušení navíc zavedeme limit, kdy délka každého řádku
+smí být nejvýše ‹name_max› bajtů (nepočítaje znak konce řádku).
+
+
+    const int name_max = 256; /* C */
+
+Návratová hodnota 0 označuje úspěch. Pokud je některý ze řádků
+souboru ‹list› delší než ‹name_max›, vraťte -2; nastane-li
+systémová chyba, hodnotu -1.
+
+Nápověda: na popisovači k souboru ‹list› je možné používat volání
+‹lseek›. Jeho použitím si můžete usnadnit implementaci. 
+
+    int cat( int dir_fd, const char *list, int out_fd ); /* C */
+
+
+## r. Řešené úlohy
+
+
+### 1. [‹wcount›]
+
+Za slovo budeme považovat posloupnost „nebílých“ znaků, po které
+následují jeden či více „bílých“ znaků, nebo konec vstupu. Bílé
+znaky uvažujeme ve smyslu standardní funkce ‹isspace› deklarované
+v hlavičce <ctype.h>.
+
+Podprogram ‹count_words› zpracuje soubor o zadané cestě ‹file› a
+výsledek vrátí skrze ukazatel ‹count›.
+
+Nastane-li systémová chyba, podprogram vrátí -1 (přitom hodnota
+na adrese ‹count› není určena). V opačném případě vrátí 0. 
+
+    int count_words( int dir_fd, const char *file, int *count ); /* C */
+
+
+### 2. [‹cgrep›]
+
+Implementujte podprogram ‹cgrep›, která vypíše všechny řádky ze
+vstupu ‹fd_in›, které obsahují znak ‹c›. Tyto řádky vypište na
+popisovač ‹fd_out›. Pro tuto úlohy není stanoven žádný limit na
+maximální délku řádku. Smíte ovšem předpokládat, že ve vstupním
+souboru se lze posouvat voláním ‹lseek›.
+
+Návratová hodnota: 0 – úspěch; 1 – systémová chyba. 
+
+    int cgrep( int fd_in, char c, int fd_out ); /* C */
+
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 3. [‹flake›]
+
+V této úloze budeme programovat funkci ‹path›, jejímž účelem bude
+ověřit, zda zadaný soubor splňuje určitou vlastnost.
+
+Soubor musí obsahovat řádky nejvýše dané délky (ta je funkci
+předána jako druhý parametr ‹len›). Každý řádek je zakončen
+znakem '\n' a obsahuje pouze symboly ' ' a '*'. Na každém řádku
+se musí vyskytovat právě jednou znak '*', který označuje pozici
+pomyslného robota.
+
+Nevadí, pokud řádek obsahuje mezery mezi tímto znakem a koncem
+řádku.
+
+Vaším úkolem je rozhodnout, zda mezi dvěma řádky vždy platí, že
+robot změnil pozici nejvýše o jedna.
+
+Příklad: Uvažme následující řádky.
+ 1: "          *    \n"
+ 2: "           *\n"
+ 3: "         *\n"
+Mezi řádky 1 a 2 se robot posunul o jedno pozici doprava, to je
+v pořádku. Mezi řádky 2 a 3 se však robot posunul o dvě doleva,
+tedy soubor celkově není validní.
+
+Návratová hodnota:
+ • 0 – čtení úspěšné a soubor je validní;
+ • 1 – čtení úspěšné, ale robot se posunul o více pozic;
+ • 2 – čtení úspěšné, ale soubor je špatného formátu;
+ • 3 – čtení neúspěšné. 
+
+    int path( const char* file, int len ); /* C */
+
+
+    void main( void ) /* C */
+    {
+        return 0;
+    }
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### 4. [‹bcount›]
+
+Podprogram ‹count_distinct› spočítá počet různých bajtů
+v souboru. Tento počet v případě úspěchu vrátí, jinak vrátí
+hodnotu -1. 
+
+    int count_distinct( int dir_fd, const char *file ); /* C */
+
+
+### 5. [‹linked›]
+
+Implementujte funkci ‹linked›, která přečte «první řádek»
+zadaného souboru. Tento text se interpretuje jako název souboru,
+kterým se má dále pokračovat. Nejprve ho vypíše (na popisovač
+‹out›) a potom soubor otevře a provede pro něj totéž.
+
+Tento proces se opakuje, dokud nenarazíme na prázdný soubor,
+který zřetězenou sekvenci ukončí.
+
+Abychom nemuseli komplikovaně načítat neomezeně dlouhé názvy,
+zavedeme zde limit pro délku názvu souboru 256 bajtů. Je-li první
+řádek v některém vstupním souboru delší, funkce ‹linked› skončí
+s návratovou hodnotou -2 (znak konce řádku se do tohoto limitu
+nepočítá). Nastane-li systémová chyba, funkce nechť vrátí hodnotu
+-1, jinak pak počet souborů, které otevřela. 
+
+    const int name_max = 256; /* C */
+
+    int linked( const char* file, int out ); /* C */
+
+
+
+### 6. [‹otp›]
+
+V této úloze si naprogramujeme jednoduchou techniku
+z kryptografie označovanou jako „one-time pad.“
+
+Funkci ‹otp› jsou zadány dva názvy souborů a výstupní popisovač.
+Úkolem této funkce je na tento popisovač vypsat
+    ‹obsah prvního XOR obsah druhého›.
+
+«Druhý» soubor zde považujeme za klíč a pro bezpečnost této
+kryptografické techniky je nezbytné, aby jeho délka byla
+«alespoň» taková jako je délka prvního.
+
+V případě, že tento požadavek není splněn, funkce nechť vrátí -2.
+Jestliže nastane problém ve čtení některého souboru či problém
+v zápisu na výstupní popisovač, vraťte -1. Pokud je vše úspěšné,
+vraťte 0. 
+
+    int otp( const char* file, const char* key_file, int out ); /* C */
+
+
+
+
+# K. Vzorová řešení
+
+## 1. Týden 1
+
+
+### r.1. [‹wcount›]
+
+    int count_words( int dir_fd, const char *file, int *count ) /* C */
+    {
+        const int nbytes = 1024;
+        char buffer[ nbytes ];
+        int fd, bytes_read;
+        int result = -1;
+        bool in_word = false;
+
+        *count = 0; /* C */
+
+        if ( ( fd = openat( dir_fd, file, O_RDONLY ) ) == -1 ) /* C */
+            goto out;
+
+        do { /* C */
+
+            if ( ( bytes_read = read( fd, buffer, nbytes ) ) == -1 ) /* C */
+                goto out;
+
+            for ( int i = 0; i < bytes_read; ++i ) /* C */
+                if ( in_word && isspace( buffer[ i ] ) )
+                {
+                    ++ *count;
+                    in_word = false;
+                }
+                else if ( !in_word && !isspace( buffer[ i ] ) )
+                    in_word = true;
+
+        } while ( bytes_read > 0 ); /* C */
+
+        if ( in_word ) /* C */
+            ++ *count;
+
+        result = 0; /* C */
+
+    out: /* C */
+        if ( fd != -1 && close( fd ) == -1 )
+            warn( "closing %s", file );
+        return result;
+    }
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### r.2. [‹cgrep›]
+
+    int copy_span( int fd_in, int fd_out, int from, int to ) /* C */
+    {
+        const int nbytes = 1024;
+        int bytes_total = 0, to_write, bytes_read;
+        int orig_pos;
+        char buffer[ nbytes ];
+
+        if ( ( orig_pos = lseek( fd_in, 0, SEEK_CUR ) ) == -1 ) /* C */
+            return -1;
+
+        if ( lseek( fd_in, from, SEEK_SET ) == -1 ) /* C */
+            return -1;
+
+        do { /* C */
+            if ( ( bytes_read = read( fd_in, buffer, nbytes ) ) == -1 )
+                return -1;
+
+            bytes_total += bytes_read; /* C */
+            to_write = bytes_read;
+            int extra = bytes_total + from - to;
+
+            if ( extra > 0 ) /* C */
+                to_write -= extra;
+
+            if ( write( fd_out, buffer, to_write ) == -1 ) /* C */
+                return -1;
+        } while ( bytes_read > 0 && bytes_total < to - from );
+
+        if ( lseek( fd_in, orig_pos, SEEK_SET ) == -1 ) /* C */
+            return -1;
+
+        return 0; /* C */
+    }
+
+    int cgrep( int fd_in, char c, int fd_out ) /* C */
+    {
+        const int nbytes = 3;
+        char buffer[ nbytes ];
+        int bytes_read = 0, offset = 0, line_start = 0;
+        bool matched = false;
+
+        do { /* C */
+            if ( ( bytes_read = read( fd_in, buffer, nbytes ) ) == -1 )
+                return -1;
+
+            for ( int i = 0; i < bytes_read; ++i, ++offset ) /* C */
+            {
+                if ( buffer[ i ] == c )
+                    matched = true;
+
+                if ( buffer[ i ] == '\n' ) /* C */
+                {
+                    if ( matched &&
+                         copy_span( fd_in, fd_out, line_start,
+                                    offset + 1 ) == -1 )
+                        return -1;
+
+                    line_start = offset + 1; /* C */
+                    matched = false;
+                }
+            }
+        } while ( bytes_read > 0 );
+
+        return 0; /* C */
+    }
+
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+
+
+### r.4. [‹bcount›]
+
+    int count_distinct( int dir_fd, const char *file ) /* C */
+    {
+        const int nbytes = 3;
+        unsigned char buffer[ nbytes ];
+        int counts[ 256 ] = { 0 };
+        int fd = -1;
+        int bytes_read;
+        int result = -1, saved_errno;
+
+        if ( ( fd = openat( dir_fd, file, O_RDONLY ) ) == -1 ) /* C */
+            goto out;
+
+        do { /* C */
+            if ( ( bytes_read = read( fd, buffer, nbytes ) ) == -1 )
+                goto out;
+
+            for ( int i = 0; i < bytes_read; ++i ) /* C */
+                counts[ buffer[ i ] ] ++;
+        } while ( bytes_read > 0 );
+
+        result = 0; /* C */
+
+        for ( int i = 0; i < 256; ++i ) /* C */
+            if ( counts[ i ] )
+                ++ result;
+
+    out: /* C */
+        saved_errno = errno;
+
+        if ( fd != -1 && close( fd ) == -1 ) /* C */
+            warn( "closing fd %d for %s", fd, file );
+
+        errno = saved_errno; /* C */
+        return result;
+    }
+
+
+# T. Technické informace
+
+Tato kapitola obsahuje informace o technické realizaci předmětu,
+a to zejména:
+
+ • jak se pracuje s kostrami úloh,
+ • jak sdílet obrazovku (terminál) ve cvičení,
+ • jak se odevzdávají úkoly,
+ • kde najdete výsledky testů a jak je přečtete,
+ • kde najdete hodnocení kvality kódu (učitelské recenze),
+ • jak získáte kód pro vzájemné recenze.
+
+## Informační systém
+
+Informační systém tvoří primární „rozhraní“ pro stahování studijních
+materiálů, odevzdávání řešení, získání výsledků vyhodnocení a čtení
+recenzí. Zároveň slouží jako hlavní komunikační kanál mezi studenty
+a učiteli, prostřednictvím diskusního fóra.
+
+### Diskusní fórum
+
+Máte-li dotazy k úlohám, organizaci, atp., využijte k jejich
+položení prosím vždy přednostně diskusní fórum.¹ Ke každé kapitole a
+ke každému příkladu ze sady vytvoříme samostatné vlákno, kam patří
+dotazy specifické pro tuto kapitolu nebo tento příklad. Pro řešení
+obecných organizačních záležitostí a technických problémů jsou
+podobně v diskusním fóru nachystaná vlákna.
+
+Než položíte libovolný dotaz, přečtěte si relevantní část dosavadní
+diskuse – je možné, že na stejný problém už někdo narazil. Máte-li
+ve fóru dotaz, na který se Vám nedostalo do druhého pracovního dne
+reakce, připomeňte se prosím tím, že na tento svůj příspěvek
+odpovíte.
+
+Máte-li dotaz k výsledku testu, nikdy tento výsledek nevkládejte do
+příspěvku (podobně nikdy nevkládejte části řešení příkladu). Učitelé
+mají přístup k obsahu Vašich poznámkových bloků, i k Vámi odevzdaným
+souborům. Je-li to pro pochopení kontextu ostatními čtenáři potřeba,
+odpovídající učitel chybějící informace doplní dle uvážení.
+
+¹ Nebojte se do fóra napsat – když si s něčím nevíte rady a/nebo
+  nemůžete najít v materiálech, rádi Vám pomůžeme nebo Vás
+  nasměrujeme na místo, kde odpověď naleznete.
+
+### Stažení koster
+
+Kostry naleznete ve «studijních materiálech» v ISu: ‹Student› →
+‹PB152› → ‹Studijní materály› → ‹Učební materiály›. Každá kapitola
+má vlastní složku, pojmenovanou ‹00› (tento úvod a materiály
+k nultému cvičení), ‹01› (první běžná kapitola), ‹02›, …, ‹12›.
+Veškeré soubory stáhnete jednoduše tak, že na složku kliknete pravým
+tlačítkem a vyberete možnost ‹Stáhnout jako ZIP›. Stažený soubor
+rozbalte a můžete řešit.
+
+### Odevzdání řešení
+
+Vypracované příklady můžete odevzdat do «odevzdávárny» v ISu:
+‹Student› → ‹PB152› → ‹Odevzdávárny›. Pro přípravy používejte
+odpovídající složky s názvy ‹01›, …, ‹12›. Pro příklady ze sad pak
+‹s1_a_csv›, atp. (složky začínající ‹s1› pro první, ‹s2› pro druhou
+a ‹s3› pro třetí sadu).
+
+Soubor vložíte výběrem možnosti ‹Soubor – nahrát› (první ikonka na
+liště nad seznamem souborů). Tímto způsobem můžete najednou nahrát
+souborů několik (například všechny přípravy z dané kapitoly). Vždy
+se ujistěte, že vkládáte správnou verzi souboru (a že nemáte
+v textovém editoru neuložené změny). «Pozor!» Všechny vložené
+soubory se musí jmenovat stejně jako v kostrách, jinak nebudou
+rozeznány (IS při vkládání automaticky předřadí Vaše UČO – to je
+v pořádku, název souboru po vložení do ISu «neměňte») .
+
+O každém odevzdaném souboru (i nerozeznaném) se Vám v poznámkovém
+bloku ‹log› objeví záznam. Tento záznam i výsledky testu syntaxe by
+se měl objevit do několika minut od odevzdání (nemáte-li ani po 15
+minutách výsledky, napište prosím do diskusního fóra).
+
+Archiv všech souborů, které jste úspěšně odevzdali, naleznete ve
+složce ‹Private› ve studijních materiálech (‹Student› → ‹PB152› →
+‹Studijní materiály› → ‹Private›).
+
+### Výsledky automatických testů
+
+Automatickou zpětnou vazbu k odevzdaným úlohám budete dostávat
+prostřednictvím tzv. «poznámkových bloků» v ISu. Ke každé
+odevzdávárně existuje odpovídající poznámkový blok, ve kterém
+naleznete aktuální výsledky testů. Pro přípravy bude blok vypadat
+přibližně takto:
+
+    testing verity of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed    [0.5]
+    subtest p2_bar failed
+    subtest p3_baz failed
+    subtest p4_quux passed   [0.5]
+    subtest p5_wibble passed [0.5]
+    subtest p6_xyzzy failed
+       {bližší popis chyby}
+    verity test failed
+    
+    testing syntax of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed
+    subtest p2_bar failed
+      {bližší popis chyby}
+    subtest p3_baz failed
+      {bližší popis chyby}
+    subtest p4_quux passed
+    subtest p5_wibble passed
+    subtest p6_xyzzy passed
+    syntax test failed
+    
+    testing sanity of submission from 2022-09-17 22:43 CEST
+    subtest p1_foo passed    [  1]
+    subtest p2_bar failed
+    subtest p3_baz failed
+    subtest p4_quux passed   [  1]
+    subtest p5_wibble passed [  1]
+    subtest p6_xyzzy passed  [  1]
+    sanity test failed
+    
+    best submission: 2022-09-17 22:43 CEST worth *5.5 point(s)
+
+Jednak si všimněte, že každý odstavec má «vlastní časové razítko»,
+které určuje, ke kterému odevzdání daný výstup patří. Tato časová
+razítka nemusí být stejná. V hranatých závorkách jsou uvedeny dílčí
+body, za hvězdičkou na posledním řádku pak celkový bodový zisk za
+tuto kapitolu.
+
+Také si všimněte, že ‹best submission› se vztahuje na jedno
+konkrétní odevzdání jako celek: v situaci, kdy odstavec „verity“ a
+odstavec „sanity“ nemají stejné časové razítko, «nemusí» být celkový
+bodový zisk součtem všech dílčích bodů.  O konečném zisku rozhoduje
+vždy poslední odevzdání před příslušným termínem (opět jako jeden
+celek).¹
+
+Výstup pro příklady ze sad je podobný, uvažme například:
+
+    testing verity of submission from 2022-10-11 21:14 CEST
+    subtest foo-small passed
+    subtest foo-large passed
+    verity test passed          [ 10]
+    
+    testing syntax of submission from 2022-10-14 23:54 CEST
+    subtest build passed
+    syntax test passed
+    
+    testing sanity of submission from 2022-10-14 23:54 CEST
+    subtest foo passed
+    sanity test passed
+    
+    best submission: 2022-10-11 21:14 CEST worth *10 point(s)
+
+Opět si všimněte, že časová razítka se mohou lišit (a v případě
+příkladů ze sady bude k této situaci docházet poměrně často, vždy
+tedy nejprve ověřte, ke kterému odevzdání se který odstavec vztahuje
+a pak až jej dále interpretujte).
+
+¹ Můžete si tak odevzdáním nefunkčních řešení na poslední chvíli
+  snížit výsledný bodový zisk. Uvažte situaci, kdy máte v pátek 4
+  body za sanity příkladů p1, p2, p3, p6 a 1 bod za verity p1, p2.
+  V sobotu odevzdáte řešení, kde p1 neprochází sanity testem, ale p4
+  ano a navíc projdou verity testy příklady p4 a p6. Váš výsledný
+  zisk bude 5.5 bodu. Tento mechanismus Vám nikdy nesníží výsledný
+  bodový zisk pod již jednou dosaženou hranici „best submission“.
+
+### Recenze
+
+Vám adresované recenze, podobně jako archiv odevzdaných souborů,
+naleznete ve složce ‹Private› ve studijních materiálech (‹Student› →
+‹PB152› → ‹Studijní materiály› → ‹Private›). Shrnutí bodového zisku
+za tyto recenze pak naleznete v poznámkovém bloku ‹reviews›.
+
+### Další poznámkové bloky
+
+Blok ‹corr› obsahuje záznamy o manuálních bodových korekcích (např.
+v situaci, kdy byl Váš bodový zisk ovlivněn chybou v testech).
+Podobně se zde objeví záznamy o penalizaci za opisování.
+
+Blok ‹log› obsahuje záznam o všech odevzdaných souborech, včetně
+těch, které nebyly rozeznány. Nedostanete-li po odevzdání příkladu
+výsledek testů, ověřte si v tomto poznámkovém bloku, že soubor byl
+správně rozeznán.
+
+Blok ‹misc› obsahuje záznamy o Vaší aktivitě ve cvičení (netýká se
+bodů za vzájemné recenze ani vnitrosemestrální testy). Nemáte-li
+před koncem cvičení, ve kterém jste řešili příklad u tabule, záznam
+v tomto bloku, připomeňte se svému cvičícímu.
+
+Konečně blok ‹sum› obsahuje souhrn bodů, které jste dosud získali, a
+které ještě získat můžete. Dostanete-li se do situace, kdy Vám ani
+zisk všech zbývajících bodů nebude stačit pro splnění podmínek
+předmětu, tento blok Vás o tom bude informovat. Tento blok má navíc
+přístupnou statistiku bodů – můžete tak srovnat svůj dosavadní
+bodový zisk se svými spolužáky.
+
+Je-li blok ‹sum› v rozporu s pravidly uvedenými v tomto dokumentu,
+přednost mají pravidla zde uvedená. Podobně mají v případě
+nesrovnalosti přednost dílčí poznámkové bloky. Dojde-li k takovéto
+neshodě, informujte nás o tom prosím v diskusním fóru. Případná
+známka uvedená v poznámkovém bloku ‹sum› je podobně pouze
+informativní – rozhoduje vždy známka zapsaná v hodnocení předmětu.
+
+## Studentský server ‹aisa›
+
+Použití serveru ‹aisa› pro odevzdávání příkladů je zcela volitelné a
+vše potřebné můžete vždy udělat i prostřednictvím ISu. Nevíte-li si
+s něčím z níže uvedeného rady, použijte IS.
+
+Na server ‹aisa› se přihlásíte programem ‹ssh›, který je k dispozici
+v prakticky každém moderním operačním systému (v OS Windows skrze
+WSL¹ – Windows Subsystem for Linux). Konkrétní příkaz (za ‹xlogin›
+doplňte ten svůj):
+
+    $ ssh xlogin@aisa.fi.muni.cz
+
+Program se zeptá na heslo: použijte to fakultní (to stejné, které
+používáte k přihlášení na ostatní fakultní počítače, nebo např. ve
+‹fadmin›-u nebo fakultním ‹gitlab›-u).
+
+¹ Jako alternativu, nechcete-li z nějakého důvodu WSL instalovat,
+  lze použít program ‹putty›.
+
+### Pracovní stanice
+
+Veškeré instrukce, které zde uvádíme pro použití na stroji ‹aisa›
+platí beze změn také na libovolné školní UNIX-ové pracovní stanici
+(tzn. z fakultních počítačů není potřeba se hlásit na stroj ‹aisa›,
+navíc mají sdílený domovský adresář, takže svoje soubory z tohoto
+serveru přímo vidíte, jako by byly uloženy na pracovní stanici).
+
+### Stažení koster
+
+Aktuální zdrojový balík stáhnete příkazem:
+
+    $ pb152 update
+
+Stažené soubory pak naleznete ve složce ‹~/pb152›. Je bezpečné tento
+příkaz použít i v případě, že ve své kopii již máte rozpracovaná
+řešení – systém je při aktualizaci nepřepisuje. Došlo-li ke změně
+kostry u příkladu, který máte lokálně modifikovaný, aktualizovanou
+kostru naleznete v souboru s dodatečnou příponou ‹.pristine›, např.
+‹01/e2_concat.cpp.pristine›. V takovém případě si můžete obě verze
+srovnat příkazem ‹diff›:
+
+    $ diff -u e2_concat.cpp e2_concat.cpp.pristine
+
+Případné relevantní změny si pak již lehce přenesete do svého
+řešení.
+
+Krom samotného zdrojového balíku Vám příkaz ‹pb152 update› stáhne i
+veškeré recenze (jak od učitelů, tak od spolužáků). To, že máte
+k dispozici nové recenze, uvidíte ve výpisu. Recenze najdete ve
+složce ‹~/pb152/reviews›.
+
+### Odevzdání řešení
+
+Odevzdat vypracované (nebo i rozpracované) řešení můžete ze složky
+s relevantními soubory takto:
+
+    $ cd ~/pb152/01
+    $ pb152 submit
+
+Přidáte-li přepínač ‹--wait›, příkaz vyčká na vyhodnocení testů fáze
+„syntax“ a jakmile je výsledek k dispozici, vypíše obsah příslušného
+poznámkového bloku. Chcete-li si ověřit co a kdy jste odevzdali,
+můžete použít příkaz
+
+    $ pb152 status
+
+nebo se podívat do informačního systému (blíže popsáno v sekci T.1).
+
+«Pozor!» Odevzdáváte-li stejnou sadu příprav jak v ISu tak
+prostřednictvím příkazu ‹pb152›, ujistěte se, že odevzdáváte vždy
+všechny příklady.
+
+### Sdílení terminálu
+
+Řešíte-li příklad typu ‹r› ve cvičení, bude se Vám pravděpodobně
+hodit režim sdílení terminálu s cvičícím (který tak bude moct
+promítat Váš zdrojový kód na plátno, případně do něj jednoduše
+zasáhnout).
+
+Protože se sdílí pouze terminál, budete se muset spokojit
+s negrafickým textovým editorem (doporučujeme použít ‹micro›,
+případně ‹vim› umíte-li ho ovládat). Spojení navážete příkazem:
+
+    $ pb152 beamer
+
+Protože příkaz vytvoří nové sezení, nezapomeňte se přesunout do
+správné složky příkazem ‹cd ~/pb152/NN›.
+
+### Recenze
+
+Příkaz ‹pb152 update› krom zdrojového balíku stahuje také:
+
+ 1. zdrojové kódy, které máte možnost recenzovat, a to do složky
+    ‹~/pb152/to_review›,
+ 2. recenze, které jste na svůj kód obdrželi (jak od spolužáků, tak
+    od vyučujících), a to do stávajících složek zdrojového balíku
+    (tzn. recenze na příklady z první kapitoly se Vám objeví ve
+    složce ‹~/pb152/01› – že se jedná o recenzi poznáte podle jména
+    souboru, který bude začínat uživatelským jménem autora recenze,
+    např. ‹xrockai.00123.p1_nhamming.cpp›).
+
+Chcete-li vypracované recenze odeslat:
+
+ 1. přesuňte se do složky ‹~/pb152/to_review› a
+ 2. zadejte příkaz ‹pb152 submit›, případně doplněný o seznam
+    souborů, které hodláte odeslat (jinak se odešlou všechny, které
+    obsahují jakýkoliv přidaný komentář).
+
+## Kostry úloh
+
+Pracujete-li na studentském serveru ‹aisa›, můžete pro překlad
+jednotlivých příkladů použít přiložený soubor ‹makefile›, a to
+zadáním příkazu
+
+    $ make příklad
+
+kde ‹příklad› je název souboru bez přípony (např. tedy ‹make
+e1_factorial›). Tento příkaz postupně:
+
+ 1. přeloží Vaše řešení překladačem ‹gcc›,
+ 2. spustí přiložené testy,
+ 3. spustí kontrolu nástrojem ‹valgrind›.
+
+Selže-li některý krok, další už se provádět nebude. Povede-li se
+překlad v prvním kroku, v pracovním adresáři naleznete spustitelný
+soubor s názvem ‹příklad›, se kterým můžete dále pracovat (např. ho
+ladit/krokovat nástrojem ‹gdb›).
+
+Existující přeložené soubory můžete smazat příkazem ‹make clean›
+(vynutíte tak jejich opětovný překlad a spuštění všech kontrol).
+
+### Textový editor
+
+Na stroji ‹aisa› je k dispozici jednoduchý editor ‹micro›, který má
+podobné ovládání jako klasické textové editory, které pracují
+v grafickém režimu, a který má slušnou podporu pro práci se
+zdrojovým kódem. Doporučujeme zejména méně pokročilým. Další
+možností jsou samozřejmě pokročilé editory ‹vim› a ‹emacs›.
+
+Mimo lokálně dostupné editory si můžete ve svém oblíbeném editoru,
+který máte nainstalovaný u sebe, nastavit režim vzdálené editace
+(použitím protokolu ‹ssh›). Minimálně ve VS Code je takový režim
+k dispozici a je uspokojivě funkční.
+
+### Vlastní prostředí
+
+Každý příklad je zcela obsažen v jednom standardním zdrojovém
+souboru, proto je jejich překlad velmi jednoduchý. Pravděpodobně
+každé IDE zvládne s příklady bez problémů pracovat (spouštět, ladit,
+atp.), musí ale běžet na systému typu POSIX (splňují všechny OS krom
+Windows – zde ale můžete využít WSL a případně jeho
+«integraci do VS Code¹»).
+
+Krom IDE můžete také použít dodaný soubor ‹makefile›, pouze si
+v nadřazené složce (tzn. «vedle» složek ‹01›, ‹02›, atd.) vytvořte
+soubor ‹local.mk›, ve kterém nastavíte, jak se na Vašem systému
+spouští potřebné příkazy. Implicitní nastavení je toto, a funguje-li
+Vám, není potřeba soubor ‹local.mk› vůbec vytvářet:
+
+    CC = cc
+    VALGRIND = valgrind
+
+Můžete samozřejmě příklady překládat a kontrolovat i ručně.
+
+¹ ‹https://code.visualstudio.com/docs/remote/wsl›
+
+# Z. Doporučení k zápisu kódu
+
+Tato sekce rozvádí obecné principy zápisu kódu s důrazem na
+čitelnost a korektnost. Samozřejmě žádná sada pravidel nemůže
+zaručit, že napíšete dobrý (korektní a čitelný) program, o nic více,
+než může zaručit, že napíšete dobrou povídku nebo namalujete dobrý
+obraz. Přesto ve všech těchto případech pravidla existují a jejich
+dodržování má obvykle na výsledek pozitivní dopad.
+
+Každé pravidlo má samozřejmě nějaké výjimky. Tyto jsou ale výjimkami
+proto, že nastávají «výjimečně». Některá pravidla připouští výjimky
+častěji než jiná: 
+
+### 1. Dekompozice
+
+Vůbec nejdůležitější úlohou programátora je rozdělit problém tak,
+aby byl schopen každou část správně vyřešit a dílčí výsledky pak
+poskládat do korektního celku.
+
+ A. Kód musí být rozdělen do ucelených jednotek (kde jednotkou
+    rozumíme funkci, typ, modul, atd.) přiměřené velikosti, které
+    lze studovat a používat nezávisle na sobě.
+ B. Jednotky musí být od sebe odděleny jasným «rozhraním», které by
+    mělo být jednodušší a uchopitelnější, než kdybychom použití
+    jednotky nahradili její definicí.
+ C. Každá jednotka by měla mít «jeden» dobře definovaný účel, který
+    je zachycený především v jejím pojmenování a případně rozvedený
+    v komentáři.
+ D. Máte-li problém jednotku dobře pojmenovat, může to být známka
+    toho, že dělá příliš mnoho věcí.
+ E. Jednotka by měla realizovat vhodnou «abstrakci», tzn. měla by
+    být «obecná» – zkuste si představit, že dostanete k řešení
+    nějaký jiný (ale dostatečně příbuzný) problém: bude Vám tato
+    konkrétní jednotka k něčemu dobrá, aniž byste ji museli
+    (výrazně) upravovat?
+ F. Má-li jednotka parametr, který fakticky identifikuje místo ve
+    kterém ji používáte (bez ohledu na to, je-li to z jeho názvu
+    patrné), je to často známka špatně zvolené abstrakce. Máte-li
+    parametr, který by bylo lze pojmenovat ‹called_from_bar›, je to
+    jasná známka tohoto problému.
+ G. Daný podproblém by měl být vyřešen v programu pouze jednou –
+    nedaří-li se Vám sjednotit různé varianty stejného nebo velmi
+    podobného kódu (aniž byste se uchýlili k taktice z bodu d), může
+    to být známka nesprávně zvolené dekompozice. Zkuste se zamyslet,
+    není-li možné problém rozložit na podproblémy jinak.
+
+### 2. Jména
+
+Dobře zvolená jména velmi ulehčují čtení kódu, ale jsou i dobrým
+vodítkem při dekompozici a výstavbě abstrakcí.
+
+ A. Všechny entity ve zdrojovém kódu nesou «anglická» jména.
+    Angličtina je univerzální jazyk programátorů.
+ B. Jméno musí být «výstižné» a «popisné»: v místě použití je
+    obvykle jméno náš hlavní (a často jediný) «zdroj informací»
+    o jmenované entitě. Nutnost hledat deklaraci nebo definici
+    (protože ze jména není jasné, co volaná funkce dělá, nebo jaký
+    má použitá proměnná význam) čtenáře nesmírně zdržuje.¹
+ C. Jména «lokálního» významu mohou být méně informativní: je mnohem
+    větší šance, že význam jmenované entity si pamatujeme, protože
+    byla definována před chvílí (např. lokální proměnná v krátké
+    funkci).
+ D. Obecněji, informační obsah jména by měl být přímo úměrný jeho
+    rozsahu platnosti a nepřímo úměrný frekvenci použití: globální
+    jméno musí být informativní, protože jeho definice je „daleko“
+    (takže si ji už nepamatujeme) a zároveň se nepoužívá příliš
+    často (takže si nepamatujeme ani to, co jsme se dozvěděli, když
+    jsme ho potkali naposled).
+ E. Jméno parametru má dvojí funkci: krom toho, že ho používáme
+    v těle funkce (kde se z pohledu pojmenování chová podobně jako
+    lokální proměnná), slouží jako dokumentace funkce jako celku.
+    Pro parametry volíme popisnější jména, než by zaručovalo jejich
+    použití ve funkci samotné – mají totiž dodatečný globální
+    význam.
+ F. Některé entity mají ustálené názvy – je rozumné se jich držet,
+    protože čtenář automaticky rozumí jejich významu, i přes
+    obvyklou stručnost. Zároveň je potřeba se vyvarovat použití
+    takovýchto ustálených jmen pro nesouvisející entity.  Typickým
+    příkladem jsou iterační proměnné ‹i› a ‹j›.
+ G. Jména s velkým rozsahem platnosti by měla být také
+    «zapamatovatelná». Je vždy lepší si přímo vzpomenout na jméno
+    funkce, kterou právě potřebuji, než ho vyhledávat (podobně jako
+    je lepší znát slovo, než ho jít hledat ve slovníku).
+ H. Použitý slovní druh by měl odpovídat druhu entity, kterou
+    pojmenovává. Proměnné a typy pojmenováváme přednostně
+    podstatnými jmény, funkce přednostně slovesy.
+ I. Rodiny příbuzných nebo souvisejících entit pojmenováváme podle
+    společného schématu (‹table_name›, ‹table_size›, ‹table_items› –
+    nikoliv např. ‹items_in_table›; ‹list_parser›, ‹string_parser›,
+    ‹set_parser›; ‹find_min›, ‹find_max›, ‹erase_max› – nikoliv
+    např. ‹erase_maximum› nebo ‹erase_greatest› nebo ‹max_remove›).
+ J. Jména by měla brát do úvahy kontext, ve kterém jsou platná.
+    Neopakujte typ proměnné v jejím názvu (‹cars›, nikoliv
+    ‹list_of_cars› ani ‹set_of_cars›) nemá-li tento typ speciální
+    význam. Podobně jméno nadřazeného typu nepatří do jmen jeho
+    metod (třída ‹list› by měla mít metodu ‹length›, nikoliv
+    ‹list_length›).
+ K. Dávejte si pozor na překlepy a pravopisné chyby. Zbytečně
+    znesnadňují pochopení a (zejména v kombinaci s našeptávačem)
+    lehce vedou na skutečné chyby způsobené záměnou podobných ale
+    jinak napsaných jmen. Navíc kód s překlepy v názvech působí
+    značně neprofesionálně.
+
+¹ Nejde zde pouze o samotný fakt, že je potřeba něco vyhledat. Mohlo
+  by se zdát, že tento problém řeší IDE, které nás umí „poslat“ na
+  příslušnou definici samo. Hlavní zdržení ve skutečnosti spočívá
+  v tom, že musíme přerušit čtení předchozího celku. Na rozdíl od
+  počítače je pro člověka „zanořování“ a zejména pak „vynořování“ na
+  pomyslném zásobníku docela drahou operací.
+
+### 3. Stav a data
+
+Udržet si přehled o tom, co se v programu děje, jaké jsou vztahy
+mezi různými stavovými proměnnými, co může a co nemůže nastat, je
+jedna z nejtěžších částí programování.
+
+TBD: Vstupní podmínky, invarianty, …
+
+### 4. Řízení toku
+
+Přehledný, logický a co nejvíce lineární sled kroků nám ulehčuje
+pochopení algoritmu. Časté, komplikované větvení je naopak těžké
+sledovat a odvádí pozornost od pochopení důležitých myšlenek.
+
+TBD.
+
+### 5. Volba algoritmů a datových struktur
+
+TBD.
+
+### 6. Komentáře
+
+Nejde-li myšlenku předat jinak, vysvětlíme ji doprovodným
+komentářem. Čím těžší myšlenka, tím větší je potřeba komentovat.
+
+ A. Podobně jako jména entit, komentáře které jsou součástí kódu
+    píšeme anglicky.²
+ B. Případný komentář jednotky kódu by měl vysvětlit především „co“
+    a „proč“ (tzn. jaký plní tato jednotka účel a za jakých
+    okolností ji lze použít).
+ C. Komentář by také neměl zbytečně duplikovat informace, které jsou
+    k nalezení v hlavičce nebo jiné „nekomentářové“ části kódu –
+    jestli máte například potřebu komentovat parametr funkce,
+    zvažte, jestli by nešlo tento parametr lépe pojmenovat nebo
+    otypovat.
+ D. Komentář by «neměl» zbytečně duplikovat samotný spustitelný kód
+    (tzn. neměl by se zdlouhavě zabývat tím „jak“ jednotka vnitřně
+    pracuje). Zejména jsou nevhodné komentáře typu „zvýšíme
+    proměnnou i o jedna“ – komentář lze použít k vysvětlení «proč»
+    je tato operace potřebná – co daná operace dělá si může kažďý
+    přečíst v samotném kódu.
+
+² Tato sbírka samotná představuje ústupek z tohoto pravidla: smyslem
+  našich komentářů je naučit Vás poměrně těžké a často nové
+  koncepty, a její cirkulace je omezená. Zkušenost z dřívějších let
+  ukazuje, že pro studenty je anglický výklad značnou bariérou
+  pochopení. Přesto se snažte vlastní kód komentovat anglicky –
+  výjimku lze udělat pouze pro rozsáhlejší komentáře, které byste
+  jinak nedokázali srozumitelně formulovat. V praxi je angličtina
+  zcela běžně bezpodmínečně vyžadovaná.
+
+### 7. Formální úprava
+
+TBD.

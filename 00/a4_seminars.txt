@@ -1,0 +1,67 @@
+## Cvičení
+
+Těžiště tohoto předmětu je jednoznačně v samostatné domácí práci –
+učit se programovat znamená zejména hodně programovat. Společná
+cvičení sice nemohou tuto práci nahradit, mohou Vám ale přesto
+v lecčem pomoct. Smyslem cvičení je:
+
+ 1. analyzovat problémy, na které jste při samostatné domácí práci
+    narazili, a zejména prodiskutovat, jak je vyřešit,
+ 2. řešit programátorské problémy společně (s cvičícím, ve dvojici,
+    ve skupině) – nahlédnout jak o programech a programování uvažují
+    ostatní a užitečné prvky si osvojit.
+
+Cvičení je rozděleno na dva podobně dlouhé segmenty, které
+odpovídají těmto bodům. První část probíhá přibližně takto:
+
+ • cvičící vybere ty z Vámi odevzdaných příprav, které se mu zdají
+   něčím zajímavé – ať už v pozitivním, nebo negativním smyslu,
+   
+   ◦ řešení bude «anonymně» promítat na plátno a u každého otevře
+     diskusi o tom, čím je zajímavé;
+   ◦ Vaším úkolem je aktivně se do této diskuse zapojit (můžete se
+     například ptát proč je daná věc dobře nebo špatně a jak by se
+     udělala lépe, vyjádřit svůj názor, odpovídat na dotazy
+     cvičícího),
+   ◦ k promítnutému řešení se můžete přihlásit a ostatním přiblížit,
+     proč je napsané tak jak je, nebo klidně i rozporovat případnou
+     kritiku (není to ale vůbec nutné),
+   
+ • dále podobným způsobem vybere vzájemné (peer) recenze, které jste
+   v předchozím týdnu psali, a stručně je s Vámi prodiskutuje
+   (celkovou strukturu recenze, proč je který komentář dobrý nebo
+   nikoliv, jestli nějaký komentář chybí, atp.) – opět se můžete
+   (resp. byste se měli) zapojovat,
+ • na Vaši žádost lze ve cvičení analogicky probrat «neúšpěšná»
+   řešení příkladů (a to jak příprav, tak příkladů z uzavřených
+   sad).
+
+Druhá část cvičení je variabilnější, ale bude se vždy točit kolem
+bodů za aktivitu (každý týden můžete za aktivitu získat maximálně 3
+body).
+
+Ve čtvrtém, osmém a dvanáctém týdnu proběhnou „vnitrosemestrálky“
+kde budete řešit samostatně jeden příklad ze sbírky, bez možnosti
+hledat na internetu – tak, jak to bude na závěrečném testu; každé
+úspěšné řešení (tzn. takové, které splní verity testy) získá ony 3
+body za aktivitu pro daný týden.
+
+V ostatních týdnech budete ve druhém segmentu kombinovat různé
+aktivity, které budou postavené na příkladech typu ‹r› z aktuální
+kapitoly (které konkrétní příklady budete ve cvičení řešit vybere
+cvičící, může ale samozřejmě vzít v potaz Vaše preference):
+
+ 1. Můžete se přihlásit k řešení příkladu na plátně, kdy primárně
+    vymýšlíte řešení Vy, ale zbytek třídy Vám bude podle potřeby
+    radit, nebo se ptát co/jak/proč se v řešení děje. U jednodušších
+    příkladů se od Vás bude také očekávat, že jako součást řešení
+    doplníte testy.
+ 2. Cvičící Vám může zadat práci ve dvojicích – první dvojice, která
+    se dopracuje k funkčnímu řešení získá možnost své řešení
+    předvést zbytku třídy – vysvětlit jak a proč funguje, odpovědět
+    na případné dotazy, opravit chyby, které v řešení publikum
+    najde, atp. – a získat tak body za aktivitu. Získané 3 body
+    budou rozděleny rovným dílem mezi vítězné řešitele.
+ 3. příklad můžete také řešit společně jako skupina – takto
+    vymyšlený kód bude zapisovat cvičící (body za aktivitu se
+    v tomto případě neudělují).

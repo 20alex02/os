@@ -1,0 +1,53 @@
+## Hodnocení
+
+Abyste předmět úspěšně ukončili, musíte v «každém bloku¹» získat «60
+bodů». Žádné další požadavky nemáme.
+
+Body lze získat mnoha různými způsoby (přesnější podmínky naleznete
+v následujících sekcích této kapitoly). V blocích 1-3 (probíhají
+během semestru) jsou to:
+
+ • za každou úspěšně odevzdanou přípravu «1» bod (max. 6 bodů každý
+   týden, nebo «24/blok»),
+ • za každou přípravu, která projde „verity“ testy navíc «0,5» bodu
+   (max. 3 body každý týden, nebo «12/blok»),
+ • za účast³ na cvičení získáte 3 body (max. tedy «12/blok»),
+ • za aktivitu ve cvičení 3 body (max. tedy «12/blok»).
+
+Za přípravy a cvičení lze tedy získat teoretické maximum «60» bodů.
+Dále můžete získat:
+
+ • «10» bodů za úspěšně vyřešený příklad ze sady domácích úloh
+   (celkem vždy «60/blok»).
+
+V blocích 2-4 navíc můžete získat body za kvalitu řešení příkladů ze
+sady úloh předchozího bloku:
+
+ • za kvalitu kódu max. «5» bodů za příklad (celkem «30/blok»).
+
+Konečně blok 4, který patří do zkouškového období, nemá ani cvičení
+ani sadu domácích úloh. Krom bodů za kvalitu kódu ze třetí sady lze
+získat:
+
+ • «15» bodů za každý zkouškový příklad (celkem «90/blok»).
+
+Celkově tedy potřebujete:
+
+ • blok 1: «60/120» bodů,
+ • blok 2: «60/150» bodů,
+ • blok 3: «60/150» bodů,
+ • blok 4: «60/120» bodů (neplatí pro ukončení zápočtem).
+
+¹ Máte-li předmět ukončen zápočtem, čtvrtý blok a tedy ani závěrečný
+  test pro Vás není relevantní. Platí požadavek na 3×60 bodů z bloků
+  v semestru.
+
+³ V případě, že jste «řádně omluveni» v ISu, nebo Vaše cvičení
+  «odpadlo» (např. padlo na státní svátek), můžete body za účast
+  získat buď náhradou v jiné skupině (pro státní svátky dostanete
+  instrukce mailem, individuální případy si domluvte s cvičícími
+  obou dotčených skupin). Nemůžete-li účast nahradit takto,
+  «domluvte se» se svým cvičícím (v tomto případě lze i mailem) na
+  vypracování 3 rozšířených příkladů ze sbírky (přesné detaily Vám
+  sdělí cvičící podle konkrétní situace). Neomluvenou neúčast lze
+  nahrazovat «pouze» v jiné skupině a to max. 1–2× za semestr.

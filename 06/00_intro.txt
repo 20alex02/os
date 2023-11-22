@@ -1,0 +1,174 @@
+# Složky (adresáře)
+
+V této kapitole budeme pracovat s adresáři – speciálním typem
+souboru, který je tvořen odkazy na další soubory. Ze známých
+abstraktních datových struktur se adresář podobá na «slovník»
+(asociativní pole). Adresář (složka) se skládá z «položek» – dvojic
+klíč/hodnota:
+
+ 1. klíč je unikátní «jméno» (řetězec, který neobsahuje nulový znak
+    ani znak ‹/›),
+ 2. hodnota je «odkaz» na soubor (i-uzel) libovolného typu (může být
+    opět adresářem).
+
+Jména jsou unikátní pouze v rámci jednoho adresáře. Soubor (který
+není adresářem)¹ může být odkazován více než jednou položkou, a
+položky, které odkazují na stejný soubor, mohou být ve stejné nebo
+různých adresářích (složkách).
+
+Ukázky:
+
+ 1. ‹newest›  – nalezení nejnovějšího souboru v zadané složce,
+ 2. ‹depth›   – počítání maximální hloubky adresářové struktury,
+ 3. ‹refs›    – kolik odkazů na soubor je v zadaném stromě,
+ 4. ‹rewrite› – přepsání souboru bez rizika poškození.
+
+Přípravy:
+
+ 1. ‹fcount›  – počítání obyčejných souborů v adresáři,
+ 2. ‹access›  – kontrola práv u souborů zadaných seznamem,
+ 3. ‹list›    – sestavení spojovaného seznamu názvů souborů,
+ 4. ‹archive› – přesun starých souborů do archivní složky,
+ 5. ‹find›    – rekurzivní hledání podle jména,
+ 6. ‹du›      – využití místa složkou (bez tvrdých odkazů).
+
+¹ Kdybychom umožnili, aby na jeden adresář odkazovalo více různých
+  adresářových položek, celková struktura by tvořila obecný graf.
+  Toto omezení existuje, protože práce s grafem je obecně mnohem
+  složitější než se stromem.
+
+## Systémová volání
+
+V této kapitole budeme nově potřebovat volání ‹fstatat› a
+‹renameat›, která slouží pro práci s odkazy v adresářích, a také
+volání ‹dup›, které umožňuje klonovat existující popisovače.
+
+### ‹fstatat›
+
+Toto volání umožňuje získat informace o i-uzlu pomocí nějakého
+odkazu, který na tento i-uzel vede. Má 4 parametry:
+
+ • ‹fd› je popisovač otevřeného adresáře, ve kterém bude odkaz
+   hledat,
+ • ‹path› je jméno, případně cesta, ke kýženému odkazu,
+ • ‹sb› je ukazatel na paměť, kam volání ‹fstatat› uloží informace
+   o i-uzlu formou struktury ‹stat›,
+ • ‹flag› je číselný příznak – může být buď 0 nebo
+   ‹AT_SYMLINK_NOFOLLOW›, které zabezpečí, že je-li soubor (i-uzel)
+   měkkým odkazem, volání ‹fstatat› bude pracovat přímo s tímto
+   i-uzlem, a nikoliv s i-uzlem, který je tímto měkkým odkazem
+   nepřímo určen.
+
+Zejména pro účely procházení adresářové struktury je důležité
+používat režim ‹AT_SYMLINK_NOFOLLOW› a případné měkké odkazy, je-li
+to žádoucí, zpracovat odděleně.
+
+Je-li volání ‹fstatat› úspěšné, vyplněná struktura ‹stat› obsahuje
+řadu užitečných informací, mimo jiné:
+
+ • ‹st_mode› popisuje jednak typ souboru (obyčejný soubor, adresář,
+   měkký odkaz, atp.), jednak jeho přístupová práva,
+ • ‹st_size› je velikost souboru v bajtech,
+ • ‹st_blocks› je počet bloků, které jsou použity k uložení souboru,
+ • ‹st_?tim›¹, kde ‹?› je ‹a›, ‹c› nebo ‹m›, obsahuje informace
+   o čase posledního přístupu (Access), změny metadat (Change) nebo
+   změny dat (Modification).²
+
+### ‹renameat›
+
+TBD.
+
+### ‹dup›
+
+TBD.
+
+### Otevírání složek pomocí ‹openat›
+
+Dosud jste nemuseli ve svém kódu řešit otevírání složek – pro tento
+účel se Vám může hodit příznak ‹O_DIRECTORY›, který lze uvést ve
+třetím parametru systémového volání ‹openat›. Tím je zaručeno, že
+kdyby odkaz zadaného jména vedl na jiný typ souboru (např.
+obyčejný), volání ‹openat› selže.
+
+Kvůli „zabudované“ souběžnosti v souborovém systému může i pokus
+o otevření odkazu, který před malou chvílí ‹fstatat› označil za
+složku, vést k otevření něčeho jiného, např. obyčejného souboru.
+Použití ‹O_DIRECTORY› může v takových případech značně zjednodušit
+diagnostiku.
+
+¹ Názvy těchto atributů skutečně nemají na konci písmeno e, a to
+  z historických důvodů – ‹st_mtime› atp. byl název analogických
+  atributů, které ale měly pouze sekundové rozlišení. Pro
+  kompatibilitu se staršími systémy je ‹st_mtime› (atp.) makro,
+  které se přepíše na ‹st_mtim.tv_sec›.
+² Pozor, ‹ctim› «není» od creation – kdy byl soubor vytvořen není
+  možné (standardními prostředky) zjistit.
+
+## Knihovní podprogramy
+
+Struktura ‹DIR› (analogická struktuře ‹FILE›) je knihovním rozhraním
+pro práci s adresáři, resp. jejich položkami. Norma POSIX nepopisuje
+nízkoúrovňové rozhraní pro čtení adresáře – to je interní záležitost
+každého operačního systému.¹ Pro vytvoření struktury ‹DIR› budeme
+používat podprogram ‹fdopendir›, pro další práci s ní pak
+‹rewinddir› a ‹readdir›, a zdroje uvolníme podprogramem ‹closedir›.
+
+### ‹fdopendir›, ‹rewinddir›
+
+Podprogram ‹fdopendir› vytvoří a inicializuje strukturu ‹DIR› a
+vrátí na ni ukazatel (v případě chyby je vrácený ukazatel nulový).
+Předaný popisovač tímto přechází do vlastnictví takto vytvořené
+struktury ‹DIR› a není dovoleno jej nezávisle uzavřít (musíte vždy
+použít ‹closedir›) ani manipulovat pozicí čtení jinak, než
+podprogramem ‹seekdir› (který ale nebudeme potřebovat).²
+
+Popisovač ale lze bezpečně použít jako první parametr pro funkce
+z rodiny ‹*at› (‹openat›, ‹fstatat›, ‹renameat›, atp.) – samozřejmě
+jen do chvíle, kdy je struktura ‹DIR› uvolněna.
+
+Počáteční pozice čtení podprogram ‹fdopendir› nemění – používal-li
+předchozí vlastník tento popisovač ke čtení složek, nebo od chvíle
+jeho vzniku v adresáři přibyly nové položky, může následné čtení
+pomocí ‹readdir› vrátit pouze část položek.
+
+Proto je mezi ‹fdopendir› a prvním použitím ‹readdir› typicky nutné
+použít podprogram ‹rewinddir›, který strukturu ‹DIR› přesune na
+začátek adresáře a zároveň zaručí, že položky, které vznikly až do
+chvíle volání ‹rewinddir› budou pro ‹readdir› viditelné. To se
+samozřejmě netýká položek, které jsou v mezičase odstraněny.
+
+### ‹readdir›
+
+Podprogram ‹readdir› přečte a vrátí další položku ze struktury
+‹DIR›. Výsledkem je ukazatel na strukturu ‹dirent›, která je uložena
+v paměti, která logicky patří rodičovské struktuře ‹DIR›. Další
+volání ‹readdir› na téže instanci ‹DIR› může tuto paměť zneplatnit –
+zejména to znamená, že není možné uchovávat ukazatele na ‹d_name›
+mezi iteracemi cyklu, který prochází položky adresáře. Použití
+‹readdir› na jiné instanci ‹DIR› je ale zcela nezávislé.
+
+Narazí-li ‹readdir› na konec složky (tzn. žádné další položky už
+přečíst nelze), vrátí nulový ukazatel. Rozeznat chybu od konce
+složky lze pouze kontrolou hodnoty ‹errno›, kterou musí programátor
+vždy před voláním ‹readdir› nastavit na nulu, přeje-li si chybu
+detekovat.
+
+Struktura ‹dirent› má pouze dvě předepsané položky: ‹d_ino› a
+‹d_name›.³ Položka ‹d_name› obsahuje řetězec zakončený nulou lze ji
+přímo předat voláním ‹fstatat› nebo ‹openat›.
+
+¹ Většina systémů k tomuto účelu používá nějakou variantu
+  systémového volání ‹getdents›, analogickému k volání ‹read› ale
+  specializovaného pro adresáře. Některé systémy umožňují použít
+  přímo ‹read› i na adresáře. Ve všech případech je formát takto
+  získaných dat specifický pro daný systém, případně i jeho
+  konkrétní verzi. V aplikacích tedy používáme knihovní rozhraní
+  postavené na struktuře ‹DIR›.
+² Není-li popisovač v našem výhradním vlastnictví, musíme pro účely
+  použití ‹fdopendir› vytvořit kopii systémovým voláním ‹dup› (viz
+  výše).
+³ Na některých systémech obsahuje také položku ‹d_type›, její
+  hodnota ale nemusí být uvedena, v závislosti na okolnostech (může
+  být ‹DT_UNKNOWN›). Potřebujeme-li znát typ souboru, je «nutné»
+  provést ‹fstatat›, položka ‹d_type› je pouze optimalizace, která
+  může «někdy» ušetřit volání ‹fstatat›.
