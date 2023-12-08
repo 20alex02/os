@@ -1,0 +1,116 @@
+# Spustitelné soubory
+
+V této kapitole se budeme zabývat spustitelnými soubory a jejich
+spuštěním (prozatím pouze v existujícím procesu). Používat budeme
+nově zejména systémová volání z rodiny ‹exec›. Podíváme se také na
+proměnné prostředí a s nimi související funkce ‹getenv›, ‹setenv› a
+‹putenv›. Konečně se bude hodit také varianta ‹dup2› již známého
+volání ‹dup›.
+
+Přípravy:
+
+ 1. ‹shell›    – spuštění jednoduchého shellového skriptu
+ 2. ‹execp›    – jako ‹execvp› ale automaticky nastaví argv0
+ 3. ‹binfmt›   – určení formátu spustitelného souboru
+ 4. ‹uexec›    – spustit soubor pokud není set[gs]id
+ 5. ‹withfile› – přesměruje zadaný soubor na stdin zadaného příkazu
+ 6. ‹env›      – spustí příkaz s rozšířeným prostředím
+
+## Systémová volání
+
+Hlavní novinkou této kapitoly je rodina volání ‹exec›. Základní
+verzí tohoto volání je ‹execve›, nicméně existuje několik dalších
+užitečných variant popsaných níže.
+
+### ‹dup2›
+
+Podobně jako volání ‹dup› vytvoří duplikát existujícího popisovače
+otevřeného souboru, s tím rozdílem, že hodnotu nového popisovače
+určí druhý parametr. Je tak možné „přebít“ existující popisovač
+nějakým jiným. Toto systémové volání je zejména užitečné pro
+přesměrování popisovačů standardního vstupu a výstupu (‹stdin›,
+‹stdout›, ‹stderr›).
+
+### ‹execve›
+
+Nahradí program v aktuálním proces novým programem, který je načten
+z předaného souboru. Soubor, který obsahuje nový program, je předán
+cestou (absolutní, nebo relativní k aktuální pracovní složce).
+Chceme-li spouštět programy relativně vůči otevřené složce,
+dostáváme se do podobné situace jako při použití ‹mkstemp› v šesté
+kapitole, kterou lze řešit použitím volání ‹fchdir›.¹
+
+Volání ‹execve› má dva další parametry: pole ukazatelů na parametry
+‹argv› a pole ukazatelů na proměnné prostředí ‹envp›. V obou
+případech je toto pole ukončeno nulovým ukazatelem (pozor, nikoliv
+ukazatelem na prázdný řetězec). Pozor, na indexu 0 pole ‹argv› se
+nachází «název programu», nikoliv jeho první parametr.
+
+### ‹execv›
+
+Je zjednodušená verze ‹execve›, liší se pouze tím, že místo
+parametru ‹envp›, které by určilo proměnné prostředí, je novému
+programu předáno prostředí stávající.
+
+### ‹execl›, ‹execle›
+
+Je variadická verze volání ‹execv›, výhodná v situaci, kdy je seznam
+parametrů pevnou součástí programu – nemusíme pak konstruovat pole
+‹argv›, ale jeho jednotlivé položky přímo předáme volání ‹execl›.
+Poslední parametr musí být nulový ukazatel. Existuje i verze
+‹execle›, která navíc umožní (po koncovém nulovém ukazateli) předat
+ještě parametr ‹envp› se stejným významem, jako u ‹execve›.
+
+### ‹execlp›, ‹execvp›
+
+Konečně varianty s názvem končícím písmenem ‹p› jsou analogické
+příslušným kmenovým verzím (‹execlp› jako ‹execl›, ‹execvp› jako
+‹execv›), ale místo cesty k spustitelnému souboru jim předáváme
+pouze název příkazu. Tento příkaz je vyhledán podle proměnné
+prostředí ‹PATH› a až takto nalezený soubor je spuštěn.
+
+## Knihovní podprogramy
+
+Od chvíle, kdy je program spuštěn, jsou proměnné prostředí uloženy
+jako běžná textová data v paměti programu. Pro práci s těmito daty
+jsou určeny 4 knihovní funkce: ‹getenv›, ‹setenv›, ‹putenv› a
+‹unsetenv›.
+
+### ‹getenv›
+
+Získá proměnnou prostředí podle jména. Výsledkem je ukazatel na
+hodnotu proměnné (pozor, přesto, že návratový typ ‹getenv› je
+‹char *› a nikoliv ‹const char *›, paměť na kterou návratová hodnota
+ukazuje je zakázáno měnit). Není-li předaný řetězec jménem
+existující proměnné prostředí, výsledkem je nulový ukazatel.
+
+### ‹setenv›, ‹unsetenv›
+
+Podprogram ‹setenv› má 3 parametry:
+
+ • ‹name› je jméno proměnné prostředí, kterou si přejeme nastavit,
+ • ‹value› je její nová hodnota,
+ • ‹overwrite› určí, má-li být případná stávající stejnojmenná
+   proměnná nahrazena novou hodnotou.
+
+Podprogram ‹setenv› veškerá předaná data zkopíruje, paměť tedy
+zůstává ve vlastnictví volajícího. Volání ‹setenv› může selhat
+(v takovém případě je výsledkem hodnota -1).
+
+Analogické volání ‹unsetenv› zcela zruší zadanou proměnnou (pozor,
+není to totéž jako nastavení hodnoty na prázdný řetězec).
+
+### ‹putenv›
+
+Vloží řetězec ve formě ‹jméno=hodnota› do prostředí. Existuje-li již
+proměnná stejného jména, je nahrazena. Paměť předaná podprogramu
+‹putenv› se stává vlastnictvím prostředí a volající s ní nesmí dál
+nijak manipulovat (zejména ji nesmí uvolnit – není tedy mimo jiné
+povoleno předat podprogramu ‹putenv› lokální pole).
+
+Podobně jako ‹setenv›, výsledkem je v případě chyby hodnota -1.
+
+¹ POSIX předepisuje také volání ‹fexecve›, které lze kombinovat
+  s voláním ‹openat› a spuštění tak provést vůči otevřené složce bez
+  modifikace globálního stavu. Žel volání ‹fexecve› není zatím příliš
+  široce implementováno, takže se mu prozatím vyhneme.

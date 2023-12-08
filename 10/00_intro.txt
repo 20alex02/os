@@ -1,0 +1,113 @@
+# Procesy
+
+V této kapitole se seznámíme se systémovými voláními pro práci
+s procesy, zejména ‹fork›, který vytvoří nový proces, a ‹waitpid›,
+které počká na ukončení takto vytvořeného procesu.
+
+Ukázky:
+
+ 1. ‹wait› – vytvoření a ukončení procesu
+ 2. ‹rle›  – asynchronní manipulace s daty
+
+Přípravy:
+
+ 1. ‹counter› – počítání bajtů, asynchronně
+ 2. ‹mcount›  – totéž, ale s více popisovači najednou
+ 3. ‹meter›   – obousměrný průtokoměr pro proudové spojení
+ 4. ‹pipe›    – analogie shellové roury ‹prog₁ | prog₂›
+ 5. ‹mpipe›   – totéž, ale s měřením průtoku
+ 6. ‹compute› – jednoduchý výpočetní server
+
+## Systémová volání
+
+Nejdůležitější novou systémovou službou této kapitoly je ‹fork›,
+který vytvoří kopii aktuálního procesu.
+
+### ‹fork›
+
+Atypicky, systémové volání ‹fork› nemá žádné parametry – tento
+zdánlivý nedostatek ovšem kompenzuje tím, že se vrátí dvakrát,
+pokaždé s jiným výsledkem – a pokaždé v jiném procesu.
+
+Během systémového volání ‹fork› je vytvořen nový proces, který svoji
+existenci začne jako kopie toho původního, který ‹fork› zavolal.
+Nový proces se liší jen v několika „metadatových“ parametrech –
+zejména má unikátní ‹pid› (číselný identifikátor procesu, z angl.
+Process IDentifier).
+
+Nový proces (tzv. potomek) má stejný adresní prostor jako ten
+původní (tzv. rodič), ale data uložená v paměti procesu jsou zcela
+nezávislá.¹ Z praktického hlediska to zejména znamená, že zápisy do
+paměti, které provede některý z těchto dvou procesů, nebudou pro ten
+druhý viditelné.
+
+Oba procesy pokračují návratem z volání ‹fork› – v rodičovském
+procesu je výsledkem tohoto volání ‹pid› potomka, zatímco
+v potomkovi je výsledkem volání ‹fork› nula. Toto je také základní
+mechanismus, podle kterého program určí, ve kterém z procesů je jeho
+současná kopie spuštěna.
+
+V případě, že ‹fork› selže, žádný nový proces nevznikne a vrátí se
+pouze v původním rodičovském procesu, s výsledkem -1. Nejčastějším
+důvodem pro takové selhání je dosažení limitu na počet souběžně
+aktivních procesů.
+
+### ‹exit›
+
+Protějškem volání ‹fork› v potomkovi je ‹exit›, který aktuální
+proces ukončí a tedy se již do volajícího programu nevrátí. Jediný
+parametr volání ‹exit› je celé číslo ‹status›, jehož spodních 8 bitů
+je předáno rodičovskému procesu prostřednictvím odpovídajícího
+volání ‹waitpid› (zbytek hodnoty ‹status› je pro naše účely
+nedostupný).
+
+### ‹waitpid›
+
+Protějškem volání ‹fork› v rodiči je ‹waitpid›, který má
+3 parametry:
+
+ • ‹pid_t pid› – identifikátor procesu, na který hodláme čekat
+   (tento proces musí být přímým potomkem aktuálního procesu),
+ • ‹int *status› – adresa místa v paměti, kam bude uložen kód
+   popisující výsledek procesu ‹pid›,
+ • ‹int options› – příznaky, pro naše účely nula nebo ‹WNOHANG›.
+
+Je-li ‹options› nula, volání ‹waitpid› bude blokovat² až do chvíle,
+než je příslušný proces ukončen, je-li naopak předáno ‹WNOHANG›,
+volání ‹waitpid› se ihned vrátí, bez ohledu na to, jestli proces
+s identifikátorem ‹pid› již skončil, nebo nikoliv – v tom druhém
+případě je výsledkem -1 a ‹errno› je nastaveno na ‹EAGAIN›, podobně
+jako při neblokujících vstupně-výstupních operacích.
+
+Proces-potomek zcela zanikne až voláním ‹waitpid› v rodiči (zejména
+tedy nevzniká žádné riziko, že mezi voláním ‹exit› v potomkovi a
+‹waitpid› v rodiči by bylo ‹pid› přiděleno nějakému jinému procesu).
+
+¹ Pro podrobnější vysvětlení viz kapitolu 1 skript.
+² Žel, neexistuje přenositelný mechanismus, který by umožnil
+  skloubit čekání na ukončení potomka s čekáním na vstup a výstup
+  (jinými slovy, ‹waitpid› není možné zařadit do volání ‹poll›).
+
+## Popisovače a ‹fork›
+
+Při vytvoření nového procesu se krom obsahu paměti dědí od rodiče
+také popisovače otevřených souborů, a to stejným způsobem, jakým
+vzniká nové číslo popisovače voláním ‹dup›¹ – to má dva velmi
+důležité důsledky:
+
+ • rodič a potomek sdílí pozici v otevřeném souboru, tzn. volání
+   ‹read› v jednom z procesů posune pozici i v procesu druhém
+   (podobně ‹write›),
+ • je-li zděděný popisovač svázán se zapisovacím koncem roury, nebo
+   se socketem, spojení bude ukončeno až ve chvíli, kdy popisovač
+   zavřou «oba procesy».
+
+Proto je potřeba věnovat pozornost tomu, aby po volání ‹fork› daný
+proces uzavřel všechny popisovače, které logicky patří tomu druhému
+(např. použijeme-li rouru pro předávání dat z rodiče do potomka,
+musí potomek zapisovací konec roury ihned po návratu z volání ‹fork›
+uzavřít). V opačném případě příjemce dat na takto ustaveném
+komunikačním kanálu «uvázne», jakmile odesílatel zavře svoji kopii
+popisovače.
+
+¹ Podrobněji popsáno v úvodu kapitoly 6.

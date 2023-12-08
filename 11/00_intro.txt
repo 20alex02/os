@@ -1,0 +1,185 @@
+# Vlákna
+
+Tato kapitola se bude zabývat vícevláknovými programy (tzn.
+takovými, které provádí několik souběžných výpočtů v jednom procesu
+a tedy i adresním prostoru).
+
+Ukázky:
+
+ 1. ‹xxx›
+ 2. ‹proxy›   – jednoduchý reverzní proxy server
+
+Přípravy:
+
+ 1. ‹counter› – asynchronní počítání přečtených bajtů
+ 2. ‹memo›    – server se čtyřbajtovou pamětí
+ 3. ‹meter›   – přeposílání dat mezi popisovači
+ 4. ‹multi›   – server s několika slovy paměti
+ 5. ‹kvd›     – key-value store daemon
+ 6. ‹gather›  – rozvětvení a sloučení výpočtu
+
+## Systémové služby
+
+V této kapitole přidáme dvě nové služby – vláknové ekvivalenty
+systémových volání ‹fork› a ‹waitpid›, totiž ‹pthread_create›
+(vytvoří ve stávajícím procesu nové vlákno) a ‹pthread_join› (vyčká
+na ukončení běžícího vlákna a uvolní zdroje s ním spojené).
+
+### ‹pthread_create›
+
+Přesto, že v kontextu vláken plní ‹pthread_create› stejnou úlohu
+jako ‹fork›, má velmi odlišné rozhraní – řízení v novém vlákně
+začíná předaným podprogramem, nikoliv druhým návratem služby
+‹pthread_create›. Souhrn parametrů:
+
+ • ‹pthread_t *thread› je «výstupní» parametr – na předanou adresu
+   bude zapsán identifikátor nově vytvořeného vlákna,
+ • ‹const pthread_attr_t *attr› je ukazatel na strukturu, která
+   popisuje atributy nového vlákna – je-li tento ukazatel nulový (to
+   bude typicky náš případ), použijí se implicitní hodnoty,
+ • ‹start_routine› je funkční ukazatel – takto určený podprogram
+   musí mít jeden parametr typu ‹void *› a návratovou hodnotu
+   stejného typu, a je použit jako vstupní bod nového vlákna, přitom
+   návratem ‹start_routine› toto vlákno skončí,
+ • ‹void *arg› je hodnota, která bude beze změny použita jako
+   parametr pro ‹start_routine› – můžeme tak novému vláknu předat
+   nějakou počáteční informaci.
+
+Návratová hodnota ‹start_routine› není pro operační systém nijak
+podstatná – opět slouží pouze ke komunikaci s ostatními vlákny
+v témže procesu (viz níže).
+
+### ‹pthread_exit›
+
+Je alternativním způsobem ukončení vlákna a podobá se na systémovou
+službu ‹exit›. Jeho jediným parametrem je ukazatel (typu ‹void *›),
+který lze získat použitím ‹pthread_join› (viz níže). U vláken je
+nicméně typické spíše ukončení návratem ze ‹start_routine›.
+
+### ‹pthread_join›
+
+Vlákno může samozřejmě kdykoliv skončit asynchronně – pro účely
+synchronizace s ukončením vlákna existuje služba ‹pthread_join›,
+která se podobá na ‹waitpid› – vyčká na ukončení zadaného vlákna a
+předá volajícímu informaci o jeho výsledku (návratové hodnotě
+‹start_routine›, nebo bylo-li vlákno ukončeno použitím
+‹pthread_exit›, jeho parametru). Na rozdíl od procesů, mezi vlákny
+neexistuje hierarchie – libovolné vlákno může použít ‹pthread_join›
+na libovolné jiné.¹
+
+Podobně jako u procesů, ‹pthread_join› má i druhou funkci – uvolní
+zdroje svázané s ukončeným vláknem. Je tedy důležité zavolat
+‹pthread_join› pro každé nastartované vlákno, a to i v případě, kdy
+tato synchronizace není nutná.²
+
+¹ S výjimkou hlavního vlákna – ukončení tohoto vlákna ukončí celý
+  proces, a tedy nemá smysl volat na něj ‹pthread_join›.
+² Alternativou je v případě vláken ‹pthread_detach›, ale správné
+  použití takto odpojených vláken je poměrně komplikované, budeme se
+  jim tedy v tomto předmětu vyhýbat.
+
+## Souběžný přístup do paměti
+
+S vlákny přichází také důležitý nový problém¹ – náš program může
+k některé paměťové buňce přistupovat souběžně, tzn. způsobem, kdy
+dva přístupy (čtení nebo zápis) nejsou uspořádány relací
+předcházení.² Souběžný přístup do paměti je obzvláště náchylný na
+hazard souběhu, zejména tento velmi běžný vzor:
+
+ 1. načteme hodnotu ⟦X⟧ z adresy ⟦A⟧,
+ 2. nad ⟦X⟧ provedeme nějaký výpočet, ⟦Y = f(X)⟧,
+ 3. výsledek ⟦Y⟧ uložíme zpět na adresu ⟦A⟧.
+
+Provedeme-li tento postup souběžně ve dvou instancích se stejnou
+adresou ⟦A⟧, můžeme dostat až tři potenciálně různé výsledky
+(hodnoty zapsané na adrese ⟦A⟧).
+
+Množinu adres ⟦C⟧, k nimž program přistupuje souběžně, a alespoň
+některé z těchto přístupů jsou zápisy, budeme nazývat «sdílenými
+adresami» nebo «sdílenou pamětí». Proměnnou uloženou ve sdílené
+paměti pak budeme nazývat «sdílenou proměnnou».
+
+### Souběžný přístup do paměti
+
+V této kapitole se budeme výše uvedenému problematickému vzoru
+prozatím vyhýbat – do sdílené paměti (proměnné) budeme:
+
+ • zapisovat pouze zcela novou hodnotu, nezávislou na hodnotách
+   uložené kdekoliv ve sdílené paměti (zejména tedy na hodnotě dosud
+   uložené na téže adrese),
+ • s přečtenou hodnotou dále pracovat pouze způsobem, který není pro
+   zbývající vlákna pozorovatelný.
+
+Tím bude zaručeno, že se vyhneme vnitřním hazardům souběhu – stav
+našeho programu bude vždy pevně určen časovým sledem vnějších
+(komunikačních) událostí.
+
+Pozor, tato omezení se nevztahují na události mimo náš podprogram
+(resp. systém podprogramů) – programujeme-li například vícevláknový
+server, klient může získat nějakou hodnotu, která závisí na
+hodnotách uložených ve sdílené paměti, provést s ní nějaký výpočet,
+a serveru takto vypočtenou hodnotu opět doručit k dalšímu zpracování
+nebo uložení.
+
+Klient se zde vystavuje možnému hazardu souběhu, a je odpovědností
+tohoto klienta se s tímto rizikem vypořádat. Tato situace není
+odlišná od libovolné jiné komunikace se souběžným serverem a zejména
+není specifická pro vícevláknové servery. Na úplně stejný problém
+může klient narazit při komunikaci s jednoprocesovým, jednovláknovým
+serverem, třeba postaveným na mechanismu ‹poll›.
+
+### Atomický zápis a čtení
+
+Procesory a překladače typicky nezaručují, že běžné mechanismy
+přístupu do paměti budou atomické vůči souběžnému přístupu na tutéž
+adresu – tedy i na pohled bezpečný (ve smyslu předchozí sekce) zápis
+nebo čtení může ve výsledném programu představovat chybu atomicity.
+
+Musíme proto přístupy na sdílené adresy označit tak, aby byl
+strojový kód, který překladač pro daný přístup na adresu ⟦A⟧
+vygeneruje, z tohoto pohledu bezpečný:
+
+ 1. musí skutečně dojít k přístupu na adresu ⟦A⟧, tzn. překladač
+    zejména nesmí přístup do paměti nahradit použitím registru,
+    který by měl v sekvenčním programu stejnou hodnotu jako paměť
+    na adrese ⟦A⟧,³
+ 2. musí použít vhodné instrukce procesoru – ne všechny instrukce
+    všech procesorů se při souběžném přístupu chovají korektně,
+    mohou například načíst hodnotu, která nikdy na danou adresu
+    nebyla zapsaná.⁴
+
+Jazyk C99 žel k tomuto účelu žádné prostředky nemá,⁵ obrátíme se
+proto na standard C11, konkrétně prostředky definované v hlavičkovém
+souboru ‹stdatomic.h›.⁶ V této kapitole si vystačíme s deklaracemi
+proměnných typu ‹atomic_foo›: ‹atomic_int›, ‹atomic_uint›,
+‹atomic_long›, ‹atomic_ulong› atp. Přístup k takto deklarovaným
+proměnným bude splňovat požadavky obou výše uvedených bodů.
+
+«Pozor!» To neznamená, že by byl bezpečný libovolný výpočet, který
+používá proměnné tohoto typu. Atomické proměnné jsou atomické pouze
+pro jediné čtení nebo jediný zápis.⁷
+
+¹ Striktně vzato jsme na tento problém mohli narazit i dříve, např.
+  při souběžném použití sdíleného mapování vytvořeného systémovým
+  voláním ‹mmap› (ze dvou procesů). Podobné konstrukce jdou ale nad
+  rámec tohoto předmětu.
+² Podrobněji viz kapitoly 5 a 6 skript.
+³ Toto je velmi častá optimalizace – umí-li překladač prokázat, že
+  program na adresu ⟦A⟧ od posledního čtení nezapisoval, a předchozí
+  přečtená hodnota je stále uložena v registru, použije tuto
+  předchozí adresu. Je-li adresa ⟦A⟧ sdílená, toto nebude fungovat,
+  ale překladače jazyka C předpokládají, že adresy sdílené nejsou,
+  není-li v programu explicitně uvedeno jinak.
+⁴ Klasickým příkladem je tzv. „tearing“ kdy vícebajtový zápis
+  provedený jedinou instrukcí proběhne sekvenčně, a souběžná
+  instrukce přečte část původní a část nové hodnoty. To se může při
+  použití nezarovnaných adres stát i s malými hodnotami, např.
+  jediným 32bitovým nebo 64bitovým slovem.
+⁵ Klíčové slovo ‹volatile›, které možná znáte, sice řeší první bod,
+  nikoliv ale ten druhý, a překladač tak může stále vygenerovat
+  nekorektní program.
+⁶ Pozor, rozhraní C11 pro práci s vlákny (hlavička ‹threads.h› a
+  podprogramy rodiny ‹thrd›) v tomto předmětu používat nebudeme.
+⁷ Složitějšími atomickými operacemi se v tomto předmětu zabývat
+  nebudeme – omezíme se na použití hotových synchronizačních
+  konstrukcí (mutex, ‹rwlock›, podmínková proměnná, atp.).

@@ -1,0 +1,23 @@
+# Souběžná komunikace
+
+Předmětem této kapitoly bude souběžná komunikace s několika
+protistranami. Připomeneme si systémové volání ‹poll›, seznámíme se
+s implementací serveru (programu, který má přidělenu adresu, a který
+čeká na připojení klienta, resp. klientů) a poté oba koncepty
+spojíme v server, který bude souběžně komunikovat s několika klienty
+zároveň, a to tak, že žádný klient nebude jinými klienty blokován.
+
+Ukázky:
+
+ 1. ‹drain›    – použití ‹poll› se sockety
+ 2. ‹server›   – kostra serveru, ‹accept›
+ 3. ‹multi›    – kombinace ‹poll› a ‹accept›
+
+Přípravy:
+
+ 1. ‹poll›     – výběr další akce souběžného serveru
+ 2. ‹seq›      – server, který počítá připojení
+ 3. ‹kvseqd›   – sekvenční verze key-value serveru
+ 4. ‹par›      – počítání souběžných klientů
+ 5. ‹kvpard›   – souběžná verze key-value serveru
+ 6. ‹buffered› – † obousměrná komunikační roura
