@@ -113,47 +113,48 @@
 const char *std_out = "STDOUT";
 const char *std_err = "STDERR";
 
-const char *std_out_details = "STDOUT ";
-
-const char *std_out_no_newline = "STDOUT: no newline\n";
-const char *std_err_no_newline = "STDERR: no newline\n";
-
 struct buffer {
     char *data;
+    int newline;
     int capacity;
     int len;
-    bool newline;
 };
 
 bool write_out(int fd, struct buffer *buf, const char *output_type) {
-    char prefix[PREFIX_LEN];
-    char no_newline[NO_NEWLINE_LEN];
-    snprintf(prefix, PREFIX_LEN, "[%s] ", output_type);
-    snprintf(no_newline, NO_NEWLINE_LEN, "%s: no newline\n", output_type);
+    char prefix[PREFIX_LEN + 1];
+    char no_newline[NO_NEWLINE_LEN + 1];
+    snprintf(prefix, PREFIX_LEN + 1, "[%s] ", output_type);
+    snprintf(no_newline, NO_NEWLINE_LEN + 1, "%s: no newline\n", output_type);
 
     if (write(fd, prefix, PREFIX_LEN) == -1) {
         return false;
     }
     if (buf->len <= MAX_LINE_LEN + 1) {
-        if (!buf->newline) {
-            buf->data[buf->len++] = '\n';
+        if (buf->newline != -1) {
+            return write(fd, buf->data, buf->newline + 1) != -1;
         }
-        if (write(fd, buf->data, buf->len) == -1) {
+        buf->data[buf->len] = '\n';
+        if (write(fd, buf->data, buf->len + 1) == -1) {
             return false;
         }
     } else {
+        char tmp = buf->data[MAX_LINE_LEN];
         buf->data[MAX_LINE_LEN] = '\n';
         if (write(fd, buf->data, MAX_LINE_LEN + 1) == -1) {
             return false;
         }
+        buf->data[MAX_LINE_LEN] = tmp;
+
         char cropped[MAX_LINE_LEN];
-        snprintf(cropped, MAX_LINE_LEN, "%s: cropped %d characters\n", output_type, buf->len - MAX_LINE_LEN);
+        snprintf(cropped, MAX_LINE_LEN, "%s: cropped %d characters\n", output_type,
+                 buf->newline == -1 ? buf->len - MAX_LINE_LEN : buf->newline + 1 - MAX_LINE_LEN);
         if (write(fd, cropped, strlen(cropped)) == -1) {
             return false;
         }
     }
-    if (!buf->newline && write(fd, no_newline, NO_NEWLINE_LEN) == -1) {
-        return false;
+    if (buf->newline == -1) {
+        buf->len = 0;
+        return write(fd, no_newline, NO_NEWLINE_LEN) != -1;
     }
     return true;
 }
@@ -169,13 +170,21 @@ bool realloc_double(struct buffer *buf) {
 }
 
 bool read_pipe(int fd, struct buffer *buf, bool *flag) {
-    buf->len = 0;
-    buf->newline = false;
+    if (buf->len != 0) {
+        buf->len -= buf->newline + 1;
+        memmove(buf->data, buf->data + buf->newline + 1, buf->len);
+    }
+    char *newline = memchr(buf->data, '\n', buf->len);
+    if (newline) {
+        buf->newline = newline - buf->data;
+        return true;
+    }
+    buf->newline = -1;
     ssize_t nread;
     while ((nread = read(fd, buf->data + buf->len, BLOCK_SIZE)) > 0) {
         buf->len += (int) nread;
-        if (memchr(buf->data + buf->len - nread, '\n', nread)) {
-            buf->newline = true;
+        if ((newline = memchr(buf->data + buf->len - nread, '\n', nread))) {
+            buf->newline = newline - buf->data;
             return true;
         }
         if (buf->capacity - buf->len + 1 < BLOCK_SIZE && !realloc_double(buf)) {
@@ -183,6 +192,7 @@ bool read_pipe(int fd, struct buffer *buf, bool *flag) {
         }
     }
     if (nread == -1 /*&& errno != EAGAIN*/) {
+        perror("read");
         return false;
     }
     if (nread == 0) {
@@ -199,7 +209,7 @@ int combine(char **argv, int fd_out, int *status) {
         return -1;
     }
     int pipe_stderr[2];
-    if (pipe(pipe_stdout) == -1) {
+    if (pipe(pipe_stderr) == -1) {
         perror("pipe");
         close(pipe_stdout[0]);
         close(pipe_stdout[1]);
@@ -225,8 +235,8 @@ int combine(char **argv, int fd_out, int *status) {
 
         if (close(pipe_stdout[0]) == -1) exit_status = EXIT_CHILD_FAILURE;
         if (close(pipe_stdout[1]) == -1) exit_status = EXIT_CHILD_FAILURE;
-        if (close(pipe_stdout[1]) == -1) exit_status = EXIT_CHILD_FAILURE;
-        if (close(pipe_stdout[1]) == -1) exit_status = EXIT_CHILD_FAILURE;
+        if (close(pipe_stderr[0]) == -1) exit_status = EXIT_CHILD_FAILURE;
+        if (close(pipe_stderr[1]) == -1) exit_status = EXIT_CHILD_FAILURE;
 
         if (exit_status != EXIT_SUCCESS) {
             exit(exit_status);
@@ -237,7 +247,8 @@ int combine(char **argv, int fd_out, int *status) {
         exit(EXIT_CHILD_FAILURE);
     }
 
-    struct buffer buf = {0};
+    struct buffer buf_out = {0};
+    struct buffer buf_err = {0};
 
     int close_rv = close(pipe_stdout[1]);
     if (close(pipe_stderr[1]) == -1 || close_rv == -1) {
@@ -245,23 +256,26 @@ int combine(char **argv, int fd_out, int *status) {
         goto err;
     }
 
-    buf.capacity = BLOCK_SIZE;
-    buf.data = malloc(buf.capacity * sizeof(char));
-    if (!buf.data) {
+    buf_out.capacity = buf_err.capacity = BLOCK_SIZE;
+    buf_out.data = malloc(buf_out.capacity * sizeof(char));
+    buf_err.data = malloc(buf_err.capacity * sizeof(char));
+    if (!buf_out.data || !buf_err.data) {
         goto err;
     }
 
     bool stdout_done = false, stderr_done = false;
     while (!stdout_done || !stderr_done) {
-        if (!stdout_done) {
-            if (!read_pipe(pipe_stdout[0], &buf, &stdout_done)) {
-                goto err;
-            }
+        if (!stdout_done && !read_pipe(pipe_stdout[0], &buf_out, &stdout_done)) {
+            goto err;
         }
-        if (!stderr_done) {
-            if (!read_pipe(pipe_stderr[0], &buf, &stderr_done)) {
-                goto err;
-            }
+        if (buf_out.len != 0 && !write_out(fd_out, &buf_out, std_out)) {
+            goto err;
+        }
+        if (!stderr_done && !read_pipe(pipe_stderr[0], &buf_err, &stderr_done)) {
+            goto err;
+        }
+        if (buf_err.len != 0 && !write_out(fd_out, &buf_err, std_err)) {
+            goto err;
         }
     }
 
@@ -270,7 +284,8 @@ int combine(char **argv, int fd_out, int *status) {
     }
     rv = 0;
     err:
-    free(buf.data);
+    free(buf_out.data);
+    free(buf_err.data);
     if (close(pipe_stdout[0]) == -1) rv = -1;
     if (close(pipe_stderr[0]) == -1) rv = -1;
     return rv;
@@ -318,10 +333,9 @@ static int check_output(const char *expected) {
 
     if (read(fd, buffer, 255) == -1)
         err(2, "reading %s", name);
-    printf("content: %s\n", buffer);
+//    printf("content: %s\n", buffer);
     close_or_warn(fd, name);
-//    return strcmp(expected, buffer);
-    return 0;
+    return strcmp(expected, buffer);
 }
 
 int main(int argc, char **argv) {
@@ -348,17 +362,6 @@ int main(int argc, char **argv) {
     assert(run_combine(args3, &status) == 0);
     assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
     assert(check_output("[STDERR] some error\n") == 0);
-
-    // custom
-//    int fd = open("zt.c_out", O_RDONLY);
-//    if (fd == -1) {
-//        perror("open");
-//        return EXIT_FAILURE;
-//    }
-//    char buffer[1024];
-//    read(fd, buffer, 1024);
-//    printf("zt.c_out content: %s\n", buffer);
-    // custom end
 
     unlink_if_exists("zt.c_out");
     return 0;
