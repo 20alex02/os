@@ -9,6 +9,7 @@
 #include <err.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 /* Naprogramujte proceduru ‹find›, která obdrží:
  *
@@ -36,11 +37,13 @@ int count_suffix_rec(int root_fd, int *count, const char *suffix) {
     if (root_fd == -1)
         return -1;
 
-    int rv = -1;
     DIR *dir = fdopendir(root_fd);
-    if (!dir)
-        goto out;
+    if (!dir) {
+        close(root_fd);
+        return -1;
+    }
 
+    int rv = -1;
     rewinddir(dir);
     struct dirent *ptr;
     struct stat st;
