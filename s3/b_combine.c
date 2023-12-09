@@ -147,7 +147,7 @@ bool write_out(int fd, struct buffer *buf, const char *output_type) {
 
         char cropped[MAX_LINE_LEN];
         snprintf(cropped, MAX_LINE_LEN, "%s: cropped %d characters\n", output_type,
-                 buf->newline == -1 ? buf->len - MAX_LINE_LEN : buf->newline + 1 - MAX_LINE_LEN);
+                 buf->newline == -1 ? buf->len - MAX_LINE_LEN : buf->newline - MAX_LINE_LEN);
         if (write(fd, cropped, strlen(cropped)) == -1) {
             return false;
         }
@@ -362,6 +362,16 @@ int main(int argc, char **argv) {
     assert(run_combine(args3, &status) == 0);
     assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
     assert(check_output("[STDERR] some error\n") == 0);
+
+    char *args4[] = {"echo",
+                     "1234512345123451234512345123451234512345123451234512345123451234512345123451234512345123451234512345",
+                     NULL};
+    assert(run_combine(args4, &status) == 0);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(check_output(
+            "[STDOUT] 12345123451234512345123451234512345123451234512345123451234512345123451\n"
+            "STDOUT: cropped 29 characters\n") ==
+           0);
 
     unlink_if_exists("zt.c_out");
     return 0;
