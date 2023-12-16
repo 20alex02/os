@@ -1,13 +1,12 @@
 #define _POSIX_C_SOURCE 200809L
 
-#include <sys/types.h>  /* sockaddr */
 #include <sys/socket.h> /* socket, connect */
 #include <netinet/in.h> /* sockaddr_in */
 #include <arpa/inet.h>  /* inet_ntop */
 #include <unistd.h>     /* close */
 #include <stdlib.h>     /* NULL, rand */
 #include <stdio.h>      /* printf */
-#include <stdint.h>     /* uint16_t */
+#include <string.h>
 
 /* Pro převod mezi lidsky zapamatovatelnými doménovými jmény a
  * internetovou adresou slouží protokol DNS. V této úloze si
@@ -44,11 +43,10 @@
  * paketu. Atribut ‹data› označuje samotná binární data a ‹size›
  * jejich velikost. */
 
-typedef struct
-{
-    unsigned char data[ 512 ];
+#define PACKET_SIZE 512
+typedef struct {
+    unsigned char data[PACKET_SIZE];
     int size;
-
 } packet_t;
 
 /* Následuje typ ‹question_t› reprezentující dotaz, který bude
@@ -64,11 +62,9 @@ typedef struct
  * oddělení částí jmen („labels“). Zároveň očekáváme, že koncová
  * tečka «nebude» uvedena. */
 
-typedef struct
-{
+typedef struct {
     uint16_t id;
     const char *domain;
-
 } question_t;
 
 /* Nakonec je tu typ ‹answer_t›, který bude obsahovat informace
@@ -87,14 +83,37 @@ typedef struct
  * Kromě ‹addr› budou hodnoty atributů v endianitě hostitelského
  * počítače, nikoliv síťové. */
 
-typedef struct
-{
+#define IPV6_ADDR_SIZE 16
+typedef struct {
     uint16_t id;
     uint16_t header_flags;
     uint32_t ttl;
-    char addr[ 16 ];
-
+    char addr[IPV6_ADDR_SIZE];
 } answer_t;
+
+#define HEADER_SIZE 12
+typedef struct {
+    uint16_t id;
+    uint16_t flags;
+    uint16_t qdcount;
+    uint16_t ancount;
+    uint16_t nscount;
+    uint16_t arcount;
+} header_t;
+
+#define ANSWER_SECTION_SIZE 10
+typedef struct {
+    uint16_t type;
+    uint16_t class;
+    uint32_t ttl;
+    uint16_t rdlength;
+} answer_section_t;
+
+#define QUESTION_SECTION_SIZE 4
+typedef struct {
+    uint16_t qtype;
+    uint16_t qclass;
+} question_section_t;
 
 /* Pro usnadnění implementace si rozdělme úlohu na dvě pomocné
  * procedury. První z nich je ‹create_query›, jejímž úkolem bude
@@ -109,7 +128,66 @@ typedef struct
  * možné paket sestrojit vzhledem ke stanovené maximální
  * velikosti. */
 
-int create_query( const question_t *question, packet_t *packet );
+#define TYPE_AAAA 28
+#define CLASS_IN 1
+#define QDCOUNT 1
+#define FLAGS 0x0100 // QR = 0 (query), OPCODE = 0 (standard query), AA = 0, TC = 0, RD = 1, RA = 0, Z = 0, RCODE = 0
+#define QR_MASK 0x8000
+#define RCODE_MASK 0x0F
+#define MAX_LABEL_LEN 255
+#define DOMAIN_NAME_END_MASK 0xC0
+
+#define STATUS_OK 0
+#define STATUS_SYS_ERR 1
+#define STATUS_REQ_ERR 2
+#define STATUS_ANS_ERR 3
+
+int create_query(const question_t *question, packet_t *packet) {
+    if (question == NULL || packet == NULL) {
+        return -1;
+    }
+    size_t domain_length = strlen(question->domain);
+    if (HEADER_SIZE + 1 + domain_length + 1 + QUESTION_SECTION_SIZE > PACKET_SIZE) {
+        return -1;
+    }
+
+    memset(packet, 0, sizeof(packet_t));
+
+    header_t *header = (header_t *) packet->data;
+    header->id = htons(question->id);
+    header->flags = htons(FLAGS);
+    header->qdcount = htons(QDCOUNT);
+
+    int label_start = HEADER_SIZE;
+    int index = HEADER_SIZE + 1;
+    int label_len;
+    for (int i = 0; i < domain_length; ++i) {
+        if (question->domain[i] == '.') {
+            label_len = index - label_start - 1;
+            if (label_len > MAX_LABEL_LEN) {
+                return -1;
+            }
+            packet->data[label_start] = label_len;
+            label_start += label_len + 1;
+            ++index;
+        } else {
+            packet->data[index++] = question->domain[i];
+        }
+    }
+    label_len = index - label_start - 1;
+    if (label_len > MAX_LABEL_LEN) {
+        return -1;
+    }
+    packet->data[label_start] = label_len;
+    packet->data[index++] = 0x00;
+
+    question_section_t *question_section = (question_section_t *) (packet->data + index);
+    question_section->qtype = htons(TYPE_AAAA);
+    question_section->qclass = htons(CLASS_IN);
+
+    packet->size = index + QUESTION_SECTION_SIZE;
+    return 0;
+}
 
 /* Druhou pomocnou procedurou je ‹process_answer›, jejímž úkolem
  * bude naopak zpracovat přijatý paket a uložit požadované informace
@@ -119,7 +197,53 @@ int create_query( const question_t *question, packet_t *packet );
  * je přijatý paket příliš krátký. V tom případě není specifikováno,
  * na jakou hodnotu má ‹answer› ukazovat. */
 
-int process_answer( const packet_t *packet, answer_t *answer );
+int process_answer(const packet_t *packet, answer_t *answer) {
+    if (packet->size < HEADER_SIZE + QUESTION_SECTION_SIZE + ANSWER_SECTION_SIZE + IPV6_ADDR_SIZE) {
+        return -1;
+    }
+    header_t *header = (header_t *) packet->data;
+    answer->id = ntohs(header->id);
+    answer->header_flags = ntohs(header->flags);
+
+    uint16_t is_response = answer->header_flags & QR_MASK;
+    uint8_t rcode = answer->header_flags & RCODE_MASK;
+    uint16_t answer_count = ntohs(header->ancount);
+    if (!is_response || rcode != 0 || answer_count < 1) {
+        return -1;
+    }
+
+    // skip question
+    uint16_t question_count = ntohs(header->qdcount);
+    int offset = HEADER_SIZE;
+    for (int i = 0; i < question_count; ++i) {
+        while (packet->data[offset] != 0) {
+            offset += packet->data[offset] + 1;
+        }
+        offset += 1 + QUESTION_SECTION_SIZE; // Skip the null terminator and rest of question
+    }
+
+    // skip domain name in answer
+    while (packet->data[offset] != 0) {
+        if ((packet->data[offset] & DOMAIN_NAME_END_MASK) == DOMAIN_NAME_END_MASK) {
+            ++offset;
+            break;
+        }
+        offset += packet->data[offset] + 1;
+    }
+    ++offset;
+
+    answer_section_t *answer_section = (answer_section_t *) (packet->data + offset);
+    uint16_t type = ntohs(answer_section->type);
+    uint16_t class = ntohs(answer_section->class);
+    uint16_t rdlength = ntohs(answer_section->rdlength);
+    if (type != TYPE_AAAA || class != CLASS_IN || rdlength != IPV6_ADDR_SIZE) {
+        return -1;
+    }
+
+    answer->ttl = ntohl(answer_section->ttl);
+    memcpy(answer->addr, packet->data + offset + ANSWER_SECTION_SIZE, IPV6_ADDR_SIZE);
+    return 0;
+}
 
 /* Nakonec následuje hlavní podprogram ‹udig›, který sestrojí paket
  * s dotazem, odešle jej na zadanou adresu, přijme odpověď
@@ -151,8 +275,45 @@ int process_answer( const packet_t *packet, answer_t *answer );
  * V případě, že ‹udig› vrátí něco jiného než ‹0›, není
  * specifikováno, na jakou hodnotu má ukazovat ‹answer›. */
 
-int udig( struct sockaddr_in *host, const question_t *question,
-         answer_t *answer );
+int udig(struct sockaddr_in *host, const question_t *question, answer_t *answer) {
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sockfd == -1) {
+        perror("Socket creation failed");
+        return STATUS_SYS_ERR;
+    }
+
+    packet_t packet;
+    if (create_query(question, &packet) != 0) {
+        close(sockfd);
+        return STATUS_REQ_ERR;
+    }
+
+    if (sendto(sockfd, packet.data, packet.size, 0,
+               (struct sockaddr *) host, sizeof(struct sockaddr_in)) == -1) {
+        perror("Sendto failed");
+        close(sockfd);
+        return STATUS_SYS_ERR;
+    }
+
+    struct sockaddr_in sender_addr;
+    socklen_t sender_len = sizeof(sender_addr);
+
+    ssize_t nbytes = recvfrom(sockfd, packet.data, PACKET_SIZE, 0, (struct sockaddr *) &sender_addr, &sender_len);
+    if (nbytes == -1) {
+        perror("Recvfrom failed");
+        close(sockfd);
+        return STATUS_SYS_ERR;
+    }
+    packet.size = (int) nbytes;
+
+    if (process_answer(&packet, answer) != 0 || answer->id != question->id) {
+        close(sockfd);
+        return STATUS_ANS_ERR;
+    }
+
+    close(sockfd);
+    return STATUS_OK;
+}
 
 /* Popis formátu
  *
@@ -325,61 +486,56 @@ int udig( struct sockaddr_in *host, const question_t *question,
 /* ┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄┄┄┄ následují testy ┄┄┄┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄ */
 
 #include <err.h>        /* err */
-#include <unistd.h>     /* alarm */
 #include <time.h>       /* time */
 
-int main( int argc, char **argv )
-{
+int main(int argc, char **argv) {
     /* Adresa, na které Google poskytuje službu DNS. */
     const char *host_ip_str = "8.8.8.8";
 
     /* Doménové jméno, pro které chceme zjistit adresu. */
     const char *name_in_question = "seznam.cz";
-
-    if ( argc == 3 )
-    {
-        host_ip_str = argv[ 1 ];
-        name_in_question = argv[ 2 ];
-    }
-    else if ( argc > 3 )
-    {
-        fprintf( stderr, "usage: %s host question\n", *argv );
+//    const char *name_in_question = "domain.name.too.long.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaaaaaa.aaaaaaaaax.tech.io.com.zip";
+    if (argc == 3) {
+        host_ip_str = argv[1];
+        name_in_question = argv[2];
+    } else if (argc > 3) {
+        fprintf(stderr, "usage: %s host question\n", *argv);
         return 1;
     }
 
     /* Nechť proces nevisí napořád, pokud se něco zasekne. */
-    alarm( 5 );
+    alarm(5);
 
-    printf( "host → %s\n"
+    printf("host → %s\n"
            "resolve → %s\n",
-           host_ip_str, name_in_question );
+           host_ip_str, name_in_question);
 
-    srand( time( 0 ) );
+    srand(time(0));
     question_t question;
-    question.id = rand() % ( uint16_t )( -1 );
+    question.id = rand() % (uint16_t) (-1);
     question.domain = name_in_question;
 
     answer_t answer;
 
     struct sockaddr_in host;
     host.sin_family = AF_INET;
-    host.sin_port = htons( 53 );
-    if ( inet_pton(AF_INET, host_ip_str, &host.sin_addr ) != 1 )
-        errx( 1, "invalid address '%s'", host_ip_str );
+    host.sin_port = htons(53);
+    if (inet_pton(AF_INET, host_ip_str, &host.sin_addr) != 1)
+        errx(1, "invalid address '%s'", host_ip_str);
 
-    int rv = udig( &host, &question, &answer );
-    printf( "udig → %d\n", rv );
-    if ( rv != 0 )
+    int rv = udig(&host, &question, &answer);
+    printf("udig → %d\n", rv);
+    if (rv != 0)
         return rv;
 
-    char recv_addr[ INET6_ADDRSTRLEN + 1 ] = { 0 };
-    if ( inet_ntop(AF_INET6, &answer.addr, recv_addr,
-                  INET6_ADDRSTRLEN) == NULL )
-        err( 1, "converting address from answer to string" );
+    char recv_addr[INET6_ADDRSTRLEN + 1] = {0};
+    if (inet_ntop(AF_INET6, &answer.addr, recv_addr,
+                  INET6_ADDRSTRLEN) == NULL)
+        err(1, "converting address from answer to string");
 
-    printf( "answer.id → 0x%x\n", ( int )answer.id );
-    printf( "answer.header → 0x%x\n", ( int )answer.header_flags );
-    printf( "answer.ttl → %d seconds\n", answer.ttl );
-    printf( "answer.addr → %s\n", recv_addr );
+    printf("answer.id → 0x%x\n", (int) answer.id);
+    printf("answer.header → 0x%x\n", (int) answer.header_flags);
+    printf("answer.ttl → %d seconds\n", answer.ttl);
+    printf("answer.addr → %s\n", recv_addr);
     return rv;
 }

@@ -79,7 +79,6 @@ int count_unique(int dir_fd) {
         close(dup_fd);
     free(inodes);
     return rv;
-
 }
 
 /* ┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄┄┄┄ následují testy ┄┄┄┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄ */

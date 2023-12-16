@@ -50,74 +50,78 @@ struct trunc_buffer {
 //    int used;
 //};
 
-int read_trunc(int fd, char delim, int size, char *out, struct trunc_buffer *buffer) {
-    int totalBytesRead = 0;
-    if (buffer->length > 0) {
-        int copyLength = buffer->length;
-        if (copyLength > size) {
-            copyLength = size;
-        }
-
-        memcpy(&out[totalBytesRead], buffer->data, copyLength);
-        totalBytesRead += copyLength;
-
-        // Update the buffer
-        buffer->length -= copyLength;
-        memmove(buffer->data, &buffer->data[copyLength], buffer->length);
-    }
-
-    while (totalBytesRead < size) {
-        int bytesRead = read(fd, &out[totalBytesRead], size - totalBytesRead);
-
-        if (bytesRead == -1) {
-            return -1; // Error reading from the file descriptor
-        } else if (bytesRead == 0) {
-            break; // End of file
-        }
-
-        // Update totalBytesRead
-        totalBytesRead += bytesRead;
-
-        // Check for delimiter in the newly read data
-        for (int i = 0; i < bytesRead; ++i) {
-            if (out[i] == delim) {
-                // Save the remaining data after the delimiter in the buffer
-                buffer->length = bytesRead - (i + 1);
-                for (int j = 0; j < buffer->length; ++j) {
-                    buffer->data[j] = out[i + 1 + j];
-                }
-                totalBytesRead = i + 1;
-                break;
-            }
-        }
-    }
-
-    return totalBytesRead;
-}
+//int read_trunc(int fd, char delim, int size, char *out, struct trunc_buffer *buffer) {
+//    int totalBytesRead = 0;
+//    if (buffer->length > 0) {
+//        int copyLength = buffer->length;
+//        if (copyLength > size) {
+//            copyLength = size;
+//        }
+//
+//        memcpy(&out[totalBytesRead], buffer->data, copyLength);
+//        totalBytesRead += copyLength;
+//
+//        // Update the buffer
+//        buffer->length -= copyLength;
+//        memmove(buffer->data, &buffer->data[copyLength], buffer->length);
+//    }
+//
+//    while (totalBytesRead < size) {
+//        int bytesRead = read(fd, &out[totalBytesRead], size - totalBytesRead);
+//
+//        if (bytesRead == -1) {
+//            return -1; // Error reading from the file descriptor
+//        } else if (bytesRead == 0) {
+//            break; // End of file
+//        }
+//
+//        // Update totalBytesRead
+//        totalBytesRead += bytesRead;
+//
+//        // Check for delimiter in the newly read data
+//        for (int i = 0; i < bytesRead; ++i) {
+//            if (out[i] == delim) {
+//                // Save the remaining data after the delimiter in the buffer
+//                buffer->length = bytesRead - (i + 1);
+//                for (int j = 0; j < buffer->length; ++j) {
+//                    buffer->data[j] = out[i + 1 + j];
+//                }
+//                totalBytesRead = i + 1;
+//                break;
+//            }
+//        }
+//    }
+//
+//    return totalBytesRead;
+//}
 
 int read_trunc(int fd, char delim, int size, char *out,
                struct trunc_buffer *buffer) {
-    int offset = 0;
-    if (buffer->data[0]) {
-        char *delim_p = strchr(buffer->data, delim);
-        if (delim_p && delim_p - buffer->data < size) {
-            int token_len = (int) (delim_p - buffer->data);
-            memcpy(out, buffer->data, token_len);
-            if (token_len < BUF_SIZE - 1) {
-                memmove(buffer->data, delim_p + 1, BUF_SIZE - token_len);
-            }
-            return token_len;
+
+    if (buffer->length == 0) {
+        buffer->length = read(fd, buffer->data, BUF_SIZE);
+        if (buffer->length == -1 || buffer->length == 0) {
+            return buffer->length;
         }
-        if (size <= BUF_SIZE) {
-            memcpy(out, buffer->data, size);
-            memmove(buffer->data, buffer->data + size, size);
-            return size;
-        }
-        memcpy(out, buffer->data, BUF_SIZE);
-        buffer->data[0] = '\0';
     }
-    if (read(fd, buffer->data, BUF_SIZE))
-        return 0;
+    char *delim_p = strchr(buffer->data, delim);
+    if (delim_p && delim_p - buffer->data + 1 <= size) {
+        int transfered = delim_p - buffer->data + 1;
+        memcpy(out, buffer->data, transfered);
+        memmove(buffer->data, delim_p + 1, BUF_SIZE - transfered);
+        buffer->length -= transfered;
+        return transfered;
+    } else if (delim_p) {
+        int transfered = delim_p - buffer->data + 1;
+        memcpy(out, buffer->data, size);
+        memmove(buffer->data, delim_p + 1, BUF_SIZE - transfered);
+        buffer->length -= transfered;
+        return transfered;
+    } else {
+        buffer->length = 0;
+        memcpy(out, buffer->data, buffer->length <= size ? buffer->length : size);
+        return buffer->length;
+    }
 }
 
 /* ┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄┄┄┄ následují testy ┄┄┄┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄ */

@@ -70,8 +70,7 @@ int count_suffix_rec(int root_fd, int *count, const char *suffix) {
 
     rv = 0;
     out:
-    if (dir)
-        closedir(dir);
+    closedir(dir);
 
     return rv;
 }

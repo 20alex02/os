@@ -10,6 +10,10 @@
 #include <sys/socket.h>     /* socket, AF_* */
 #include <sys/un.h>         /* struct sockaddr_un */
 #include <arpa/inet.h>      /* ntohl */
+#include <stdbool.h>
+#include <stdatomic.h>
+#include <pthread.h>
+#include <poll.h>
 
 /* Naprogramujte proudově orientovaný server, který bude přijímat
  * data od všech klientů, a každou přijatou zprávu přepošle všem
@@ -47,15 +51,225 @@
  * chybu v tomto kontextu nepovažujeme – klienti se mohou odpojit
  * kdykoliv. */
 
-int *fds;
-int fd_count;
+#define BLOCK_SIZE 128
+#define WELCOME_MSG_LEN 23
 
-void *bcast(void *arg) {
-    return NULL
+const char *welcome_msg = "broadcast server ready\n";
+
+enum status {
+    NOT_CONNECTED,
+    CONNECTED,
+    OK,
+    ERR
+};
+
+struct client {
+    int idx;
+    int *clients;
+    int clients_len;
+    int status;
+    pthread_t tid;
+};
+
+struct buf {
+    char *data;
+    int len;
+    int capacity;
+    int msg_len;
+};
+
+bool realloc_double(struct buf *buf) {
+    buf->capacity *= 2;
+    char *tmp = realloc(buf->data, buf->capacity * sizeof(char));
+    if (!tmp) {
+        return false;
+    }
+    buf->data = tmp;
+    return true;
+}
+
+bool bcast(struct client *client, struct buf *buf) {
+//    int *current_clients = malloc(client->clients_len * sizeof(int));
+//    if (!current_clients) {
+//        return false;
+//    }
+//    for (int i = 0; i < client->clients_len; ++i) {
+//        current_clients[i] = client->clients[i];
+//    }
+//
+//    // Copy the clients array
+//    memcpy(current_clients, client->clients, client->clients_len * sizeof(int));
+
+
+    // TODO send copy of clients fd so newly connected clients wont receive old messages
+    for (int i = 0; i < client->clients_len; ++i) {
+        if (client->clients[i] == -1) {
+            continue;
+        }
+        if (write(client->clients[i], buf->data, buf->msg_len) == -1 && errno != EPIPE) {
+            return false;
+        }
+    }
+    memmove(buf->data, buf->data + buf->msg_len, buf->len - buf->msg_len);
+    return true;
+}
+
+bool reap_thread(struct client *clients, int len, bool wait) {
+    bool rv = true;
+    int status;
+    for (int client = 0; client < len; ++client) {
+        status = clients[client].status;
+        if (status == OK || status == ERR || (status == CONNECTED && wait)) {
+            if (pthread_join(clients[client].tid, NULL) != 0) {
+                rv = false;
+            }
+            clients[client].status = NOT_CONNECTED;
+        }
+    }
+    return rv;
+}
+
+void *client_thread(void *arg) {
+    int status = ERR;
+    struct client *client = arg;
+    struct buf buf;
+    buf.capacity = BLOCK_SIZE;
+    buf.len = 0;
+    buf.data = malloc(buf.capacity * sizeof(char));
+    if (!buf.data) {
+        goto out;
+    }
+    if (write(client->clients[client->idx], welcome_msg, WELCOME_MSG_LEN) == -1) {
+        if (errno == EPIPE) {
+            client->status = OK;
+        }
+        goto out;
+    }
+    ssize_t nread;
+    char *newline;
+    while ((nread = read(client->clients[client->idx], buf.data + buf.len, BLOCK_SIZE)) > 0) {
+        buf.len += (int) nread;
+        if ((newline = memchr(buf.data + buf.len - nread, '\n', nread))) {
+            buf.msg_len = newline - buf.data + 1;
+            if (!bcast(client, &buf)) {
+                goto out;
+            }
+        }
+        if (buf.capacity - buf.len < BLOCK_SIZE && !realloc_double(&buf)) {
+            goto out;
+        }
+    }
+    if (nread == -1) {
+        goto out;
+    }
+    status = OK;
+
+    out:
+
+    free(buf.data);
+    if (close(client->clients[client->idx]) == -1) status = ERR;
+    client->clients[client->idx] = -1;
+    client->status = status;
+    return NULL;
 }
 
 int broadcast_server(int sock_fd, int count, int par) {
-    return 0;
+    int rv = -1;
+    struct client *clients = malloc(par * sizeof(struct client));
+    atomic_int *client_fds = malloc(par * sizeof(atomic_int));
+    if (!clients || !client_fds) {
+        goto out;
+    }
+    for (int client = 0; client < par; ++client) {
+        clients[client].idx = client;
+        clients[client].clients_len = par;
+        clients[client].clients = client_fds;
+        clients[client].status = NOT_CONNECTED;
+    }
+
+    for (int conn = 0; conn < count; ++conn) {
+
+    }
+
+    rv = 0;
+    out:
+    // join all remaining threads
+    // memory cleanup
+    // close files
+    return rv;
+}
+
+//bool init_data(struct pollfd **pfds, struct buf **bufs, int len) {
+//    *pfds = malloc(len * sizeof(struct pollfd));
+//    *bufs = malloc(len * sizeof(struct buf));
+//    if (!*pfds || !*bufs) {
+//        return false;
+//    }
+//    for (int i = 0; i < len; ++i) {
+//        *pfds[i].fd = -1;
+//        pfds[i].events = POLLIN;
+//        bufs->data = NULL;
+//        bufs->len = 0;
+//        bufs->capacity = BLOCK_SIZE;
+//    }
+//    for (int i = 0; i < len; ++i) {
+//        bufs[i].data = malloc(bufs[i].capacity * sizeof(char));
+//        if (!bufs[i].data) {
+//            goto out;
+//        }
+//    }
+//}
+
+int broadcast_server_2(int sock_fd, int count, int par) {
+    int rv = -1;
+    struct pollfd *pfds = malloc(par * sizeof(struct pollfd));
+    struct buf *bufs = malloc(par * sizeof(struct buf));
+    if (!pfds || !bufs) {
+        goto out;
+    }
+    for (int i = 0; i < par; ++i) {
+        pfds[i].fd = -1;
+        pfds[i].events = POLLIN;
+        bufs->data = NULL;
+        bufs->len = 0;
+        bufs->capacity = BLOCK_SIZE;
+    }
+    for (int i = 0; i < par; ++i) {
+        bufs[i].data = malloc(bufs[i].capacity * sizeof(char));
+        if (!bufs[i].data) {
+            goto out;
+        }
+    }
+
+    int connected = 0;
+    int pfd;
+    for (int conn = 0; conn < count; ++conn) {
+        for (pfd = 0; pfd < par; ++pfd) {
+            if (pfds[pfd].fd == -1) break;
+        }
+        if ((pfds[pfd].fd = accept(sock_fd, NULL, NULL)) == -1) {
+            goto out;
+        }
+        if (++connected == par) {
+
+        }
+    }
+
+    rv = 0;
+    out:
+    if (pfds) {
+        for (int i = 0; i < par; ++i) {
+            if (pfds[i].fd != -1 && close(pfds[i].fd) == -1) rv = -1;
+        }
+        free(pfds);
+    }
+    if (bufs) {
+        for (int i = 0; i < par; ++i) {
+            free(bufs->data);
+        }
+        free(bufs);
+    }
+    return rv;
 }
 
 /* ┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄┄┄┄ následují testy ┄┄┄┄┄┄┄┄┄┄ %< ┄┄┄┄┄┄┄ */

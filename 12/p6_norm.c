@@ -17,19 +17,16 @@
  * jinak zapsané. Výsledná hodnota musí být svým významem
  * ekvivalentní té původní. */
 
-int isTokenInResult(const char *result, const char *token) {
-    char *copy = strdup(result);
-    char *tok = strtok(copy, ":");
 
-    while (tok != NULL) {
-        if (strcmp(tok, token) == 0) {
-            free(copy);
+int is_token_in_result(const char *token, const char *result) {
+    size_t token_len = strlen(token);
+    char *ptr = strstr(result, token);
+    while (ptr != NULL) {
+        if ((ptr == result || ptr[-1] == ':') && ptr[token_len] == ':') {
             return 1;
         }
-        tok = strtok(NULL, ":");
+        ptr = strstr(ptr + 1, token);
     }
-
-    free(copy);
     return 0;
 }
 
@@ -42,26 +39,22 @@ char *path_normalize(const char *path) {
     if (copy == NULL) {
         return NULL;
     }
-    char *token;
-    char *saveptr;
-    char *result = malloc(strlen(path) + 1);
+    char *result = malloc(strlen(path) + 2);
     if (result == NULL) {
         free(copy);
         return NULL;
     }
     result[0] = '\0';
-    token = strtok_r(copy, ":", &saveptr);
+    char *token = strtok(copy, ":");
     while (token != NULL) {
-        if (!isTokenInResult(result, token)) {
+        if (!is_token_in_result(token, result)) {
             strcat(result, token);
             strcat(result, ":");
         }
-        token = strtok_r(NULL, ":", &saveptr);
+        token = strtok(NULL, ":");
     }
 
-    if (result[strlen(result) - 1] == ':') {
-        result[strlen(result) - 1] = '\0';
-    }
+    result[strlen(result) - 1] = '\0';
 
     free(copy);
     return result;
